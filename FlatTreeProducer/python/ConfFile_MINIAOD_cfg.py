@@ -85,9 +85,11 @@ process.jec = cms.ESSource("PoolDBESSource",
 )
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')                           
 
-##process.load('Configuration.StandardSequences.Services_cff')
-##process.load("Configuration.Geometry.GeometryRecoDB_cff")
-##process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
+process.load('Configuration.Geometry.GeometryRecoDB_cff')
+process.load('Configuration.StandardSequences.Services_cff')
+process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi") # needs for electron smearing of miniAODv1
 
 corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 if options.isData:
@@ -166,21 +168,24 @@ for idmod in my_id_modules:
 
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
-# https://twiki.cern.ch/twiki/bin/viewauth/CMS/EGMSmearer - added unwillingly by Xavier
-###process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-#process.calibratedPatElectrons
-
-#from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-#process = regressionWeights(process)
-
-#process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
-
-
-##-- TESTING -- TRYING TO ADD ELECTRON ENERGY SMEARING , following : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#Running_on_2017_MiniAOD_V1 #FIXME
+# to be used only for 2017 MiniAODv1
 #from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-#setupEgammaPostRecoSeq(process, runVID=False) #a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+#setupEgammaPostRecoSeq(process,
+#                       applyEnergyCorrections=True,
+#                       applyVIDOnCorrectedEgamma=True,
+#                       runVID=True,
+#                       eleIDModules=my_id_modules,
+#                       era='2017-Nov17ReReco')
 
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(process,
+                       runVID=False,
+                       era='2017-Nov17ReReco')
 
+process.egmGsfElectronIDs.physicsObjectSrc = 'slimmedElectrons'
+process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
+process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
+                       
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,isData=options.isData)
 
@@ -472,19 +477,16 @@ if options.runQG:
     process.runQG = cms.Sequence(process.QGTagger)
 
 process.p = cms.Path(
-#                     process.calibratedPatElectrons+
+                     process.egammaPostRecoSeq+
                      process.rerunMvaIsolationSequence+
-                     process.fullPatMetSequence+
-                     process.NewTauIDsEmbedded+
+                     process.electronMVAVariableHelper+
                      process.electronMVAValueMapProducer+
-                     process.egmGsfElectronIDSequence+
-#                     process.regressionApplication+
+                     process.egmGsfElectronIDs+
+                     process.fullPatMetSequence+
                      process.METSignificance+
+                     process.NewTauIDsEmbedded+
                      process.jecSequence+
                      process.runQG+
-#                     process.BadChargedCandidateFilter+
-#                     process.BadPFMuonFilter+
                      process.slimmedPatTriggerUnpacked+
                      process.FlatTree
-		     #process.egammaPostRecoSeq #FIXME -- need to add "+" before
                     )

@@ -25,7 +25,7 @@ mkdir MyAnalysis
 cd MyAnalysis
 
 # CMSSW Release
-RELEASE=9_4_3
+RELEASE=9_4_10
 
 # Setup release
 cmsrel CMSSW_$RELEASE
@@ -34,20 +34,15 @@ cmsenv
 git cms-init
 
 # Egamma
-git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP
-git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3
-git cms-merge-topic cms-egamma:EGM_94X_v1
-git clone https://github.com/ECALELFS/ScalesSmearings.git EgammaAnalysis/ElectronTools/data/ScalesSmearings -b Run2017_17Nov2017_v1
+git cms-merge-topic guitargeek:EgammaID_9_4_X
+git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
 
-# Compile
-scram b -j5
+# MET filters
+git cms-merge-topic cms-met:METFixEE2017_949_v2
 
-cd $CMSSW_BASE/external/slc6_amd64_gcc630/
-git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data
-cd data/RecoEgamma/ElectronIdentification/data
-git checkout CMSSW_9_4_0_pre3_TnP
-cd $CMSSW_BASE/src
-cp ${CMSSW_BASE}/external/slc6_amd64_gcc630/data/RecoEgamma/ElectronIdentification/data/Fall17/EIDmva_E* ${CMSSW_BASE}/src/RecoEgamma/ElectronIdentification/data/Fall17/.
+# Use the latest DeepJet training
+git cms-addpkg RecoBTag/TensorFlow
+git cherry-pick 94ceae257f846998c357fcad408986cc8a039152
 
 # Tools needed for AK10 jet collection
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox 
