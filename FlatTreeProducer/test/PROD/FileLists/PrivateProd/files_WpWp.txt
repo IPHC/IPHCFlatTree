@@ -1,0 +1,2 @@
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/WpWpJJ_EWK_QCD_TuneCP5_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_WpWpJJ.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/WpWpJJ_EWK_QCD_TuneCP5_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_WpWpJJ001.root

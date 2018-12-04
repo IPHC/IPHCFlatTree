@@ -1,0 +1,12 @@
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb001.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb002.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb003.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb004.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb005.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb006.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb007.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb008.root 	
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb009.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb010.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/VHToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_Fall17/MINIAODSIM_merged/merged_VHToNonbb011.root

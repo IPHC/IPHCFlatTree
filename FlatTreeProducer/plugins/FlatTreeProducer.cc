@@ -1785,6 +1785,15 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_E.push_back(elec.energy());
         ftree->el_id.push_back(elec.pdgId());
         ftree->el_charge.push_back(elec.charge());
+	
+	//NEW -- electron pT smearing
+	float el_PreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
+	float el_PostCorr = elec.userFloat("ecalTrkEnergyPostCorr");
+	float el_ErrPostCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
+
+	ftree->el_ecalTrkEnergyPreCorr.push_back(el_PreCorr);
+	ftree->el_ecalTrkEnergyPostCorr.push_back(el_PostCorr);
+	ftree->el_ecalTrkEnergyErrPostCorr.push_back(el_ErrPostCorr);	
 
         ftree->el_isGsfCtfScPixChargeConsistent.push_back(elec.isGsfCtfScPixChargeConsistent());
         ftree->el_isGsfScPixChargeConsistent.push_back(elec.isGsfScPixChargeConsistent());
@@ -2069,9 +2078,16 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             reco::GenParticle *genp = new reco::GenParticle();
 
             float drmin;
-            bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
 						elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
+						
+	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
+	    bool hasChargeMCMatch = (result_MCMatch == 2);
+	    bool el_hasPhotonMCMatch = (result_MCMatch == 3); //Check if electrons are matched to photons -- for conv bkg	
+						
             ftree->el_hasMCMatch.push_back(hasMCMatch);
+            ftree->el_hasChargeMCMatch.push_back(hasChargeMCMatch);
+            ftree->el_hasPhotonMCMatch.push_back(el_hasPhotonMCMatch);
             if( hasMCMatch )
             {
                 ftree->el_gen_pt.push_back(genp->pt());
@@ -2592,9 +2608,15 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             reco::GenParticle *genp = new reco::GenParticle();
 
             float drmin;
-            bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
 						muon.pt(),muon.eta(),muon.phi(),muon.pdgId(),0);
+						
+	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
+	    bool hasChargeMCMatch = (result_MCMatch == 2);
+	    						
             ftree->mu_hasMCMatch.push_back(hasMCMatch);
+            ftree->mu_hasChargeMCMatch.push_back(hasChargeMCMatch);
+	    
             if( hasMCMatch )
             {
                 ftree->mu_gen_pt.push_back(genp->pt());
@@ -2768,9 +2790,15 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             reco::GenParticle *genp = new reco::GenParticle();
 
             float drmin;
-            bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
 						tau.pt(),tau.eta(),tau.phi(),tau.pdgId(),1);
+						
+	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
+	    bool hasChargeMCMatch = (result_MCMatch == 2);
+	    						
             ftree->tau_hasMCMatch.push_back(hasMCMatch);
+            ftree->tau_hasChargeMCMatch.push_back(hasChargeMCMatch);
+	    
             if( hasMCMatch )
             {
                 ftree->tau_gen_pt.push_back(genp->pt());

@@ -187,7 +187,14 @@ process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
 process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
                        
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,isData=options.isData)
+runMetCorAndUncFromMiniAOD(
+        process,
+        isData = options.isData,
+        fixEE2017 = True,
+        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
+        postfix = "ModifiedMET"
+)
+#runMetCorAndUncFromMiniAOD(process,isData=options.isData)
 
 # MET
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2
@@ -482,7 +489,8 @@ process.p = cms.Path(
                      process.electronMVAVariableHelper+
                      process.electronMVAValueMapProducer+
                      process.egmGsfElectronIDs+
-                     process.fullPatMetSequence+
+                     process.fullPatMetSequenceModifiedMET+
+#                     process.fullPatMetSequence+
                      process.METSignificance+
                      process.NewTauIDsEmbedded+
                      process.jecSequence+

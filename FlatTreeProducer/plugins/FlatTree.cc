@@ -252,6 +252,10 @@ void FlatTree::Init()
    el_E.clear();
    el_id.clear();
    el_charge.clear();
+   
+   el_ecalTrkEnergyPreCorr.clear();
+   el_ecalTrkEnergyPostCorr.clear();
+   el_ecalTrkEnergyErrPostCorr.clear();
 
    el_isGsfCtfScPixChargeConsistent.clear();
    el_isGsfScPixChargeConsistent.clear();
@@ -429,6 +433,8 @@ void FlatTree::Init()
    el_conept.clear();
 
    el_hasMCMatch.clear();
+   el_hasChargeMCMatch.clear();
+   el_hasPhotonMCMatch.clear();
    el_gen_pt.clear();
    el_gen_eta.clear();
    el_gen_phi.clear();
@@ -752,6 +758,7 @@ void FlatTree::Init()
    mu_conept.clear();
 
    mu_hasMCMatch.clear();
+   mu_hasChargeMCMatch.clear();
    mu_gen_pt.clear();
    mu_gen_eta.clear();
    mu_gen_phi.clear();
@@ -836,6 +843,7 @@ void FlatTree::Init()
    tau_pfEssential_dxy_Sig.clear();
 
    tau_hasMCMatch.clear();
+   tau_hasChargeMCMatch.clear();
    tau_gen_pt.clear();
    tau_gen_eta.clear();
    tau_gen_phi.clear();
@@ -1414,6 +1422,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_id") ) tree->Branch("el_id", "std::vector<int>", &el_id, buffersize);
    if( doWrite("el_charge") ) tree->Branch("el_charge", "std::vector<int>", &el_charge, buffersize);
    
+   if( doWrite("el_ecalTrkEnergyPreCorr") ) tree->Branch("el_ecalTrkEnergyPreCorr", "std::vector<float>", &el_ecalTrkEnergyPreCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyPostCorr") ) tree->Branch("el_ecalTrkEnergyPostCorr", "std::vector<float>", &el_ecalTrkEnergyPostCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyErrPostCorr") ) tree->Branch("el_ecalTrkEnergyErrPostCorr", "std::vector<float>", &el_ecalTrkEnergyErrPostCorr, buffersize);
+
    if( doWrite("el_passConversionVeto") ) tree->Branch("el_passConversionVeto", "std::vector<int>", &el_passConversionVeto, buffersize);   
    if( doWrite("el_isGsfCtfScPixChargeConsistent") ) tree->Branch("el_isGsfCtfScPixChargeConsistent", "std::vector<int>", &el_isGsfCtfScPixChargeConsistent, buffersize);
    if( doWrite("el_isGsfScPixChargeConsistent") ) tree->Branch("el_isGsfScPixChargeConsistent", "std::vector<int>", &el_isGsfScPixChargeConsistent, buffersize);
@@ -1590,6 +1602,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_conept") ) tree->Branch("el_conept", "std::vector<float>", &el_conept, buffersize);
 
    if( doWrite("el_hasMCMatch") ) tree->Branch("el_hasMCMatch", "std::vector<int>", &el_hasMCMatch, buffersize);
+   if( doWrite("el_hasChargeMCMatch") ) tree->Branch("el_hasChargeMCMatch", "std::vector<int>", &el_hasChargeMCMatch, buffersize);
+   if( doWrite("el_hasPhotonMCMatch") ) tree->Branch("el_hasPhotonMCMatch", "std::vector<int>", &el_hasPhotonMCMatch, buffersize);
    if( doWrite("el_gen_pt") ) tree->Branch("el_gen_pt", "std::vector<float>", &el_gen_pt, buffersize);
    if( doWrite("el_gen_eta") ) tree->Branch("el_gen_eta", "std::vector<float>", &el_gen_eta, buffersize);
    if( doWrite("el_gen_phi") ) tree->Branch("el_gen_phi", "std::vector<float>", &el_gen_phi, buffersize);
@@ -1913,6 +1927,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_conept") ) tree->Branch("mu_conept", "std::vector<float>", &mu_conept, buffersize);
 
    if( doWrite("mu_hasMCMatch") ) tree->Branch("mu_hasMCMatch", "std::vector<int>", &mu_hasMCMatch, buffersize);
+   if( doWrite("mu_hasChargeMCMatch") ) tree->Branch("mu_hasChargeMCMatch", "std::vector<int>", &mu_hasChargeMCMatch, buffersize);
    if( doWrite("mu_gen_pt") ) tree->Branch("mu_gen_pt", "std::vector<float>", &mu_gen_pt, buffersize);
    if( doWrite("mu_gen_eta") ) tree->Branch("mu_gen_eta", "std::vector<float>", &mu_gen_eta, buffersize);
    if( doWrite("mu_gen_phi") ) tree->Branch("mu_gen_phi", "std::vector<float>", &mu_gen_phi, buffersize);
@@ -1997,6 +2012,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_pfEssential_dxy_Sig") ) tree->Branch("tau_pfEssential_dxy_Sig", "std::vector<float>", &tau_pfEssential_dxy_Sig, buffersize);
 
    if( doWrite("tau_hasMCMatch") ) tree->Branch("tau_hasMCMatch", "std::vector<int>", &tau_hasMCMatch, buffersize);
+   if( doWrite("tau_hasChargeMCMatch") ) tree->Branch("tau_hasChargeMCMatch", "std::vector<int>", &tau_hasChargeMCMatch, buffersize);
    if( doWrite("tau_gen_pt") ) tree->Branch("tau_gen_pt", "std::vector<float>", &tau_gen_pt, buffersize);
    if( doWrite("tau_gen_eta") ) tree->Branch("tau_gen_eta", "std::vector<float>", &tau_gen_eta, buffersize);
    if( doWrite("tau_gen_phi") ) tree->Branch("tau_gen_phi", "std::vector<float>", &tau_gen_phi, buffersize);

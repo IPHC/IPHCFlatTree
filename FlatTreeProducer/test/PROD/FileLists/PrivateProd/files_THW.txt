@@ -1,0 +1,4 @@
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/THW_5f_Hincl_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_THW.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/THW_5f_Hincl_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_THW001.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/THW_5f_Hincl_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_THW002.root
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/THW_5f_Hincl_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_THW003.root

@@ -213,6 +213,9 @@
     <var name="el_E" save="1"></var>
     <var name="el_id" save="1"></var>
     <var name="el_charge" save="1"></var>
+    <var name="el_ecalTrkEnergyPreCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyPostCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyErrPostCorr" save="1"></var>    
     <var name="el_passConversionVeto" save="1"></var>
     <var name="el_isGsfCtfScPixChargeConsistent" save="1"></var>
     <var name="el_isGsfScPixChargeConsistent" save="1"></var>
@@ -365,6 +368,8 @@
     <var name="el_hasMatchedConversion" save="1"></var>
     <var name="el_expectedMissingInnerHits" save="1"></var>
     <var name="el_hasMCMatch" save="1" mc="1"></var>
+    <var name="el_hasChargeMCMatch" save="1" mc="1"></var>
+    <var name="el_hasPhotonMCMatch" save="1" mc="1"></var>
     <var name="el_gen_pt" save="1" mc="1"></var>
     <var name="el_gen_eta" save="1" mc="1"></var>
     <var name="el_gen_phi" save="1" mc="1"></var>
@@ -659,6 +664,7 @@
     <var name="mu_lepMVA_jetNDauChargedMVASel" save="1"></var>
     <var name="mu_conept" save="1"></var>
     <var name="mu_hasMCMatch" save="1" mc="1"></var>
+    <var name="mu_hasChargeMCMatch" save="1" mc="1"></var>
     <var name="mu_gen_pt" save="1" mc="1"></var>
     <var name="mu_gen_eta" save="1" mc="1"></var>
     <var name="mu_gen_phi" save="1" mc="1"></var>
@@ -733,6 +739,7 @@
     <var name="tau_pfEssential_dxy_error" save="1"></var>
     <var name="tau_pfEssential_dxy_Sig" save="1"></var>
     <var name="tau_hasMCMatch" save="1" mc="1"></var>
+    <var name="tau_hasChargeMCMatch" save="1" mc="1"></var>
     <var name="tau_gen_pt" save="1" mc="1"></var>
     <var name="tau_gen_eta" save="1" mc="1"></var>
     <var name="tau_gen_phi" save="1" mc="1"></var>

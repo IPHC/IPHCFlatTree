@@ -286,6 +286,10 @@ class FlatTree
    std::vector<float> el_E;
    std::vector<int> el_id;
    std::vector<int> el_charge;
+   
+   std::vector<float> el_ecalTrkEnergyPreCorr;
+   std::vector<float> el_ecalTrkEnergyPostCorr;
+   std::vector<float> el_ecalTrkEnergyErrPostCorr;
 
    std::vector<int> el_passConversionVeto;
    std::vector<int> el_isGsfCtfScPixChargeConsistent;
@@ -465,6 +469,8 @@ class FlatTree
    std::vector<float> el_conept;
 
    std::vector<int> el_hasMCMatch;
+   std::vector<int> el_hasChargeMCMatch;
+   std::vector<int> el_hasPhotonMCMatch;
    std::vector<float> el_gen_pt;
    std::vector<float> el_gen_eta;
    std::vector<float> el_gen_phi;
@@ -792,6 +798,7 @@ class FlatTree
    std::vector<float> mu_conept;
 
    std::vector<int> mu_hasMCMatch;
+   std::vector<int> mu_hasChargeMCMatch;
    std::vector<float> mu_gen_pt;
    std::vector<float> mu_gen_eta;
    std::vector<float> mu_gen_phi;
@@ -877,6 +884,7 @@ class FlatTree
    std::vector<float> tau_pfEssential_dxy_Sig;
 
    std::vector<int> tau_hasMCMatch;
+   std::vector<int> tau_hasChargeMCMatch;
    std::vector<float> tau_gen_pt;
    std::vector<float> tau_gen_eta;
    std::vector<float> tau_gen_phi;

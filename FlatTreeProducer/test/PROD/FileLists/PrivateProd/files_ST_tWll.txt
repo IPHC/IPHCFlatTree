@@ -1,0 +1,1 @@
+root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/ST_tWll_5f_LO_TuneCP5_PSweights_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_tWll.root

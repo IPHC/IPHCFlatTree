@@ -40,7 +40,7 @@ class MCTruth
 			       FlatTree& tree,
 			       const edm::Handle<std::vector<reco::GenParticle> >& GenParticles);
 
-   bool doMatch(const edm::Event& iEvent,
+   int doMatch(const edm::Event& iEvent,
 		const edm::EventSetup& iSetup,
 		const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
 		reco::GenParticle *genp,

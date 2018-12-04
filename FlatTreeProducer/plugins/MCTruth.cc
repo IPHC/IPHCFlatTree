@@ -399,19 +399,23 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
    tree.gen_PVz = gen_PVz;
 }
 
-bool MCTruth::doMatch(const edm::Event& iEvent,
+//CHANGED to comply with nanoAOD standards : dR < 0.3 and dPt/Pt < 0.5
+//Also changed func from bool to int : 0 <-> no match // 1 <-> match found // 2 <-> charge also matches // 3 <-> electron matches to photon
+int MCTruth::doMatch(const edm::Event& iEvent,
 		      const edm::EventSetup& iSetup,
 		      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
 		      reco::GenParticle *genp,
 		      float &drMin,
 		      float pt, float eta, float phi, int pdgId, bool isTau)
-{
-   bool foundMatch = 0;
-   
+{ 
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
 
-   float drmin = 0.2;
+   bool foundMatch = 0;
+   bool hasChargeMatch = 0;
+   bool ele_hasPhotonMatch = 0;
+   
+   float drmin = 0.3; //changed from 0.2 to 0.3
    
    for(genParticleSrc = genParticlesCollection.begin();
        genParticleSrc != genParticlesCollection.end(); 
@@ -419,17 +423,18 @@ bool MCTruth::doMatch(const edm::Event& iEvent,
      {
 	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
 
+	float ptGen = mcp->pt();
 	float etaGen = mcp->eta();
 	float phiGen = mcp->phi();
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
 
 	if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
+	//if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1) //FIXME
 	
-	//if( (abs(pdgId) != abs(idGen)) && !isTau ) continue;
-	if(pdgId != idGen && !isTau) continue; //added charge matching requirement
-	
-	if( (abs(idGen) != 15 && abs(idGen) != 11 && abs(idGen) != 13) && isTau ) continue;
+	if( (abs(idGen) != 15 && abs(idGen) != 11 && abs(idGen) != 13) && isTau ) continue; //Leptonic taus
+
+	if(!isTau && (abs(pdgId) != abs(idGen)) && (abs(pdgId) != 11 || abs(idGen) != 22) ) continue; //ID matching (ele and muons) //For ele, also try to match to photons (for conv bkg)
 	
 	const reco::GenParticle* mom = getMother(*mcp);
 	int momPID = mom->pdgId();
@@ -440,24 +445,39 @@ bool MCTruth::doMatch(const edm::Event& iEvent,
 	     momPID = momTau->pdgId();
 	  }
 
-	if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 ) continue;
-	if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && 
-	    abs(momPID) != 15 ) continue;
+	//Make sure lepton is prompt
+	if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && (abs(idGen) != 22 || abs(pdgId) != 11) ) {continue;} //also keep photons for conv matching
+	if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
 	
+	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
+	
+	if( (fabs(pt - ptGen) / pt) > 0.5) {continue;} //New requirement
 
 	if( dr < drmin )
 	  {
 	     drmin = dr;
 	     foundMatch = 1;
 	     genp = mcp;
+	     
+	     if(pdgId == idGen && !isTau) {hasChargeMatch = true;}
+	     else {hasChargeMatch = false;}
+	     
+	     if(abs(pdgId == 11) && abs(idGen) == 22) {ele_hasPhotonMatch = true;}
+	     else {ele_hasPhotonMatch = false;}
 	  }	
      }
    
    drMin = drmin;
    
-   return foundMatch;
+   if(ele_hasPhotonMatch) {return 3;}
+   else if(hasChargeMatch) {return 2;}
+   else if(foundMatch) {return 1;}
+   
+   return 0; //no match found
 }
+
+
 
 void MCTruth::Init(FlatTree &tree)
 {
