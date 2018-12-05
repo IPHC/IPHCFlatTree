@@ -1765,18 +1765,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         // Skimming electrons with pT < 5 GeV.
         //if (elec.pt() < 5) continue;
-	
-	//FIXME
-	/*
-	if(elec.hasUserFloat("ecalTrkEnergyPostCorr") )
-	{
-	    //ftree->el_SmearingCorr.push_back(elec.userFloat("ecalTrkEnergyPostCorr") );
-	    std::cout<<"ELE SMEARING CORR = "<<elec.userFloat("ecalTrkEnergyPostCorr")<< std::endl;
-	}
-	else 
-	{
-	   //ftree->el_SmearingCorr.push_back(-666);
-	}*/
 
         ftree->el_pt.push_back(elec.pt());
         ftree->el_eta.push_back(elec.eta());

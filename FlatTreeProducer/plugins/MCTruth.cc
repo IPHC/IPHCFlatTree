@@ -21,7 +21,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    std::vector<int> gen_id;
    std::vector<int> gen_status;
    std::vector<int> gen_charge;
-   std::vector<bool> gen_isPromptFinalState; //NEW
+   std::vector<bool> gen_isPromptFinalState;
    std::vector<int> gen_index;
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
@@ -109,7 +109,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
 	gen_id.push_back(idGen);
 	gen_status.push_back(statusGen);
 	gen_charge.push_back(chargeGen);
-	gen_isPromptFinalState.push_back(isPromptFinalStateGen); //NEW
+	gen_isPromptFinalState.push_back(isPromptFinalStateGen);
 	gen_index.push_back(indexGen);
 	gen_mother_index.push_back(mother_index);
 	gen_daughter_n.push_back(daughter_n);
@@ -134,7 +134,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    std::vector<int> gen_id_slimmed;
    std::vector<int> gen_status_slimmed;
    std::vector<int> gen_charge_slimmed;
-   std::vector<bool> gen_isPromptFinalState_slimmed; //NEW
+   std::vector<bool> gen_isPromptFinalState_slimmed;
    std::vector<int> gen_index_slimmed;
    std::vector<int> gen_mother_index_slimmed;
    std::vector<int> gen_daughter_n_slimmed;
@@ -193,7 +193,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
        gen_id_slimmed = gen_id;
        gen_status_slimmed = gen_status;
        gen_charge_slimmed = gen_charge;
-       gen_isPromptFinalState_slimmed = gen_isPromptFinalState; //NEW
+       gen_isPromptFinalState_slimmed = gen_isPromptFinalState;
        gen_index_slimmed = gen_index;
        gen_mother_index_slimmed = gen_mother_index;
        gen_daughter_n_slimmed = gen_daughter_n;
@@ -208,7 +208,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    tree.gen_status = gen_status_slimmed;
    tree.gen_id = gen_id_slimmed;
    tree.gen_charge = gen_charge_slimmed;
-   tree.gen_isPromptFinalState = gen_isPromptFinalState_slimmed; //NEW
+   tree.gen_isPromptFinalState = gen_isPromptFinalState_slimmed;
    tree.gen_index = gen_index_slimmed;
    tree.gen_mother_index = gen_mother_index_slimmed;
    tree.gen_daughter_n = gen_daughter_n_slimmed;
@@ -270,7 +270,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
    std::vector<int> gen_id;
    std::vector<int> gen_status;
    std::vector<int> gen_charge;
-   std::vector<bool> gen_isPromptFinalState; //NEW
+   std::vector<bool> gen_isPromptFinalState;
    std::vector<int> gen_index;
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
@@ -352,7 +352,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
 	gen_id.push_back(idGen);
 	gen_status.push_back(statusGen);
 	gen_charge.push_back(chargeGen);
-	gen_isPromptFinalState.push_back(isPromptFinalStateGen); //NEW
+	gen_isPromptFinalState.push_back(isPromptFinalStateGen);
 	gen_index.push_back(indexGen);
 	gen_mother_index.push_back(mother_index);
 	gen_daughter_n.push_back(daughter_n);
@@ -370,7 +370,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
    tree.gen_status = gen_status;
    tree.gen_id = gen_id;
    tree.gen_charge = gen_charge;
-   tree.gen_isPromptFinalState = gen_isPromptFinalState; //NEW
+   tree.gen_isPromptFinalState = gen_isPromptFinalState;
    tree.gen_index = gen_index;
    tree.gen_mother_index = gen_mother_index;
    tree.gen_daughter_n = gen_daughter_n;
@@ -429,8 +429,8 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
 
-	if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
-	//if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1) //FIXME
+	//if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
+	if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1)
 	
 	if( (abs(idGen) != 15 && abs(idGen) != 11 && abs(idGen) != 13) && isTau ) continue; //Leptonic taus
 
@@ -452,7 +452,7 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( (fabs(pt - ptGen) / pt) > 0.5) {continue;} //New requirement
+	if( (fabs(pt - ptGen) / ptGen) > 0.5) {continue;} //New requirement : dPt/pt(gen) must be < 0.5
 
 	if( dr < drmin )
 	  {
@@ -1709,7 +1709,7 @@ void MCTruth::Init(FlatTree &tree)
    tree.gen_status.clear();
    tree.gen_id.clear();
    tree.gen_charge.clear();
-   tree.gen_isPromptFinalState.clear(); //NEW
+   tree.gen_isPromptFinalState.clear();
    tree.gen_index.clear();
    tree.gen_mother_index.clear();
    tree.gen_daughter_n.clear();
