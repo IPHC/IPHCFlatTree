@@ -43,7 +43,7 @@ class MCTruth
    int doMatch(const edm::Event& iEvent,
 		const edm::EventSetup& iSetup,
 		const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		reco::GenParticle *genp,
+		reco::GenParticle &genp,
 		float &drMin,
 		float pt, float eta, float phi, int pdgId, bool isTau);
    

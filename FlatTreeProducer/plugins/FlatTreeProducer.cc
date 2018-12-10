@@ -112,7 +112,8 @@ class FlatTreeProducer : public edm::EDAnalyzer
 
         TH1D* hcount;
         TH1D* hweight;
-
+        TH1D* hpileup; //NEW
+	
         TMVA::Reader* ele_reader;
         TMVA::Reader* mu_reader;
 
@@ -959,6 +960,7 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     //
     hcount = fs->make<TH1D>("hcount","hcount",1,0.,1.);
     hweight = fs->make<TH1D>("hweight","hweight",1,0.,1.);
+    hpileup = fs->make<TH1D>("hpileup","hpileup",100,0.,100.);
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1239,6 +1241,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             {
                 ftree->mc_pu_intime_NumInt = pvi->getPU_NumInteractions();
                 ftree->mc_pu_trueNumInt = pvi->getTrueNumInteractions();
+		
+		hpileup->Fill(pvi->getTrueNumInteractions(), ftree->mc_weight);
             }
             else if( n_bc == -1 ) ftree->mc_pu_before_npu = pvi->getPU_NumInteractions();
             else if( n_bc == +1 ) ftree->mc_pu_after_npu  = pvi->getPU_NumInteractions();
@@ -1766,22 +1770,31 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         // Skimming electrons with pT < 5 GeV.
         //if (elec.pt() < 5) continue;
 
-        ftree->el_pt.push_back(elec.pt());
+        ftree->el_pt.push_back(elec.pt()); //before smearing
         ftree->el_eta.push_back(elec.eta());
         ftree->el_phi.push_back(elec.phi());
         ftree->el_m.push_back(elec.mass());
-        ftree->el_E.push_back(elec.energy());
+        ftree->el_E.push_back(elec.energy()); //before smearing
         ftree->el_id.push_back(elec.pdgId());
         ftree->el_charge.push_back(elec.charge());
 	
-	//NEW -- electron pT smearing
-	float el_PreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
-	float el_PostCorr = elec.userFloat("ecalTrkEnergyPostCorr");
-	float el_ErrPostCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
-
-	ftree->el_ecalTrkEnergyPreCorr.push_back(el_PreCorr);
-	ftree->el_ecalTrkEnergyPostCorr.push_back(el_PostCorr);
-	ftree->el_ecalTrkEnergyErrPostCorr.push_back(el_ErrPostCorr);	
+	//Electron pT smearing
+	float E_PreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
+	float E_PostCorr = elec.userFloat("ecalTrkEnergyPostCorr"); //smeared E
+	float ErrCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
+	float smearCorr = E_PostCorr / E_PreCorr;
+	float pt_postCorr = elec.pt() * smearCorr; //smeared pT
+	
+	//std::cout<<std::endl<<"E_PreCorr = "<<E_PreCorr<<std::endl;
+	//std::cout<<"E_PostCorr = "<<E_PostCorr<<std::endl;
+	//std::cout<<"ErrCorr = "<<ErrCorr<<std::endl;
+	//std::cout<<"smearCorr = "<<smearCorr<<std::endl;
+	//std::cout<<"pt_postCorr = "<<pt_postCorr<<std::endl;
+	  
+	ftree->el_pt_postCorr.push_back(pt_postCorr);
+	ftree->el_E_postCorr.push_back(E_PostCorr);
+	ftree->el_smearCorrFactor.push_back(smearCorr);
+	ftree->el_smearCorrError.push_back(ErrCorr);
 
         ftree->el_isGsfCtfScPixChargeConsistent.push_back(elec.isGsfCtfScPixChargeConsistent());
         ftree->el_isGsfScPixChargeConsistent.push_back(elec.isGsfScPixChargeConsistent());
@@ -2064,9 +2077,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         {
             // Internal matching
             reco::GenParticle *genp = new reco::GenParticle();
-
+	    
             float drmin;
-            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+	    
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
 						
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
@@ -2596,7 +2610,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             reco::GenParticle *genp = new reco::GenParticle();
 
             float drmin;
-            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						muon.pt(),muon.eta(),muon.phi(),muon.pdgId(),0);
 						
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
@@ -2778,7 +2792,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             reco::GenParticle *genp = new reco::GenParticle();
 
             float drmin;
-            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,genp,drmin,
+            int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						tau.pt(),tau.eta(),tau.phi(),tau.pdgId(),1);
 						
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
@@ -2855,11 +2869,12 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
         ftree->jet_jecFactorL3Absolute.push_back(jet.jecFactor("L3Absolute"));
 
-       ftree->jet_jetArea.push_back(jet.jetArea());
+        ftree->jet_jetArea.push_back(jet.jetArea());
 
-        jecUnc->setJetEta(fabs(jet.eta()));
+	//Compute and store JES uncert.
+	//NB -- the computation and application is re-implemented in NtupleProducer. Should compute JES after correcting for JER ? (see https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetCorUncertainties)
+	jecUnc->setJetEta(jet.eta()); //CHANGED -- use absolute eta
         jecUnc->setJetPt(jet.pt());
-
         ftree->jet_Unc.push_back(jecUnc->getUncertainty(true));
 
         ftree->jet_ntrk.push_back(jet.associatedTracks().size());
@@ -2948,13 +2963,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_tightJetID.push_back(tightJetID);
         ftree->jet_tightLepVetoJetID.push_back(tightLepVetoJetID);
 
-        //Quark-gluon tagging //FIXME -- not filled
+        //Quark-gluon tagging
         const auto jetRef = view_jets->ptrAt(ij);
         if( ! qgHandle.failedToGet() )
             ftree->jet_qgtag.push_back((*qgHandle)[jetRef]);
         else
             ftree->jet_qgtag.push_back(-666.);
-
+	    
         const reco::GenJet* genJet = jet.genJet();
         bool hasGenInfo = (genJet);
         ftree->jet_hasGenJet.push_back(hasGenInfo);
@@ -3504,7 +3519,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //	     RefToBase<reco::Jet> jetRef(RefToBaseProd<reco::Jet>(genJets),ij);
             //	     int genJet_flavour = (*genJetFlavourMatching)[jetRef].getFlavour();
             //	     ftree->genJet_flavour.push_back(genJet_flavour);
-            ftree->genJet_flavour.push_back(-666); // FIXME
+            ftree->genJet_flavour.push_back(-666); //Not filled
         }
     }
 
@@ -3639,7 +3654,11 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
     jecUnc = new JetCorrectionUncertainty(JetCorPar);*/
 
     const char* cmssw_base = std::getenv("CMSSW_BASE");
-    std::string JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V6_MC/Fall17_17Nov2017_V6_MC_Uncertainty_AK4PFchs.txt";
+    std::string JECUncertaintyPath;
+    
+    if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_Uncertainty_AK4PFchs.txt";}
+    else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V8_MC/Fall17_17Nov2017_V8_MC_Uncertainty_AK4PFchs.txt";}
+    	
     jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
 }
 

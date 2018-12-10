@@ -13,7 +13,7 @@ options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarPa
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
 
-options.register('runQG',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run QGTagger')
+options.register('runQG',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run QGTagger')
 
 options.register('fillMCScaleWeight',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PDF weights')
 options.register('fillPUInfo',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PU info')
@@ -45,7 +45,7 @@ if options.isData:
 else:
     process.GlobalTag.globaltag = '94X_mc2017_realistic_v14'
 
-corName="Fall17_17Nov2017_V6_MC"
+corName="Fall17_17Nov2017_V8_MC"
 corTag="JetCorrectorParametersCollection_"+corName
 if options.isData:
     corName="Fall17_17Nov2017BCDEF_V6_DATA"

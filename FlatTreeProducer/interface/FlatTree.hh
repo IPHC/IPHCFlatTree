@@ -287,10 +287,11 @@ class FlatTree
    std::vector<int> el_id;
    std::vector<int> el_charge;
    
-   std::vector<float> el_ecalTrkEnergyPreCorr;
-   std::vector<float> el_ecalTrkEnergyPostCorr;
-   std::vector<float> el_ecalTrkEnergyErrPostCorr;
-
+   std::vector<float> el_pt_postCorr;
+   std::vector<float> el_E_postCorr;
+   std::vector<float> el_smearCorrFactor;
+   std::vector<float> el_smearCorrError;
+   
    std::vector<int> el_passConversionVeto;
    std::vector<int> el_isGsfCtfScPixChargeConsistent;
    std::vector<int> el_isGsfScPixChargeConsistent;
@@ -2461,7 +2462,8 @@ class FlatTree
    std::vector<float> gen_E;
    std::vector<int> gen_id;
    std::vector<int> gen_charge;
-   std::vector<bool> gen_isPromptFinalState; //NEW
+   std::vector<bool> gen_isPromptFinalState;
+   std::vector<bool> gen_isDirectPromptTauDecayProductFinalState;
    std::vector<int> gen_status;
    std::vector<int> gen_index;
    std::vector<int> gen_mother_index;

@@ -213,9 +213,10 @@
     <var name="el_E" save="1"></var>
     <var name="el_id" save="1"></var>
     <var name="el_charge" save="1"></var>
-    <var name="el_ecalTrkEnergyPreCorr" save="1"></var>
-    <var name="el_ecalTrkEnergyPostCorr" save="1"></var>
-    <var name="el_ecalTrkEnergyErrPostCorr" save="1"></var>    
+    <var name="el_pt_postCorr" save="1"></var>
+    <var name="el_E_postCorr" save="1"></var>
+    <var name="el_smearCorrFactor" save="1"></var>   
+    <var name="el_smearCorrError" save="1"></var>   
     <var name="el_passConversionVeto" save="1"></var>
     <var name="el_isGsfCtfScPixChargeConsistent" save="1"></var>
     <var name="el_isGsfScPixChargeConsistent" save="1"></var>

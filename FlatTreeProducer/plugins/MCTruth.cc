@@ -22,6 +22,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    std::vector<int> gen_status;
    std::vector<int> gen_charge;
    std::vector<bool> gen_isPromptFinalState;
+   std::vector<bool> gen_isDirectPromptTauDecayProductFinalState;
    std::vector<int> gen_index;
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
@@ -44,7 +45,8 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
 	int chargeGen = mcp->charge();
-	int isPromptFinalStateGen = mcp->isPromptFinalState(); //NEW
+	int isPromptFinalStateGen = mcp->isPromptFinalState();
+	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
 	int indexGen = gen_n;
         float mStopGen = idGen == 1000006 ? mGen : -1;
         float mNeutralinoGen = idGen == 1000022 ? mGen : -1;
@@ -110,6 +112,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
 	gen_status.push_back(statusGen);
 	gen_charge.push_back(chargeGen);
 	gen_isPromptFinalState.push_back(isPromptFinalStateGen);
+	gen_isDirectPromptTauDecayProductFinalState.push_back(isDirectPromptTauDecayProductFinalState);
 	gen_index.push_back(indexGen);
 	gen_mother_index.push_back(mother_index);
 	gen_daughter_n.push_back(daughter_n);
@@ -135,6 +138,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    std::vector<int> gen_status_slimmed;
    std::vector<int> gen_charge_slimmed;
    std::vector<bool> gen_isPromptFinalState_slimmed;
+   std::vector<bool> gen_isDirectPromptTauDecayProductFinalState_slimmed;
    std::vector<int> gen_index_slimmed;
    std::vector<int> gen_mother_index_slimmed;
    std::vector<int> gen_daughter_n_slimmed;
@@ -172,6 +176,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
               gen_status_slimmed.push_back(gen_status.at(p));
               gen_charge_slimmed.push_back(gen_charge.at(p));
 	      gen_isPromptFinalState_slimmed.push_back(gen_isPromptFinalState.at(p));
+	      gen_isDirectPromptTauDecayProductFinalState_slimmed.push_back(gen_isDirectPromptTauDecayProductFinalState.at(p));
               gen_index_slimmed.push_back(gen_index.at(p));
               gen_mother_index_slimmed.push_back(gen_mother_index.at(p));
               gen_daughter_n_slimmed.push_back(gen_daughter_n.at(p));
@@ -194,6 +199,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
        gen_status_slimmed = gen_status;
        gen_charge_slimmed = gen_charge;
        gen_isPromptFinalState_slimmed = gen_isPromptFinalState;
+       gen_isDirectPromptTauDecayProductFinalState_slimmed = gen_isDirectPromptTauDecayProductFinalState;
        gen_index_slimmed = gen_index;
        gen_mother_index_slimmed = gen_mother_index;
        gen_daughter_n_slimmed = gen_daughter_n;
@@ -209,6 +215,7 @@ void MCTruth::fillTopStopDecayChain(const edm::Event& iEvent,
    tree.gen_id = gen_id_slimmed;
    tree.gen_charge = gen_charge_slimmed;
    tree.gen_isPromptFinalState = gen_isPromptFinalState_slimmed;
+   tree.gen_isDirectPromptTauDecayProductFinalState = gen_isDirectPromptTauDecayProductFinalState_slimmed;
    tree.gen_index = gen_index_slimmed;
    tree.gen_mother_index = gen_mother_index_slimmed;
    tree.gen_daughter_n = gen_daughter_n_slimmed;
@@ -271,6 +278,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
    std::vector<int> gen_status;
    std::vector<int> gen_charge;
    std::vector<bool> gen_isPromptFinalState;
+   std::vector<bool> gen_isDirectPromptTauDecayProductFinalState;
    std::vector<int> gen_index;
    std::vector<int> gen_mother_index;
    std::vector<int> gen_daughter_n;
@@ -290,7 +298,8 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
 	int chargeGen = mcp->charge();
-	int isPromptFinalStateGen = mcp->isPromptFinalState(); //NEW
+	int isPromptFinalStateGen = mcp->isPromptFinalState();
+	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
 	int indexGen = gen_n;
 	
 
@@ -353,6 +362,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
 	gen_status.push_back(statusGen);
 	gen_charge.push_back(chargeGen);
 	gen_isPromptFinalState.push_back(isPromptFinalStateGen);
+	gen_isDirectPromptTauDecayProductFinalState.push_back(isDirectPromptTauDecayProductFinalState);
 	gen_index.push_back(indexGen);
 	gen_mother_index.push_back(mother_index);
 	gen_daughter_n.push_back(daughter_n);
@@ -371,6 +381,7 @@ void MCTruth::fillGenParticles(const edm::Event& iEvent,
    tree.gen_id = gen_id;
    tree.gen_charge = gen_charge;
    tree.gen_isPromptFinalState = gen_isPromptFinalState;
+   tree.gen_isDirectPromptTauDecayProductFinalState = gen_isDirectPromptTauDecayProductFinalState;
    tree.gen_index = gen_index;
    tree.gen_mother_index = gen_mother_index;
    tree.gen_daughter_n = gen_daughter_n;
@@ -404,7 +415,7 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
 int MCTruth::doMatch(const edm::Event& iEvent,
 		      const edm::EventSetup& iSetup,
 		      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		      reco::GenParticle *genp,
+		      reco::GenParticle &genp,
 		      float &drMin,
 		      float pt, float eta, float phi, int pdgId, bool isTau)
 { 
@@ -428,7 +439,9 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	float phiGen = mcp->phi();
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
-
+	int isPromptFinalState = mcp->isPromptFinalState();
+	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
+	
 	//if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
 	if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1)
 	
@@ -446,8 +459,11 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	  }
 
 	//Make sure lepton is prompt
-	if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && (abs(idGen) != 22 || abs(pdgId) != 11) ) {continue;} //also keep photons for conv matching
-	if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
+	//if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && (abs(idGen) != 22 || abs(pdgId) != 11) ) {continue;} //also keep photons for conv matching
+	//if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
+	
+	//Ask prompt leptons -- CHANGED
+	if(!isPromptFinalState && !isDirectPromptTauDecayProductFinalState && (abs(idGen) != 22 || abs(pdgId) != 11)) {continue;} //Keep photons for conv matching
 	
 	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
@@ -458,8 +474,8 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	  {
 	     drmin = dr;
 	     foundMatch = 1;
-	     genp = mcp;
-	     
+	     genp = *mcp; 
+
 	     if(pdgId == idGen && !isTau) {hasChargeMatch = true;}
 	     else {hasChargeMatch = false;}
 	     
@@ -1710,6 +1726,7 @@ void MCTruth::Init(FlatTree &tree)
    tree.gen_id.clear();
    tree.gen_charge.clear();
    tree.gen_isPromptFinalState.clear();
+   tree.gen_isDirectPromptTauDecayProductFinalState.clear();
    tree.gen_index.clear();
    tree.gen_mother_index.clear();
    tree.gen_daughter_n.clear();

@@ -253,9 +253,10 @@ void FlatTree::Init()
    el_id.clear();
    el_charge.clear();
    
-   el_ecalTrkEnergyPreCorr.clear();
-   el_ecalTrkEnergyPostCorr.clear();
-   el_ecalTrkEnergyErrPostCorr.clear();
+   el_pt_postCorr.clear();
+   el_E_postCorr.clear();
+   el_smearCorrFactor.clear();
+   el_smearCorrError.clear();
 
    el_isGsfCtfScPixChargeConsistent.clear();
    el_isGsfScPixChargeConsistent.clear();
@@ -1422,9 +1423,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_id") ) tree->Branch("el_id", "std::vector<int>", &el_id, buffersize);
    if( doWrite("el_charge") ) tree->Branch("el_charge", "std::vector<int>", &el_charge, buffersize);
    
-   if( doWrite("el_ecalTrkEnergyPreCorr") ) tree->Branch("el_ecalTrkEnergyPreCorr", "std::vector<float>", &el_ecalTrkEnergyPreCorr, buffersize);
-   if( doWrite("el_ecalTrkEnergyPostCorr") ) tree->Branch("el_ecalTrkEnergyPostCorr", "std::vector<float>", &el_ecalTrkEnergyPostCorr, buffersize);
-   if( doWrite("el_ecalTrkEnergyErrPostCorr") ) tree->Branch("el_ecalTrkEnergyErrPostCorr", "std::vector<float>", &el_ecalTrkEnergyErrPostCorr, buffersize);
+   if( doWrite("el_pt_postCorr") ) tree->Branch("el_pt_postCorr", "std::vector<float>", &el_pt_postCorr, buffersize);
+   if( doWrite("el_E_postCorr") ) tree->Branch("el_E_postCorr", "std::vector<float>", &el_E_postCorr, buffersize);
+   if( doWrite("el_smearCorrFactor") ) tree->Branch("el_smearCorrFactor", "std::vector<float>", &el_smearCorrFactor, buffersize);
+   if( doWrite("el_smearCorrError") ) tree->Branch("el_smearCorrError", "std::vector<float>", &el_smearCorrError, buffersize);
 
    if( doWrite("el_passConversionVeto") ) tree->Branch("el_passConversionVeto", "std::vector<int>", &el_passConversionVeto, buffersize);   
    if( doWrite("el_isGsfCtfScPixChargeConsistent") ) tree->Branch("el_isGsfCtfScPixChargeConsistent", "std::vector<int>", &el_isGsfCtfScPixChargeConsistent, buffersize);
@@ -4958,7 +4960,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
 	tree->Branch("gen_status", "std::vector<int>", &gen_status, buffersize);
 	tree->Branch("gen_id", "std::vector<int>", &gen_id, buffersize);
 	tree->Branch("gen_charge", "std::vector<int>", &gen_charge, buffersize);
-	tree->Branch("gen_isPromptFinalState", "std::vector<bool>", &gen_isPromptFinalState, buffersize); //NEW
+	tree->Branch("gen_isPromptFinalState", "std::vector<bool>", &gen_isPromptFinalState, buffersize);
+	tree->Branch("gen_isDirectPromptTauDecayProductFinalState", "std::vector<bool>", &gen_isDirectPromptTauDecayProductFinalState, buffersize);
 	tree->Branch("gen_index", "std::vector<int>", &gen_index, buffersize);
 	tree->Branch("gen_mother_index", "std::vector<int>", &gen_mother_index, buffersize);
 	tree->Branch("gen_daughter_n", "std::vector<int>", &gen_daughter_n, buffersize);
