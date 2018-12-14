@@ -27,7 +27,7 @@ float GetDeltaR(float,float,float,float);
 
 double ptRatioElec(const pat::Electron& elec,const pat::Jet* jet, float); //changed
 float ptRelElec(const pat::Electron& elec,const pat::Jet& jet);
-float conePtElec(const pat::Electron& elec,const pat::Jet* jet,float lepMVA, float); //changed
+float conePtElec(const pat::Electron& elec,const pat::Jet* jet,float lepMVA, float, float); //changed
 
 double ptRatioMuon(const pat::Muon& muon,const pat::Jet* jet, float); //changed
 float ptRelMuon(const pat::Muon& muon,const pat::Jet& jet);

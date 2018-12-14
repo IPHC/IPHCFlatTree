@@ -18,6 +18,13 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHECommonBlocks.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "GeneratorInterface/LHEInterface/interface/LHERunInfo.h"
+
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 #include "SimDataFormats/JetMatching/interface/JetFlavourMatching.h"
 
@@ -147,7 +154,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         edm::EDGetTokenT<edm::TriggerResults> triggerBitsPAT_;
         edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjects_;
         edm::EDGetTokenT<pat::PackedTriggerPrescales> triggerPrescales_;
-
+	edm::EDGetTokenT<LHERunInfoProduct> generatorRunInfoToken_;
         edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
         edm::EDGetTokenT<pat::ElectronCollection> electronPATToken_;
         edm::EDGetTokenT<edm::View<reco::GsfElectron> > electronToken_;
@@ -354,7 +361,7 @@ void FlatTreeProducer::CompareAlgo(const std::string& algo, T conf_algo_value)
     }
 }
 
-// FIXME : refactorize CheckJet, CheckElectron and CheckMuon
+// TODO : refactorize CheckJet, CheckElectron and CheckMuon
     template <typename T>
 void FlatTreeProducer::CheckJet(const std::vector<T>& vJetPt, const std::string& jetpt, const std::vector<T>& vJetEta, const std::string& jeteta, const std::string& algo)
 {
@@ -820,7 +827,8 @@ TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderMoriond18(std::string basePat
 }
 
 FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
-    hltPrescale_(iConfig,consumesCollector(),*this)
+    hltPrescale_(iConfig,consumesCollector(),*this), 
+    generatorRunInfoToken_(consumes<LHERunInfoProduct,edm::InRun>({"externalLHEProducer"}))
 {
     // ###
     // Temporarily redirecting stdout to avoid huge TMVA loading dump
@@ -1190,11 +1198,16 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( genEventInfo->binningValues().size() > 0 ) ftree->mc_ptHat = genEventInfo->binningValues()[0];
     }
 
+
+    //More infos on LHE weights : 
+    //- https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#LHE_Parser_in_CMSSW_GeneratorInt
+    //- https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
+    //-- To printout infos on all LHE weights (e.g. to know their meanings), uncomment block in endRun function
     if(! lheEventProduct.failedToGet())
     {
         if( !isData_ && fillMCScaleWeight_ )
         {
-            ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP();
+            ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //original event weight
 
             if( lheEventProduct->weights().size() > 0 )
             {
@@ -1214,6 +1227,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }	     
         }
     }
+    
 
     ftree->mc_weight = mc_weight;
 
@@ -2032,6 +2046,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         double el_eta = elec.eta();
         double el_lepMVA = -666.;       
 
+       //NB : should add pT cut on jet associated to lepton (15 in nanoAOD?) ?
        pat::Jet *elecjet = NULL;
        int jcl = -1;
        for(unsigned int ij=0;ij<jets->size();ij++)
@@ -2070,7 +2085,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         ftree->el_lepMVA.push_back(el_lepMVA);
 
-        float conept = conePtElec(elec,elecjet,el_lepMVA, PFRelIso04);
+        float conept = conePtElec(elec,elecjet,el_lepMVA, PFRelIso04, pt_postCorr);
         ftree->el_conept.push_back( conept );
 
         if( !isData_ )
@@ -2550,6 +2565,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         double mu_eta = muon.eta();
         double mu_lepMVA = -666.;
 
+       //NB : should add pT cut on jet associated to lepton (15 in nanoAOD?) ?
        pat::Jet *muonjet = NULL;
        int jcl = -1;
        for(unsigned int ij=0;ij<jets->size();ij++)
@@ -3666,6 +3682,29 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
 void FlatTreeProducer::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
     delete jecUnc;
+    
+    //Can printout here infos on all the LHE weights (else comment out)
+    //-------------------
+    
+    cout << "[MiniAnalyzer::endRun]" << endl;
+    edm::Handle<LHERunInfoProduct> run; 
+    typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
+ 
+    //iRun.getByLabel( "externalLHEProducer", run );
+    iRun.getByToken(generatorRunInfoToken_, run );
+    
+    LHERunInfoProduct myLHERunInfoProduct = *(run.product());
+ 
+    for (headers_const_iterator iter=myLHERunInfoProduct.headers_begin(); iter!=myLHERunInfoProduct.headers_end(); iter++)
+    {
+      std::cout << iter->tag() << std::endl;
+      std::vector<std::string> lines = iter->lines();
+      for (unsigned int iLine = 0; iLine<lines.size(); iLine++) 
+      {
+        std::cout << lines.at(iLine);
+      }
+    }
+    //--------------------
 }
 
 void FlatTreeProducer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)

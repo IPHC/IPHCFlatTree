@@ -8,7 +8,7 @@ config.section_('JobType')
 
 config.JobType.psetName = '../runFlatTreeMINIAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.inputFiles = ['../conf.xml','../Fall17_17Nov2017_V6_MC.db','../Fall17_17Nov2017BCDEF_V6_DATA.db']
+config.JobType.inputFiles = ['../conf.xml','../Fall17_17Nov2017_V8_MC.db','../Fall17_17Nov2017BCDEF_V6_DATA.db']
 #config.JobType.outputFiles = ['output.root']
 config.JobType.pyCfgParams = ['isData=0','runAK10=0']
 config.section_('Data')
@@ -17,7 +17,7 @@ config.Data.totalUnits = -1 #nof files (or lumisection) to analyze in total (-1=
 
 ##-- For MC
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 1 #MC -- nof files in each job
+config.Data.unitsPerJob = 2 #MC -- nof files in each job
 
 #-- For DATA
 #config.Data.splitting = 'LumiBased'

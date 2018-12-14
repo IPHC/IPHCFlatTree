@@ -322,6 +322,8 @@ double ptRatioElec(const pat::Electron& elec, const pat::Jet* jet, float isoR04)
 {
    if( jet != NULL )
      {	
+	if(GetDeltaR(elec.eta(), elec.phi(), jet->eta(), jet->phi()) < pow(10, -4) ) {return 1.;} //Added
+     
 	pat::Jet myCorJet;
 	myCorJet.setP4(jet->correctedJet("L1FastJet").p4());
 
@@ -342,6 +344,8 @@ double ptRatioElec(const pat::Electron& elec, const pat::Jet* jet, float isoR04)
 
 float ptRelElec(const pat::Electron& elec,const pat::Jet& jet)
 {
+   if(GetDeltaR(elec.eta(), elec.phi(), jet.eta(), jet.phi()) < pow(10, -4) ) {return 0.;} //Added
+
    pat::Jet myCorJet;
    myCorJet.setP4(jet.correctedJet("L1FastJet").p4());
 
@@ -357,18 +361,20 @@ float ptRelElec(const pat::Electron& elec,const pat::Jet& jet)
    return (PtRel > 0) ? PtRel : 0.0;
 }
 
-float conePtElec(const pat::Electron& elec,const pat::Jet* jet,float lepMVA, float PFRelIso04)
+float conePtElec(const pat::Electron& elec,const pat::Jet* jet,float lepMVA, float PFRelIso04, float elec_smearedPt)
 {
-   if( lepMVA >= 0.90 )
-     return elec.pt();
+   if( lepMVA >= 0.90)
+     return elec_smearedPt;
    else
-     return 0.9*elec.pt()/ptRatioElec(elec,jet,PFRelIso04);
+     return 0.9*elec_smearedPt/ptRatioElec(elec,jet,PFRelIso04);
 }
 
 double ptRatioMuon(const pat::Muon& muon,const pat::Jet* jet, float isoR04)
 {
    if( jet != NULL )
      {	
+        if(GetDeltaR(muon.eta(), muon.phi(), jet->eta(), jet->phi()) < pow(10, -4) ) {return 1.;} //Added
+
 	pat::Jet myCorJet;
 	myCorJet.setP4(jet->correctedJet("L1FastJet").p4());
 	
@@ -389,6 +395,8 @@ double ptRatioMuon(const pat::Muon& muon,const pat::Jet* jet, float isoR04)
 
 float ptRelMuon(const pat::Muon& muon,const pat::Jet& jet)
 {
+   if(GetDeltaR(muon.eta(), muon.phi(), jet.eta(), jet.phi()) < pow(10, -4) ) {return 0.;} //Added
+
    pat::Jet myCorJet;
    myCorJet.setP4(jet.correctedJet("L1FastJet").p4());
 

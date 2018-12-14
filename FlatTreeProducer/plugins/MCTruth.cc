@@ -439,8 +439,8 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	float phiGen = mcp->phi();
 	int idGen = mcp->pdgId();
 	int statusGen = mcp->status();
-	int isPromptFinalState = mcp->isPromptFinalState();
-	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
+	int isPromptFinalState = mcp->isPromptFinalState(); //final state (status 1) particle satisfying isPrompt() = not from hadron, muon or tau decay
+	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState(); //final state (status 1) particle satisfying isDirectPromptTauDecayProduct() = direct decay product from a tau decay (ie no intermediate hadron), where the tau did not come from a hadron decay
 	
 	//if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
 	if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1)
