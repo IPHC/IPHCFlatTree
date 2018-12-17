@@ -1207,14 +1207,17 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     {
         if( !isData_ && fillMCScaleWeight_ )
         {
-            ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //original event weight
+	    //"Weights from scale variations, PDFs etc. are stored in the relative product. Notice that to be used they need to be renormalized to the central event weight at LHE level which may be different from genEvtInfo->weight()"
+            ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
 
-            if( lheEventProduct->weights().size() > 0 )
+            if( lheEventProduct->weights().size() > 0 ) //NB : the cases "0.5/2" & "2/0.5" are unphysical anti-correlated variations, not needed
             {
-                ftree->weight_scale_muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[2].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5 | muR = 1
                 ftree->weight_scale_muF2   = (genEventInfo->weight())*(lheEventProduct->weights()[1].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 2   | muR = 1
-                ftree->weight_scale_muR0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[6].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 0.5
+                ftree->weight_scale_muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[2].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5 | muR = 1
                 ftree->weight_scale_muR2   = (genEventInfo->weight())*(lheEventProduct->weights()[3].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 2
+                ftree->weight_scale_muR2muF2   = (genEventInfo->weight())*(lheEventProduct->weights()[4].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 2   | muR = 2
+                ftree->weight_scale_muR0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[6].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 0.5
+                ftree->weight_scale_muR0p5muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5   | muR = 0.5
             }
 
             int nPdfAll = lheEventProduct->weights().size();
@@ -1224,6 +1227,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 const LHEEventProduct::WGT& wgt = lheEventProduct->weights().at(w);
                 ftree->mc_pdfweights.push_back(wgt.wgt);
                 ftree->mc_pdfweightIds.push_back(wgt.id);
+		
+		//std::cout<<"PDF weight = "<<wgt.wgt<<" / ID = "<<wgt.id<<std::endl;
             }	     
         }
     }
@@ -3685,7 +3690,7 @@ void FlatTreeProducer::endRun(const edm::Run& iRun, const edm::EventSetup& iSetu
     
     //Can printout here infos on all the LHE weights (else comment out)
     //-------------------
-    
+    /*
     cout << "[MiniAnalyzer::endRun]" << endl;
     edm::Handle<LHERunInfoProduct> run; 
     typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
@@ -3703,7 +3708,7 @@ void FlatTreeProducer::endRun(const edm::Run& iRun, const edm::EventSetup& iSetu
       {
         std::cout << lines.at(iLine);
       }
-    }
+    }*/
     //--------------------
 }
 
