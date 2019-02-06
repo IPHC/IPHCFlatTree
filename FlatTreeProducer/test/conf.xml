@@ -117,6 +117,7 @@
     <var name="pv_rho" save="1"></var>
     <var name="pv_isFake" save="1"></var>
     <var name="mc_weight" save="1"></var>
+    <var name="mc_weight_originalValue" save="1"></var>
     <var name="weight_originalXWGTUP" save="1" mc="1"></var>
     <var name="weight_scale_muF0p5" save="1" mc="1"></var>
     <var name="weight_scale_muF2" save="1" mc="1"></var>
@@ -767,6 +768,12 @@
     <var name="jet_DeepCSVProbbb" save="1"></var>
     <var name="jet_DeepCSVProbc" save="1"></var>
     <var name="jet_DeepCSVProbcc" save="1"></var>
+    <var name="jet_DeepFlavourProbuds" save="0"></var>
+    <var name="jet_DeepFlavourProbg" save="0"></var>
+    <var name="jet_DeepFlavourProbb" save="0"></var>
+    <var name="jet_DeepFlavourProbbb" save="0"></var>
+    <var name="jet_DeepFlavourProblepb" save="0"></var>
+    <var name="jet_DeepFlavourProbc" save="0"></var>
     <var name="jet_CharmCvsL" save="1"></var>
     <var name="jet_CharmCvsB" save="1"></var>
     <var name="jet_partonFlavour" save="1"></var>

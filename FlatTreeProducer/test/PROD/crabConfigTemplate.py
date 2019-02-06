@@ -31,6 +31,8 @@ config.Data.outputDatasetTag = 'PUBLISHDATANAME'
 config.Data.publishDBS = 'https://cmsweb.cern.ch/dbs/prod/phys03/DBSWriter'
 config.Data.outLFNDirBase = 'OUTLFN'
 
+#config.Data.allowNonValidInputDataset = True #Un-comment if running on dataset not in 'VALID' status
+
 #config.Data.lumiMask = 'GRL/Cert_294927-306462_13TeV_PromptReco_Collisions17_JSON.txt' #For data
 
 config.section_('User')

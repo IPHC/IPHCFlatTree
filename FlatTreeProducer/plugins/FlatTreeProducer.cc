@@ -119,7 +119,9 @@ class FlatTreeProducer : public edm::EDAnalyzer
 
         TH1D* hcount;
         TH1D* hweight;
-        TH1D* hpileup; //NEW
+        TH1D* hpileup;
+        TH1D* hscale;
+        TH1D* hLHE;
 	
         TMVA::Reader* ele_reader;
         TMVA::Reader* mu_reader;
@@ -967,8 +969,10 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     // ###############################
     //
     hcount = fs->make<TH1D>("hcount","hcount",1,0.,1.);
-    hweight = fs->make<TH1D>("hweight","hweight",1,0.,1.);
+    hweight = fs->make<TH1D>("hweight","hweight",2,0.,2.);
     hpileup = fs->make<TH1D>("hpileup","hpileup",100,0.,100.);
+    hscale = fs->make<TH1D>("hscale","hscale",10,0.,10.);
+    hLHE = fs->make<TH1D>("hLHE","hLHE",100,0.,100.);
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1186,8 +1190,15 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     if( genEventInfo.isValid() )
     {
-        float wGen = genEventInfo->weight();
+    	// for some 94x amcatnlo samples, the value of the mc weight is not +-1, but some large (pos/neg) number
+	// so we save both the +-1 label and the original number
+	// the latter is needed for a proper reweighting of the weight_scale_* variables
+	float wGen = genEventInfo->weight();	
+
         mc_weight = (wGen > 0 ) ? 1. : -1.;
+	
+        ftree->mc_weight = mc_weight;
+	ftree->mc_weight_originalValue = wGen;
 
         ftree->mc_id = genEventInfo->signalProcessID();
         ftree->mc_f1 = genEventInfo->pdf()->id.first;
@@ -1198,6 +1209,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( genEventInfo->binningValues().size() > 0 ) ftree->mc_ptHat = genEventInfo->binningValues()[0];
     }
 
+
+    //std::cout<<"mc_weight = "<<ftree->mc_weight<<" / mc_weight_originalValue = "<<ftree->mc_weight_originalValue<<std::endl;
+    hweight->Fill(0.5, ftree->mc_weight);
+    hweight->Fill(1.5, ftree->mc_weight_originalValue);
 
     //More infos on LHE weights : 
     //- https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#LHE_Parser_in_CMSSW_GeneratorInt
@@ -1220,13 +1235,40 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 ftree->weight_scale_muR0p5muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5   | muR = 0.5
             }
 
+	    //Store the sum of weights of each scale variation in different histo bins //Bin width is 1
+	    hscale->Fill(0+0.5, mc_weight);
+	    hscale->Fill(1+0.5, mc_weight*ftree->weight_originalXWGTUP);
+	    hscale->Fill(2+0.5, mc_weight*ftree->weight_scale_muR0p5);
+	    hscale->Fill(3+0.5, mc_weight*ftree->weight_scale_muF0p5);
+	    hscale->Fill(4+0.5, mc_weight*ftree->weight_scale_muR0p5muF0p5);
+	    hscale->Fill(5+0.5, mc_weight*ftree->weight_scale_muR2);
+	    hscale->Fill(6+0.5, mc_weight*ftree->weight_scale_muF2);
+	    hscale->Fill(7+0.5, mc_weight*ftree->weight_scale_muR2muF2);
+	    
+	    //std::cout<<__LINE__<<endl;
+
+	    //std::cout<<"lheEventProduct->weights().size(); = "<<lheEventProduct->weights().size()<<endl;
             int nPdfAll = lheEventProduct->weights().size();
             if( nPdf_ < nPdfAll && nPdf_ >= 0 ) nPdfAll = nPdf_;
+	    int bin_x = 0; //Increment bin position for each kT/kV point
             for( int w=0;w<nPdfAll;w++ )
             {
                 const LHEEventProduct::WGT& wgt = lheEventProduct->weights().at(w);
                 ftree->mc_pdfweights.push_back(wgt.wgt);
                 ftree->mc_pdfweightIds.push_back(wgt.id);
+		
+		//std::cout<<"- Index w = "<<w<<" of "<<nPdfAll<<" / weight = "<<wgt.wgt<<std::endl;
+		
+		//HARDCODED : THW_ctcvcp has 1080+69=1149 LHE weights, THQ_ctcvcp has 880+69=2049
+		//Store the last 69 weights, corresponding to the 69 couplings (only relevant for these 2 samples !)
+		if( (nPdfAll == 1149 || nPdfAll == 951) && (nPdfAll-w) <= 69) 
+		{
+			//std::cout<<"Bin center = "<<bin_x+0.5<<" / weight = "<<wgt.wgt<<std::endl;
+		
+			hLHE->Fill(bin_x+0.5, wgt.wgt * mc_weight); //Store sum of eight for each kT/kV //Bin width is 1	
+			bin_x++;
+	
+		}
 		
 		//std::cout<<"PDF weight = "<<wgt.wgt<<" / ID = "<<wgt.id<<std::endl;
             }	     
@@ -1234,9 +1276,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
     
 
-    ftree->mc_weight = mc_weight;
-
-    hweight->SetBinContent(1,hweight->GetBinContent(1)+ftree->mc_weight);
 
     // ####################################
     // #   ____  _ _                      #
@@ -2910,8 +2949,16 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_DeepCSVProbbb.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probbb"));
         ftree->jet_DeepCSVProbcc.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probcc"));
 	
-	
 	/*
+	ftree->jet_DeepFlavourProbuds.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probuds"));
+	std::cout<<"jet_DeepFlavourProbuds="<<jet.bDiscriminator("pfDeepFlavourJetTags:probuds")<<std::endl;	
+	ftree->jet_DeepFlavourProbg.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probg"));
+        ftree->jet_DeepFlavourProbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probb"));
+        ftree->jet_DeepFlavourProbbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probbb"));
+        ftree->jet_DeepFlavourProblepb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:problepb"));	
+	ftree->jet_DeepFlavourProbc.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probc"));
+	
+	
 	cout<<"jet.bDiscriminator(pfCombinedInclusiveSecondaryVertexV2BJetTags) = "<<jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probudsg) = "<<jet.bDiscriminator("deepFlavourJetTags:probudsg")<<endl;
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probb) = "<<jet.bDiscriminator("deepFlavourJetTags:probb")<<endl;

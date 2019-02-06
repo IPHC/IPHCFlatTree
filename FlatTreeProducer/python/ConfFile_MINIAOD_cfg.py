@@ -8,7 +8,7 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 import os, sys
 
 options = VarParsing('analysis')
-options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run on real data')
+options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run on real data') #FIXME
 options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply MET filters')
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
@@ -113,6 +113,24 @@ updateJetCollection(
     jetCorrections = ('AK4PFchs', corList, 'None')
 )
 
+#DF
+#updateJetCollection(
+#   process,
+#   jetSource = cms.InputTag('slimmedJets'),
+#   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+#   svSource = cms.InputTag('slimmedSecondaryVertices'),
+#   jetCorrections = ('AK4PFchs', corList, 'None'),
+#   btagDiscriminators = [
+#      	'pfDeepFlavourJetTags:probb',
+#      	'pfDeepFlavourJetTags:probbb',
+#      	'pfDeepFlavourJetTags:problepb',
+#      	'pfDeepFlavourJetTags:probc',
+#      	'pfDeepFlavourJetTags:probuds',
+#      	'pfDeepFlavourJetTags:probg'
+#      ],
+#   postfix='NewDFTraining'
+#)
+
 #updateJetCollection(
 #    process,
     #jetSource = cms.InputTag('slimmedJets','','PAT'), #FIXME -- jets reclustering to add DeepFlav caused bug -- fixed by Kirill  !
@@ -132,8 +150,11 @@ updateJetCollection(
 
 process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
 
+#process.jecSequence = cms.Sequence(process.pfDeepFlavourJetTagsNewDFTraining * process.patJetCorrFactorsNewDFTraining * process.updatedPatJetsNewDFTraining * process.patJetCorrFactorsTransientCorrectedNewDFTraining * process.updatedPatJetsTransientCorrectedNewDFTraining) #DF
+
 #jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
 jetsNameAK4="updatedPatJetsUpdatedJEC"
+#jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
 #jetsNameAK4="slimmedJets"
 jetsNameAK8="selectedUpdatedPatJetsUpdatedJECAK8"
 #jetsNameAK8="slimmedJets"
@@ -267,14 +288,19 @@ if options.runQG:
 #  Input  #
 ###########
 
-#Write here the filenames to be processed interactively !
+#Write here the filenames to be processed interactively ! #FIXME -- set accordingly the 'isData' variable at beginning of code
 
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"), # WARNING -- for test only !
     fileNames = cms.untracked.vstring(
-         #'root://eoscms.cern.ch//eos/cms/store/cmst3/group/tthlep/peruzzi/THQ_4f_Hincl_13TeV_madgraph_pythia8_Fall17/MINIAODSIM_merged/merged_THQ.root'
-	 '/store/mc/RunIIFall17MiniAODv2/THW_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/0ECB3918-55A4-E811-8542-0CC47A4DEF3A.root'
-        )
+
+	 #'/store/mc/RunIIFall17MiniAODv2/THW_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/0ECB3918-55A4-E811-8542-0CC47A4DEF3A.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/THQ_ctcvcp_4f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/D0DD519F-5903-E911-AF2E-24BE05CE2D41.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/80000/A63966E5-9503-E911-A265-0025905C96A6.root'
+	 #'/store/data/Run2017B/SingleElectron/MINIAOD/17Nov2017-v1/70000/FEA5055B-5BDE-E711-AE69-FA163EA2F9E4.root' #SingleElectron2017B
+	 #'/store/mc/RunIIFall17MiniAODv2/TT_FCNC-TtoHJ_aTleptonic_HToWWZZtautau_eta_hct-MadGraph5-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/90000/F857B893-B9B0-E811-8CB0-002590760A10.root'
+         '/store/mc/RunIIFall17MiniAOD/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/DCAA6B21-72F4-E711-9249-0019B9CADC3B.root'
+	)
 )
 
 ############

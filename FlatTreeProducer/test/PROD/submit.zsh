@@ -1,6 +1,6 @@
 #!/bin/env zsh
 
-ver="tHq2017_v1"
+ver="tHq2017_v2"
 
 slist="list.txt"
 pset="crabConfigTemplate.py"
@@ -23,7 +23,7 @@ do
   nam=$(echo "${spl[1]}" | sed 's%-%_%g')
   reqn=$(echo "${nam}_${pubdn}" | sed 's%_RunIISummer16MiniAODv2.*%%g')
   
-  #reqn="DYM50_LO_ext"
+  #reqn="VHToNonbb"
     
   size=${#reqn}
   #echo $size
@@ -31,8 +31,6 @@ do
   if [ $size -gt 99 ] #If name is too long, change it !
   then
 	reqn=$nam
-	
-	#echo "reqn = " $reqn
   fi
   
   cat ${pset} | sed "s%INPUTDATASET%${i}%g" \

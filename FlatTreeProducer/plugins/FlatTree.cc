@@ -146,6 +146,7 @@ void FlatTree::Init()
    pv_isFake = DEFVAL;
    
    mc_weight = DEFVAL;
+   mc_weight_originalValue = DEFVAL;
    mc_id = DEFVAL;
    mc_f1 = DEFVAL;
    mc_f2 = DEFVAL;
@@ -884,6 +885,15 @@ void FlatTree::Init()
    jet_CharmCvsB.clear();
    jet_partonFlavour.clear();
    jet_hadronFlavour.clear();
+   
+   /*
+   jet_DeepFlavourProbuds.clear();
+   jet_DeepFlavourProbg.clear();
+   jet_DeepFlavourProbb.clear();
+   jet_DeepFlavourProbbb.clear();
+   jet_DeepFlavourProblepb.clear();
+   jet_DeepFlavourProbc.clear();
+   */
 
    jet_neutralHadronEnergy.clear();
    jet_neutralEmEnergy.clear();
@@ -1318,6 +1328,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("pv_isFake") ) tree->Branch("pv_isFake", &pv_isFake, "pv_isFake/I", buffersize);
 
    if( doWrite("mc_weight") ) tree->Branch("mc_weight", &mc_weight, "mc_weight/F", buffersize);
+   if( doWrite("mc_weight_originalValue") ) tree->Branch("mc_weight_originalValue", &mc_weight_originalValue, "mc_weight_originalValue/F", buffersize);
    if( doWrite("mc_id") ) tree->Branch("mc_id", &mc_id, "mc_id/I", buffersize);
    if( doWrite("mc_f1") ) tree->Branch("mc_f1", &mc_f1, "mc_f1/I", buffersize);
    if( doWrite("mc_f2") ) tree->Branch("mc_f2", &mc_f2, "mc_f2/I", buffersize);
@@ -2057,6 +2068,15 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_partonFlavour") ) tree->Branch("jet_partonFlavour", "std::vector<int>", &jet_partonFlavour, buffersize);
    if( doWrite("jet_hadronFlavour") ) tree->Branch("jet_hadronFlavour", "std::vector<int>", &jet_hadronFlavour, buffersize);
 
+   /*
+   if( doWrite("jet_DeepFlavourProbuds") ) tree->Branch("jet_DeepFlavourProbuds", "std::vector<float>", &jet_DeepFlavourProbuds, buffersize);
+   if( doWrite("jet_DeepFlavourProbg") ) tree->Branch("jet_DeepFlavourProbg", "std::vector<float>", &jet_DeepFlavourProbg, buffersize);
+   if( doWrite("jet_DeepFlavourProbb") ) tree->Branch("jet_DeepFlavourProbb", "std::vector<float>", &jet_DeepFlavourProbb, buffersize);
+   if( doWrite("jet_DeepFlavourProbbb") ) tree->Branch("jet_DeepFlavourProbbb", "std::vector<float>", &jet_DeepFlavourProbbb, buffersize);
+   if( doWrite("jet_DeepFlavourProblepb") ) tree->Branch("jet_DeepFlavourProblepb", "std::vector<float>", &jet_DeepFlavourProblepb, buffersize);
+   if( doWrite("jet_DeepFlavourProbc") ) tree->Branch("jet_DeepFlavourProbc", "std::vector<float>", &jet_DeepFlavourProbc, buffersize);
+   */
+   
    if( doWrite("jet_neutralHadronEnergy") ) tree->Branch("jet_neutralHadronEnergy", "std::vector<float>", &jet_neutralHadronEnergy, buffersize);
    if( doWrite("jet_neutralEmEnergy") ) tree->Branch("jet_neutralEmEnergy", "std::vector<float>", &jet_neutralEmEnergy, buffersize);
    if( doWrite("jet_chargedHadronEnergy") ) tree->Branch("jet_chargedHadronEnergy", "std::vector<float>", &jet_chargedHadronEnergy, buffersize);

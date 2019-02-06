@@ -174,6 +174,7 @@ class FlatTree
    double met_cov11;
 
    float mc_weight;
+   float mc_weight_originalValue;
    int   mc_id;
    int   mc_f1;
    int   mc_f2;
@@ -928,6 +929,15 @@ class FlatTree
    std::vector<int> jet_partonFlavour;
    std::vector<int> jet_hadronFlavour;
 
+   /*
+   std::vector<float> jet_DeepFlavourProbuds;
+   std::vector<float> jet_DeepFlavourProbg;
+   std::vector<float> jet_DeepFlavourProbb;
+   std::vector<float> jet_DeepFlavourProbbb;
+   std::vector<float> jet_DeepFlavourProblepb;
+   std::vector<float> jet_DeepFlavourProbc;
+   */
+   
    std::vector<float> jet_neutralHadronEnergy;
    std::vector<float> jet_neutralEmEnergy;
    std::vector<float> jet_chargedHadronEnergy;
