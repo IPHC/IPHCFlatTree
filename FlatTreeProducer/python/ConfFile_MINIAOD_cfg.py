@@ -299,7 +299,8 @@ process.source = cms.Source("PoolSource",
 	 #'/store/mc/RunIIFall17MiniAODv2/THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/80000/A63966E5-9503-E911-A265-0025905C96A6.root'
 	 #'/store/data/Run2017B/SingleElectron/MINIAOD/17Nov2017-v1/70000/FEA5055B-5BDE-E711-AE69-FA163EA2F9E4.root' #SingleElectron2017B
 	 #'/store/mc/RunIIFall17MiniAODv2/TT_FCNC-TtoHJ_aTleptonic_HToWWZZtautau_eta_hct-MadGraph5-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/90000/F857B893-B9B0-E811-8CB0-002590760A10.root'
-         '/store/mc/RunIIFall17MiniAOD/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/DCAA6B21-72F4-E711-9249-0019B9CADC3B.root'
+         #'/store/mc/RunIIFall17MiniAOD/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/DCAA6B21-72F4-E711-9249-0019B9CADC3B.root'
+	 '/store/mc/RunIIFall18MiniAOD/ST_tWll_5f_LO_TuneCP5_PSweights_13TeV-madgraph-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v12-v1/270000/54CA1223-E18B-094A-BF10-56AB12A35687.root'
 	)
 )
 

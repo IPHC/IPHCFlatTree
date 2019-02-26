@@ -117,11 +117,11 @@ class FlatTreeProducer : public edm::EDAnalyzer
         FlatTree* ftree;
         const edm::Service<TFileService> fs;
 
-        TH1D* hcount;
-        TH1D* hweight;
-        TH1D* hpileup;
-        TH1D* hscale;
-        TH1D* hLHE;
+        TH1D* hcount; //Store count of events (=nof entries)
+        TH1D* hweight; //Store +-1 weight and original generator weight (can be different)
+        TH1D* hpileup; //Store pileup distribution
+        TH1D* hSumWeights; //Store all sum of weights needed later : nominal generator, nominal LHE, scale variations, ...
+        TH1D* hLHE; //(for THQ/THW samples) store sum of weights for all kT/kT reweightings
 	
         TMVA::Reader* ele_reader;
         TMVA::Reader* mu_reader;
@@ -971,7 +971,7 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hcount = fs->make<TH1D>("hcount","hcount",1,0.,1.);
     hweight = fs->make<TH1D>("hweight","hweight",2,0.,2.);
     hpileup = fs->make<TH1D>("hpileup","hpileup",100,0.,100.);
-    hscale = fs->make<TH1D>("hscale","hscale",10,0.,10.);
+    hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",10,0.,10.);
     hLHE = fs->make<TH1D>("hLHE","hLHE",100,0.,100.);
 }
 
@@ -1223,7 +1223,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( !isData_ && fillMCScaleWeight_ )
         {
 	    //"Weights from scale variations, PDFs etc. are stored in the relative product. Notice that to be used they need to be renormalized to the central event weight at LHE level which may be different from genEvtInfo->weight()"
-            ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
+            //--> That's why need to normalize scale weights by "genEventInfo->weight() / lheEventProduct->originalXWGTUP()" (even though they are most often the same)
+	    ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
 
             if( lheEventProduct->weights().size() > 0 ) //NB : the cases "0.5/2" & "2/0.5" are unphysical anti-correlated variations, not needed
             {
@@ -1233,17 +1234,20 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 ftree->weight_scale_muR2muF2   = (genEventInfo->weight())*(lheEventProduct->weights()[4].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 2   | muR = 2
                 ftree->weight_scale_muR0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[6].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 0.5
                 ftree->weight_scale_muR0p5muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5   | muR = 0.5
-            }
+            }    
+	    //std::cout<<"wgen = "<<genEventInfo->weight()<<" / lheEventProduct->weights()[6].wgt = "<<lheEventProduct->weights()[6].wgt;
+	    //std::cout<<" / lheEventProduct->originalXWGTUP() = "<<lheEventProduct->originalXWGTUP()<<" => weight_scale_muR0p5 = "<<ftree->weight_scale_muR0p5<<std::endl<<std::endl;
 
 	    //Store the sum of weights of each scale variation in different histo bins //Bin width is 1
-	    hscale->Fill(0+0.5, mc_weight);
-	    hscale->Fill(1+0.5, mc_weight*ftree->weight_originalXWGTUP);
-	    hscale->Fill(2+0.5, mc_weight*ftree->weight_scale_muR0p5);
-	    hscale->Fill(3+0.5, mc_weight*ftree->weight_scale_muF0p5);
-	    hscale->Fill(4+0.5, mc_weight*ftree->weight_scale_muR0p5muF0p5);
-	    hscale->Fill(5+0.5, mc_weight*ftree->weight_scale_muR2);
-	    hscale->Fill(6+0.5, mc_weight*ftree->weight_scale_muF2);
-	    hscale->Fill(7+0.5, mc_weight*ftree->weight_scale_muR2muF2);
+	    hSumWeights->Fill(0+0.5, ftree->mc_weight);
+	    hSumWeights->Fill(1+0.5, ftree->mc_weight_originalValue);
+	    hSumWeights->Fill(2+0.5, ftree->weight_originalXWGTUP);
+	    hSumWeights->Fill(3+0.5, ftree->weight_scale_muR0p5);
+	    hSumWeights->Fill(4+0.5, ftree->weight_scale_muF0p5);
+	    hSumWeights->Fill(5+0.5, ftree->weight_scale_muR0p5muF0p5);
+	    hSumWeights->Fill(6+0.5, ftree->weight_scale_muR2);
+	    hSumWeights->Fill(7+0.5, ftree->weight_scale_muF2);
+	    hSumWeights->Fill(8+0.5, ftree->weight_scale_muR2muF2);
 	    
 	    //std::cout<<__LINE__<<endl;
 
