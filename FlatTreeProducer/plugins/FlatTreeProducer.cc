@@ -1218,7 +1218,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //- https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#LHE_Parser_in_CMSSW_GeneratorInt
     //- https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
     //-- To printout infos on all LHE weights (e.g. to know their meanings), uncomment block in endRun function
-    if(! lheEventProduct.failedToGet())
+    if(!lheEventProduct.failedToGet())
     {
         if( !isData_ && fillMCScaleWeight_ )
         {
@@ -1279,6 +1279,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         }
     }
     
+    //Must make sure that the histo containing the sum of mc_weights is filled in any case (used for event reweighting later)
+    if(lheEventProduct.failedToGet() || !fillMCScaleWeight_) {hSumWeights->Fill(0+0.5, ftree->mc_weight); hSumWeights->Fill(0+0.5, ftree->mc_weight_originalValue);}
 
 
     // ####################################
