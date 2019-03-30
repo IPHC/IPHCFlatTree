@@ -479,7 +479,7 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	     if(pdgId == idGen && !isTau) {hasChargeMatch = true;}
 	     else {hasChargeMatch = false;}
 	     
-	     if(abs(pdgId == 11) && abs(idGen) == 22) {ele_hasPhotonMatch = true;}
+	     if(abs(pdgId) == 11 && abs(idGen) == 22) {ele_hasPhotonMatch = true;}
 	     else {ele_hasPhotonMatch = false;}
 	  }	
      }
