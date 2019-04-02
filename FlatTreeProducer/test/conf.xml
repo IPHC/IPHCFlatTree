@@ -119,12 +119,14 @@
     <var name="mc_weight" save="1"></var>
     <var name="mc_weight_originalValue" save="1"></var>
     <var name="weight_originalXWGTUP" save="1" mc="1"></var>
-    <var name="weight_scale_muF0p5" save="1" mc="1"></var>
-    <var name="weight_scale_muF2" save="1" mc="1"></var>
-    <var name="weight_scale_muR0p5" save="1" mc="1"></var>
-    <var name="weight_scale_muR2" save="1" mc="1"></var>
-    <var name="weight_scale_muR2muF2" save="1" mc="1"></var>
-    <var name="weight_scale_muR0p5muF0p5" save="1" mc="1"></var>
+    <var name="weight_scale_index2" save="1" mc="1"></var>
+    <var name="weight_scale_index3" save="1" mc="1"></var>
+    <var name="weight_scale_index4" save="1" mc="1"></var>
+    <var name="weight_scale_index5" save="1" mc="1"></var>
+    <var name="weight_scale_index6" save="1" mc="1"></var>
+    <var name="weight_scale_index7" save="1" mc="1"></var>
+    <var name="weight_scale_index8" save="1" mc="1"></var>
+    <var name="weight_scale_index9" save="1" mc="1"></var>
     <var name="mc_pdfweights" save="1" mc="1"></var>
     <var name="mc_pdfweightIds" save="1" mc="1"></var>
     <var name="mc_id" save="1" mc="1"></var>

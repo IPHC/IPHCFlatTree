@@ -8,10 +8,14 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 import os, sys
 
 options = VarParsing('analysis')
-options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run on real data') #FIXME
+options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run on real data')
 options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply MET filters')
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
+
+options.register('makeLHEmapping',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Create mapping of LHE id <-> scale/LHAPDF id')
+options.register('printLHEcontent',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Printout of LHE infos')
+options.register('samplename','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"User-defined samplename") #NEW : can user-define a samplename here (to rename output, etc.)
 
 options.register('runQG',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run QGTagger')
 
@@ -21,6 +25,37 @@ options.register('nPDF', -1, VarParsing.multiplicity.singleton, VarParsing.varTy
 options.register('confFile', 'conf.xml', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Flattree variables configuration")
 options.register('bufferSize', 32000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Buffer size for branches of the flat tree")
 options.parseArguments()
+
+#-- Can use these filenames only to produce LHE mapping with proper naming -- 
+#THQ_ctcvcp_4f_Hincl_13TeV_madgraph_pythia8
+#THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8
+#ttHJetToNonbb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8
+#ZZTo4L_13TeV_powheg_pythia8
+#THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8
+#TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8
+#TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8
+#WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8
+#tZq_ll_4f_ckm_NLO_TuneCP5_PSweights_13TeV-amcatnlo-pythia8
+#TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8
+#TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8
+#TTWW_TuneCP5_13TeV-madgraph-pythia8
+#ST_tWll_5f_LO_TuneCP5_PSweights_13TeV-madgraph-pythia8 -> no LHE found
+#TTWH_TuneCP5_13TeV-madgraph-pythia8
+#TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8
+#TGJets_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8
+#WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8
+#WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8
+#WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8
+#WZZ_TuneCP5_13TeV-amcatnlo-pythia8
+#ZZZ_TuneCP5_13TeV-amcatnlo-pythia8
+#TTTT_TuneCP5_13TeV-amcatnlo-pythia8
+#WpWpJJ_EWK-QCD_TuneCP5_13TeV-madgraph-pythia8
+#WW_DoubleScattering_13TeV-pythia8_TuneCP5 -> no LHE found
+#WZG_TuneCP5_13TeV-amcatnlo-pythia8
+#TTWH_TuneCP5_13TeV-madgraph-pythia8
+#TTTW_TuneCP5_13TeV-madgraph-pythia8
+#GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8
+
 
 ##########################
 #  Global configuration  #
@@ -288,20 +323,45 @@ if options.runQG:
 #  Input  #
 ###########
 
-#Write here the filenames to be processed interactively ! #FIXME -- set accordingly the 'isData' variable at beginning of code
+#Write here the filenames to be processed interactively ! #FIXME -- set accordingly the 'isData' variable (0,1) at beginning of code
 
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"), # WARNING -- for test only !
     fileNames = cms.untracked.vstring(
 
-	 #'/store/mc/RunIIFall17MiniAODv2/THW_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/10000/0ECB3918-55A4-E811-8542-0CC47A4DEF3A.root'
 	 #'/store/mc/RunIIFall17MiniAODv2/THQ_ctcvcp_4f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/D0DD519F-5903-E911-AF2E-24BE05CE2D41.root'
 	 #'/store/mc/RunIIFall17MiniAODv2/THW_ctcvcp_5f_Hincl_13TeV_madgraph_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/80000/A63966E5-9503-E911-A265-0025905C96A6.root'
 	 #'/store/data/Run2017B/SingleElectron/MINIAOD/17Nov2017-v1/70000/FEA5055B-5BDE-E711-AE69-FA163EA2F9E4.root' #SingleElectron2017B
 	 #'/store/mc/RunIIFall17MiniAODv2/TT_FCNC-TtoHJ_aTleptonic_HToWWZZtautau_eta_hct-MadGraph5-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v3/90000/F857B893-B9B0-E811-8CB0-002590760A10.root'
-         '/store/mc/RunIIFall17MiniAOD/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/DCAA6B21-72F4-E711-9249-0019B9CADC3B.root'
+         #'/store/mc/RunIIFall17MiniAOD/TTZToLLNuNu_M-10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/DCAA6B21-72F4-E711-9249-0019B9CADC3B.root'
 	 #'/store/mc/RunIIFall17MiniAOD/WW_DoubleScattering_13TeV-pythia8_TuneCP5/MINIAODSIM/94X_mc2017_realistic_v10-v1/510000/F65EA021-0BE5-E711-B234-0025904C7F5E.root'
-	)
+	 #'/store/mc/RunIIFall17MiniAODv2/TTWJetsToLNu_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/40000/F69A63D0-5942-E811-A63D-0025905C2C86.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTWJetsToLNu_TuneCP5_PSweights_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/FC073098-B80E-E811-8092-02163E01A140.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/ttHJetToNonbb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/70000/F8E7EC91-9742-E811-93FA-001E67792566.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/WZTo3LNu_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/60000/FED343B0-D155-E811-82B2-001A649D4791.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/ZZTo4L_13TeV_powheg_pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/70000/FC88B59B-74BB-E811-AD46-44A842BE76F1.root'
+	 #'/store/mc/RunIIFall17MiniAOD/tZq_ll_4f_ckm_NLO_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/FA92DEEA-460F-E811-A8B8-0CC47A4D7618.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/tZq_ll_4f_ckm_NLO_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/20000/78B67B34-B941-E811-B2AE-0025905A6090.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTZToLL_M-1to10_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E26F591A-40D9-E711-AC54-FA163E528917.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTWW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_94X_mc2017_realistic_v11_ext1-v1/10000/E0DEF705-E343-E811-ACBD-001D09FDD91E.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/ST_tWll_5f_LO_TuneCP5_PSweights_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/80000/F62C62D9-0E0C-E911-B1FE-00000919FE80.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTWH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/CC80714B-6402-E811-BCCE-003048CB8584.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/349D565A-ECED-E711-B9C3-20CF3027A582.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TGJets_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/MINIAODSIM/PU2017_94X_mc2017_realistic_v11-v1/70000/0698E1CE-EA36-E811-AA8F-0CC47A4DECF6.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/WGToLNuG_TuneCP5_13TeV-madgraphMLM-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/00000/A0850A0B-18D1-E811-AEC0-008CFAF293BC.root'
+	 #'/store/mc/RunIIFall17MiniAOD/WWW_4F_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v11-v1/80000/EE8E5B81-F91C-E811-B3D7-3417EBE52612.root'
+	 #'/store/mc/RunIIFall17MiniAOD/WWZ_4F_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v11-v1/30000/D6C269B5-B327-E811-A095-FA163EBF244F.root'
+	 #'/store/mc/RunIIFall17MiniAOD/WZZ_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v11-v1/60000/8C4051B9-881F-E811-B606-0CC47A4D76C0.root'
+	 #'/store/mc/RunIIFall17MiniAOD/ZZZ_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v11-v1/90000/7A2D14DC-0127-E811-921C-008CFAC93CC4.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTTT_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v2/20000/02C3910E-F10A-E811-8C52-A4BF0112BDFC.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/WpWpJJ_EWK-QCD_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/100000/FADFCC52-2772-E811-A925-562F11ECDC1A.root'
+	 #'/store/mc/RunIIFall17MiniAOD/WW_DoubleScattering_13TeV-pythia8_TuneCP5/MINIAODSIM/94X_mc2017_realistic_v10-v1/510000/F65EA021-0BE5-E711-B234-0025904C7F5E.root'
+	 #'/store/mc/RunIIFall17MiniAOD/WZG_TuneCP5_13TeV-amcatnlo-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/40000/EA167C38-A213-E811-BB51-FA163E7ED29E.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTWH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/CC80714B-6402-E811-BCCE-003048CB8584.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTTW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v3/40000/F826CD28-2E0A-E811-B6AF-1CB72C1B6568.root'
+	 #'/store/mc/RunIIFall17MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E6C44E02-F7FA-E711-9134-24BE05CEED81.root'
+	 #''
+	 )
 )
 
 ############
@@ -337,6 +397,10 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   fillMCScaleWeight = cms.bool(options.fillMCScaleWeight),
                   fillPUInfo	    = cms.bool(options.fillPUInfo),
                   nPDF              = cms.int32(options.nPDF),
+
+                  makeLHEmapping  = cms.bool(options.makeLHEmapping), #NEW
+                  samplename        = cms.string(options.samplename), #NEW
+		  printLHEcontent = cms.bool(options.printLHEcontent), #NEW
                   
                   vertexInput              = cms.InputTag("offlineSlimmedPrimaryVertices"),
                   electronInput            = cms.InputTag("slimmedElectrons"),
@@ -364,116 +428,7 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 #                  BadMuonFilter              = cms.InputTag("BadPFMuonFilter",""),
 #                  BadChargedCandidateFilter  = cms.InputTag("BadChargedCandidateFilter",""),
                   
-                  filterTriggerNames       = cms.untracked.vstring(
-                  "*"
-#                  "HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v*",
-#                  "HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v*",
-#                  "HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*",
-#                  "HLT_DoubleMu33NoFiltersNoVtx_v*",
-#                  "HLT_DoubleMu38NoFiltersNoVtx_v*",
-#                  "HLT_Ele22_eta2p1_WPLoose_Gsf_v*",
-#                  "HLT_Ele22_eta2p1_WPTight_Gsf_v*",
-#                  "HLT_Ele22_eta2p1_WP75_Gsf_v*",
-#                  "HLT_Ele23_WPLoose_Gsf_v*",
-#                  "HLT_Ele23_WP75_Gsf_v*",
-#                  "HLT_Ele27_eta2p1_WP75_Gsf_v*",
-#                  "HLT_Ele27_eta2p1_WPLoose_Gsf_CentralPFJet30_BTagCSV07_v*",
-#                  "HLT_Ele27_eta2p1_WPLoose_Gsf_v*",
-#                  "HLT_Ele27_eta2p1_WPTight_Gsf_v*",
-#                  "HLT_Ele32_eta2p1_WPLoose_Gsf_CentralPFJet30_BTagCSV07_v*",
-#                  "HLT_Ele32_eta2p1_WPLoose_Gsf_v*",
-#                  "HLT_Ele32_eta2p1_WPTight_Gsf_v*",
-#                  "HLT_Ele105_CaloIdVT_GsfTrkIdT_v*",
-#                  "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-#                  "HLT_IsoMu17_eta2p1_v*",
-#                  "HLT_DoubleIsoMu17_eta2p1_v*",
-#                  "HLT_IsoMu18_v*",
-#                  "HLT_IsoMu20_eta2p1_CentralPFJet30_BTagCSV07_v*",
-#                  "HLT_IsoMu20_v*",
-#                  "HLT_IsoMu20_eta2p1_v*",
-#                  "HLT_IsoMu24_eta2p1_CentralPFJet30_BTagCSV07_v*",
-#                  "HLT_IsoMu24_eta2p1_v*",
-#                  "HLT_IsoMu27_v*",
-#                  "HLT_IsoTkMu20_v*",
-#                  "HLT_IsoTkMu20_eta2p1_v*",
-#                  "HLT_IsoTkMu24_eta2p1_v*",
-#                  "HLT_IsoTkMu27_v*",
-#                  "HLT_Mu17_Mu8_v*",
-#                  "HLT_Mu17_Mu8_DZ_v*",
-#                  "HLT_Mu17_Mu8_SameSign_DZ_v*",
-#                  "HLT_Mu20_Mu10_v*",
-#                  "HLT_Mu20_Mu10_DZ_v*",
-#                  "HLT_Mu20_Mu10_SameSign_DZ_v*",
-#                  "HLT_Mu17_TkMu8_DZ_v*",
-#                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v*",
-#                  "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*",
-#                  "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v*",
-#                  "HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*",
-#                  "HLT_Mu27_TkMu8_v*",
-#                  "HLT_Mu30_TkMu11_v*",
-#                  "HLT_Mu40_TkMu11_v*",
-#                  "HLT_Mu20_v*",
-#                  "HLT_TkMu20_v*",
-#                  "HLT_Mu24_eta2p1_v*",
-#                  "HLT_TkMu24_eta2p1_v*",
-#                  "HLT_Mu27_v*",
-#                  "HLT_TkMu27_v*",
-#                  "HLT_Mu50_v*",
-#                  "HLT_Mu55_v*",
-#                  "HLT_Mu45_eta2p1_v*",
-#                  "HLT_Mu50_eta2p1_v*",
-#                  "HLT_PFJet40_v*",
-#                  "HLT_PFJet60_v*",
-#                  "HLT_PFJet80_v*",
-#                  "HLT_PFJet140_v*",
-#                  "HLT_PFJet200_v*",
-#                  "HLT_PFJet260_v*",
-#                  "HLT_PFJet320_v*",
-#                  "HLT_PFJet400_v*",
-#                  "HLT_PFJet450_v*",
-#                  "HLT_PFJet500_v*",
-#                  "HLT_Mu8_TrkIsoVVL_v*",
-#                  "HLT_Mu17_TrkIsoVVL_v*",
-#                  "HLT_Mu24_TrkIsoVVL_v*",
-#                  "HLT_Mu34_TrkIsoVVL_v*",
-#                  "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v*",
-#                  "HLT_Ele18_CaloIdL_TrackIdL_IsoVL_PFJet30_v*",
-#                  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v*",
-#                  "HLT_Ele33_CaloIdL_TrackIdL_IsoVL_PFJet30_v*",
-#                  "HLT_BTagMu_DiJet20_Mu5_v*",
-#                  "HLT_BTagMu_DiJet40_Mu5_v*",
-#                  "HLT_BTagMu_DiJet70_Mu5_v*",
-#                  "HLT_BTagMu_DiJet110_Mu5_v*",
-#                  "HLT_BTagMu_Jet300_Mu5_v*",
-#                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
-#                  "HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*",
-#                  "HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v*",
-#                  "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v*",
-#                  "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-#                  "HLT_Mu8_v*",
-#                  "HLT_Mu17_v*",
-#                  "HLT_Mu24_v*",
-#                  "HLT_Mu34_v*",
-#                  "HLT_Ele8_CaloIdM_TrackIdM_PFJet30_v*",
-#                  "HLT_Ele12_CaloIdM_TrackIdM_PFJet30_v*",
-#                  "HLT_Ele18_CaloIdM_TrackIdM_PFJet30_v*",
-#                  "HLT_Ele23_CaloIdM_TrackIdM_PFJet30_v*",
-#                  "HLT_Ele33_CaloIdM_TrackIdM_PFJet30_v*",
-#                  "HLT_Mu300_v*",
-#                  "HLT_Mu350_v*",
-#                  "HLT_PFHT450_SixJet40_PFBTagCSV0p72_v*",
-#                  "HLT_PFHT400_SixJet30_BTagCSV0p55_2PFBTagCSV0p72_v*",
-#                  "HLT_PFHT450_SixJet40_PFBTagCSV_v*",
-#                  "HLT_PFHT400_SixJet30_BTagCSV0p5_2PFBTagCSV_v*"
-                  ),
+                  filterTriggerNames       = cms.untracked.vstring("*"),
                   
                   muonInput                = cms.InputTag("slimmedMuons"),
                   #tauInput                 = cms.InputTag("slimmedTaus"),

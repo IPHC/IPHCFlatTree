@@ -17,7 +17,6 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenRunInfoProduct.h"
@@ -121,8 +120,9 @@ class FlatTreeProducer : public edm::EDAnalyzer
         TH1D* hweight; //Store +-1 weight and original generator weight (can be different)
         TH1D* hpileup; //Store pileup distribution
         TH1D* hSumWeights; //Store all sum of weights needed later : nominal generator, nominal LHE, scale variations, ...
-        TH1D* hLHE; //(for THQ/THW samples) store sum of weights for all kT/kT reweightings
-	
+        TH1D* hktkv; //Store sums of kt/kV LHE weights
+        TH1D* hLHE; //Store sums of LHE weights
+
         TMVA::Reader* ele_reader;
         TMVA::Reader* mu_reader;
 
@@ -148,6 +148,11 @@ class FlatTreeProducer : public edm::EDAnalyzer
         bool fillMCScaleWeight_;
         bool fillPUInfo_;
         int nPdf_;
+
+        ////NEW : user_defined variables (in python cfg file)
+        bool makeLHEmapping; //true <-> write/store mapping of LHE id <-> scale/LHAPDF id correspondance
+        bool printLHEcontent; //true <-> printout LHE infos at end of job
+        std::string samplename; //samplename (for output renaming, etc.)
 
         HLTConfigProvider hltConfig_;
         HLTPrescaleProvider hltPrescale_;
@@ -196,10 +201,10 @@ class FlatTreeProducer : public edm::EDAnalyzer
         edm::EDGetTokenT<edm::ValueMap<bool> > ele90IsoMVAIdMapToken_;
         edm::EDGetTokenT<edm::ValueMap<bool> > ele80IsoMVAIdMapToken_;
         edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIsoMVAIdMapToken_;
-   
+
         edm::EDGetTokenT<edm::ValueMap<float> > mvaIsoValuesMapToken_;
         edm::EDGetTokenT<edm::ValueMap<float> > mvaNoIsoValuesMapToken_;
-   
+
 //        edm::EDGetTokenT<edm::ValueMap<int> > mvaCategoriesMapToken_;
 
 //        edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > vetoIdFullInfoMapToken_;
@@ -212,6 +217,11 @@ class FlatTreeProducer : public edm::EDAnalyzer
         std::vector<std::string> filterTriggerNames_;
 
         JetCorrectionUncertainty *jecUnc;
+
+	//LHE weight parsing -- from here : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#6-event-weights-and-scale-factors
+	// token and mapping definition
+	edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
+	std::map<int, int> pdfIdMap_; // this is the map we want to fill
 };
 
 bool FlatTreeProducer::isInt(const boost::any & operand)
@@ -744,11 +754,11 @@ void FlatTreeProducer::ReadConfFile(const std::string& confFile)
         const std::string& obj = child->ToElement()->Attribute("name");
         const std::string& min = child->ToElement()->Attribute("min");
         int imin = atoi(min.c_str());
-        if(!obj.compare("jet")) 	ftree->n_presel_jets_min=imin; 
-        if(!obj.compare("electron")) 	ftree->n_presel_electrons_min=imin; 
-        if(!obj.compare("lepton")) 	ftree->n_presel_leptons_min=imin; 
-        if(!obj.compare("muon")) 	ftree->n_presel_muons_min=imin; 
-        if(!obj.compare("MET")) 	ftree->presel_MET_min=imin; 
+        if(!obj.compare("jet")) 	ftree->n_presel_jets_min=imin;
+        if(!obj.compare("electron")) 	ftree->n_presel_electrons_min=imin;
+        if(!obj.compare("lepton")) 	ftree->n_presel_leptons_min=imin;
+        if(!obj.compare("muon")) 	ftree->n_presel_muons_min=imin;
+        if(!obj.compare("MET")) 	ftree->presel_MET_min=imin;
 
     }
     tElement = xmlconf.FirstChildElement("preselection")->FirstChildElement("info");
@@ -808,9 +818,9 @@ void FlatTreeProducer::ReadConfFile(const std::string& confFile)
 TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderMoriond18(std::string basePath, std::string weightFileName, std::string type)
 {
    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
-   
+
    reader->AddVariable("LepGood_pt",                                     &lepMVA_pt);
-   reader->AddVariable("LepGood_eta",                                    &lepMVA_eta); 
+   reader->AddVariable("LepGood_eta",                                    &lepMVA_eta);
    reader->AddVariable("LepGood_jetNDauChargedMVASel",                   &lepMVA_jetNDauChargedMVASel);
    reader->AddVariable("LepGood_miniRelIsoCharged",                      &lepMVA_miniRelIsoCharged);
    reader->AddVariable("LepGood_miniRelIsoNeutral",                      &lepMVA_miniRelIsoNeutral);
@@ -822,14 +832,14 @@ TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderMoriond18(std::string basePat
    reader->AddVariable("log(abs(LepGood_dz))",                           &lepMVA_dz);
    if( type == "ele" ) reader->AddVariable("LepGood_mvaIdFall17noIso",   &lepMVA_mvaId);
    else reader->AddVariable("LepGood_segmentCompatibility",              &lepMVA_mvaId);
-   
+
    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
-   
+
    return reader;
 }
 
 FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
-    hltPrescale_(iConfig,consumesCollector(),*this), 
+    hltPrescale_(iConfig,consumesCollector(),*this),
     generatorRunInfoToken_(consumes<LHERunInfoProduct,edm::InRun>({"externalLHEProducer"}))
 {
     // ###
@@ -872,7 +882,10 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     fillMCScaleWeight_    = iConfig.getParameter<bool>("fillMCScaleWeight");
     fillPUInfo_           = iConfig.getParameter<bool>("fillPUInfo");
     isData_               = iConfig.getParameter<bool>("isData");
+    makeLHEmapping      = iConfig.getParameter<bool>("makeLHEmapping");
+    printLHEcontent      = iConfig.getParameter<bool>("printLHEcontent");
     applyMETFilters_      = iConfig.getParameter<bool>("applyMETFilters");
+    samplename      	  = iConfig.getParameter<std::string>("samplename"); //NEW
     triggerBits_          = consumes<edm::TriggerResults>(edm::InputTag(std::string("TriggerResults"),std::string(""),std::string("HLT")));
     triggerBitsPAT_       = consumes<edm::TriggerResults>(edm::InputTag(std::string("TriggerResults"),std::string(""),std::string("PAT")));
     triggerObjects_       = consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects"));
@@ -916,7 +929,7 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     ele90IsoMVAIdMapToken_ = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele90IsoMVAIdMap"));
     ele80IsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele80IsoMVAIdMap"));
     eleLooseIsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIsoMVAIdMap"));
-   
+
     mvaIsoValuesMapToken_      = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaIsoValuesMap"));
     mvaNoIsoValuesMapToken_      = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaNoIsoValuesMap"));
 //    mvaCategoriesMapToken_  = consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("mvaCategoriesMap"));
@@ -930,6 +943,9 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     metSigToken_            = consumes<double>(iConfig.getParameter<edm::InputTag>("metSigInput"));
     metCovToken_            = consumes<math::Error<2>::type>(iConfig.getParameter<edm::InputTag>("metCovInput"));
     qgToken_                = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+
+    lheEventToken_ = consumes<LHEEventProduct>(edm::InputTag(std::string("externalLHEProducer") ));
+
 
     // #########################
     // #  Read XML config file #
@@ -972,7 +988,8 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hweight = fs->make<TH1D>("hweight","hweight",2,0.,2.);
     hpileup = fs->make<TH1D>("hpileup","hpileup",100,0.,100.);
     hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",10,0.,10.);
-    hLHE = fs->make<TH1D>("hLHE","hLHE",100,0.,100.);
+    hktkv = fs->make<TH1D>("hktkv","hktkv",100,0.,100.); //Sum of weights for kT/kV reweights, for THQ/THW samples
+    hLHE = fs->make<TH1D>("hLHE","hLHE",1300,0.,1300.);
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1021,11 +1038,11 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     edm::Handle<edm::TriggerResults> triggerBitsPAT;
     iEvent.getByToken(triggerBitsPAT_,triggerBitsPAT);
-    edm::TriggerNames namesPAT;   
+    edm::TriggerNames namesPAT;
     if( triggerBitsPAT.isValid() )
-    {	
+    {
         namesPAT = iEvent.triggerNames(*triggerBitsPAT);
-    }   
+    }
 
     edm::Handle<pat::TriggerObjectStandAloneCollection> triggerObjects;
     iEvent.getByToken(triggerObjects_, triggerObjects);
@@ -1125,7 +1142,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     edm::Handle<edm::ValueMap<bool> > Iso90_mvaid_decisions;
     edm::Handle<edm::ValueMap<bool> > Iso80_mvaid_decisions;
     edm::Handle<edm::ValueMap<bool> > IsoLoose_mvaid_decisions;
-   
+
     iEvent.getByToken(eleVetoCBIdMapToken_,veto_cbid_decisions);
     iEvent.getByToken(eleLooseCBIdMapToken_,loose_cbid_decisions);
     iEvent.getByToken(eleMediumCBIdMapToken_,medium_cbid_decisions);
@@ -1138,18 +1155,18 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     iEvent.getByToken(ele90IsoMVAIdMapToken_,Iso90_mvaid_decisions);
     iEvent.getByToken(ele80IsoMVAIdMapToken_,Iso80_mvaid_decisions);
     iEvent.getByToken(eleLooseIsoMVAIdMapToken_,IsoLoose_mvaid_decisions);
-   
+
     edm::Handle<edm::ValueMap<float> > mvaIsoValues;
     edm::Handle<edm::ValueMap<float> > mvaNoIsoValues;
 //    edm::Handle<edm::ValueMap<int> > mvaCategories;
-   
+
     iEvent.getByToken(mvaIsoValuesMapToken_,mvaIsoValues);
     iEvent.getByToken(mvaNoIsoValuesMapToken_,mvaNoIsoValues);
 //    iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
 
 //    edm::Handle<edm::ValueMap<vid::CutFlowResult> > veto_id_cutflow_;
 //    edm::Handle<edm::ValueMap<vid::CutFlowResult> > medium_id_cutflow_;
-   
+
 //    iEvent.getByToken(vetoIdFullInfoMapToken_, veto_id_cutflow_);
 //    iEvent.getByToken(mediumIdFullInfoMapToken_, medium_id_cutflow_);
 
@@ -1172,7 +1189,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //
     ftree->ev_run = iEvent.id().run();
     ftree->ev_id = iEvent.id().event();
-   
+
     ftree->ev_lumi = iEvent.id().luminosityBlock();
 
     //std::cout << " Event =================================================================== " << std::endl << "No: " << iEvent.id().event() << std::endl ;
@@ -1191,14 +1208,14 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     if( genEventInfo.isValid() )
     {
     	// for some 94x amcatnlo samples, the value of the mc weight is not +-1, but some large (pos/neg) number
-	// so we save both the +-1 label and the original number
-	// the latter is needed for a proper reweighting of the weight_scale_* variables
-	float wGen = genEventInfo->weight();	
+    	// so we save both the +-1 label and the original number
+    	// the latter is needed for a proper reweighting of the weight_scale_* variables
+    	float wGen = genEventInfo->weight();
 
         mc_weight = (wGen > 0 ) ? 1. : -1.;
-	
+
         ftree->mc_weight = mc_weight;
-	ftree->mc_weight_originalValue = wGen;
+	       ftree->mc_weight_originalValue = wGen;
 
         ftree->mc_id = genEventInfo->signalProcessID();
         ftree->mc_f1 = genEventInfo->pdf()->id.first;
@@ -1214,27 +1231,37 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     hweight->Fill(0.5, ftree->mc_weight);
     hweight->Fill(1.5, ftree->mc_weight_originalValue);
 
-    //More infos on LHE weights : 
-    //- https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#LHE_Parser_in_CMSSW_GeneratorInt
-    //- https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
+    //-- More infos on LHE weights :
+    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/LHEReaderCMSSW#LHE_Parser_in_CMSSW_GeneratorInt
+    //https://indico.cern.ch/event/494682/contributions/1172505/attachments/1223578/1800218/mcaod-Feb15-2016.pdf
+
     //-- To printout infos on all LHE weights (e.g. to know their meanings), uncomment block in endRun function
+
+    //-- Clearest explanation about PDF/... : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#6-event-weights-and-scale-factors
+
     if(!lheEventProduct.failedToGet())
     {
         if( !isData_ && fillMCScaleWeight_ )
         {
-	    //"Weights from scale variations, PDFs etc. are stored in the relative product. Notice that to be used they need to be renormalized to the central event weight at LHE level which may be different from genEvtInfo->weight()"
+    	    //"Weights from scale variations, PDFs etc. are stored in the relative product. Notice that to be used they need to be renormalized to the central event weight at LHE level which may be different from genEvtInfo->weight()"
             //--> That's why need to normalize scale weights by "genEventInfo->weight() / lheEventProduct->originalXWGTUP()" (even though they are most often the same)
-	    ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
+    	    ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
 
-            if( lheEventProduct->weights().size() > 0 ) //NB : the cases "0.5/2" & "2/0.5" are unphysical anti-correlated variations, not needed
+            //CHANGED : used to directly relate the LHE weights to scale variations
+            //But : found that the order of scale variations / PDF sets change between samples (see : https://hypernews.cern.ch/HyperNews/CMS/get/top-modeling-and-generators/299/1.html)
+            //NB : the cases "0.5/2" & "2/0.5" are unphysical anti-correlated variations, not needed
+            //Now : store scale variations in the order they appear. Then must check manually (see possibility of LHE mapping in beginRun() function, etc.) the order of LHE weights
+            if( lheEventProduct->weights().size() > 0 )
             {
-                ftree->weight_scale_muF2   = (genEventInfo->weight())*(lheEventProduct->weights()[1].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 2   | muR = 1
-                ftree->weight_scale_muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[2].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5 | muR = 1
-                ftree->weight_scale_muR2   = (genEventInfo->weight())*(lheEventProduct->weights()[3].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 2
-                ftree->weight_scale_muR2muF2   = (genEventInfo->weight())*(lheEventProduct->weights()[4].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 2   | muR = 2
-                ftree->weight_scale_muR0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[6].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 1   | muR = 0.5
-                ftree->weight_scale_muR0p5muF0p5 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); // muF = 0.5   | muR = 0.5
-            }    
+                ftree->weight_scale_index2 = (genEventInfo->weight())*(lheEventProduct->weights()[1].wgt)/(lheEventProduct->originalXWGTUP()); //element 2 of LHE vector
+                ftree->weight_scale_index3 = (genEventInfo->weight())*(lheEventProduct->weights()[2].wgt)/(lheEventProduct->originalXWGTUP()); //element 3 of LHE vector
+                ftree->weight_scale_index4 = (genEventInfo->weight())*(lheEventProduct->weights()[3].wgt)/(lheEventProduct->originalXWGTUP()); //element 4 of LHE vector
+                ftree->weight_scale_index5 = (genEventInfo->weight())*(lheEventProduct->weights()[4].wgt)/(lheEventProduct->originalXWGTUP()); //element 5 of LHE vector
+                ftree->weight_scale_index6 = (genEventInfo->weight())*(lheEventProduct->weights()[5].wgt)/(lheEventProduct->originalXWGTUP()); //element 6 of LHE vector
+                ftree->weight_scale_index7 = (genEventInfo->weight())*(lheEventProduct->weights()[6].wgt)/(lheEventProduct->originalXWGTUP()); //element 7 of LHE vector
+                ftree->weight_scale_index8 = (genEventInfo->weight())*(lheEventProduct->weights()[7].wgt)/(lheEventProduct->originalXWGTUP()); //element 8 of LHE vector
+                ftree->weight_scale_index9 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); //element 9 of LHE vector
+            }
 	    //std::cout<<"wgen = "<<genEventInfo->weight()<<" / lheEventProduct->weights()[6].wgt = "<<lheEventProduct->weights()[6].wgt;
 	    //std::cout<<" / lheEventProduct->originalXWGTUP() = "<<lheEventProduct->originalXWGTUP()<<" => weight_scale_muR0p5 = "<<ftree->weight_scale_muR0p5<<std::endl<<std::endl;
 
@@ -1242,45 +1269,95 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    hSumWeights->Fill(0+0.5, ftree->mc_weight);
 	    hSumWeights->Fill(1+0.5, ftree->mc_weight_originalValue);
 	    hSumWeights->Fill(2+0.5, ftree->weight_originalXWGTUP);
-	    hSumWeights->Fill(3+0.5, ftree->weight_scale_muR0p5);
-	    hSumWeights->Fill(4+0.5, ftree->weight_scale_muF0p5);
-	    hSumWeights->Fill(5+0.5, ftree->weight_scale_muR0p5muF0p5);
-	    hSumWeights->Fill(6+0.5, ftree->weight_scale_muR2);
-	    hSumWeights->Fill(7+0.5, ftree->weight_scale_muF2);
-	    hSumWeights->Fill(8+0.5, ftree->weight_scale_muR2muF2);
-	    
+	    hSumWeights->Fill(3+0.5, ftree->weight_scale_index2);
+	    hSumWeights->Fill(4+0.5, ftree->weight_scale_index3);
+	    hSumWeights->Fill(5+0.5, ftree->weight_scale_index4);
+	    hSumWeights->Fill(6+0.5, ftree->weight_scale_index5);
+	    hSumWeights->Fill(7+0.5, ftree->weight_scale_index6);
+        hSumWeights->Fill(8+0.5, ftree->weight_scale_index7);
+        hSumWeights->Fill(8+0.5, ftree->weight_scale_index8);
+        hSumWeights->Fill(8+0.5, ftree->weight_scale_index9);
+
 	    //std::cout<<__LINE__<<endl;
 
 	    //std::cout<<"lheEventProduct->weights().size(); = "<<lheEventProduct->weights().size()<<endl;
             int nPdfAll = lheEventProduct->weights().size();
             if( nPdf_ < nPdfAll && nPdf_ >= 0 ) nPdfAll = nPdf_;
-	    int bin_x = 0; //Increment bin position for each kT/kV point
+	        int bin_x = 0; //Increment bin position for each kT/kV point
             for( int w=0;w<nPdfAll;w++ )
             {
                 const LHEEventProduct::WGT& wgt = lheEventProduct->weights().at(w);
-                ftree->mc_pdfweights.push_back(wgt.wgt);
+                ftree->mc_pdfweights.push_back(wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP);
                 ftree->mc_pdfweightIds.push_back(wgt.id);
-		
-		//std::cout<<"- Index w = "<<w<<" of "<<nPdfAll<<" / weight = "<<wgt.wgt<<std::endl;
-		
-		//HARDCODED : THW_ctcvcp has 1080+69=1149 LHE weights, THQ_ctcvcp has 880+69=2049
-		//Store the last 69 weights, corresponding to the 69 couplings (only relevant for these 2 samples !)
-		if( (nPdfAll == 1149 || nPdfAll == 951) && (nPdfAll-w) <= 69) 
-		{
-			//std::cout<<"Bin center = "<<bin_x+0.5<<" / weight = "<<wgt.wgt<<std::endl;
-		
-			hLHE->Fill(bin_x+0.5, wgt.wgt * mc_weight); //Store sum of eight for each kT/kV //Bin width is 1	
-			bin_x++;
-	
-		}
-		
-		//std::cout<<"PDF weight = "<<wgt.wgt<<" / ID = "<<wgt.id<<std::endl;
-            }	     
+
+        		hLHE->Fill(w+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP);
+
+        		// std::cout<<"- Index w = "<<w<<" of "<<nPdfAll<<" / weight = "<<wgt.wgt<<std::endl;
+
+        		//HARDCODED : THW_ctcvcp has 1080+69=1149 LHE weights, THQ_ctcvcp has 880+69=2049
+        		//Store the last 69 weights, corresponding to the 69 couplings (only relevant for these 2 samples !)
+        		// !!NB : could also store sums of weights for *all* LHE weights (heavy, ~1K weights per events!)
+        		if( (nPdfAll == 1149 || nPdfAll == 951) && (nPdfAll-w) <= 69)
+        		{
+        			//std::cout<<"Bin center = "<<bin_x+0.5<<" / weight = "<<wgt.wgt<<std::endl;
+
+        			hktkv->Fill(bin_x+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP); //Store sum of eight for each kT/kV //Bin width is 1
+        			//hktkv->Fill(bin_x+0.5, wgt.wgt * ftree->mc_weight_originalValue);
+        			bin_x++; //Get correct binning
+        		}
+
+        		//std::cout<<"PDF weight = "<<wgt.wgt<<" / ID = "<<wgt.id<<std::endl;
+            }
         }
     }
-    
+
     //Must make sure that the histo containing the sum of mc_weights is filled in any case (used for event reweighting later)
-    if(lheEventProduct.failedToGet() || !fillMCScaleWeight_) {hSumWeights->Fill(0+0.5, ftree->mc_weight); hSumWeights->Fill(0+0.5, ftree->mc_weight_originalValue);}
+    if(lheEventProduct.failedToGet() || !fillMCScaleWeight_) {hSumWeights->Fill(0+0.5, ftree->mc_weight); hSumWeights->Fill(1+0.5, ftree->mc_weight_originalValue);}
+
+//----------------------------
+
+//Can use here the mapping between LHE_ID and PDFset_ID, created in beginRun(), to identify e.g. a given PDF set among the LHE weights
+//NB : depending on analysis, instead of copying *all* LHE weights, might want to select here relevant infos (e.g. scale variations + 1 PDF set + kT/kV weights), and store them separately...
+/*
+	//edm::Handle<LHEEventProduct> lheEvent;
+	//iEvent.getByToken(lheEventToken_, lheEvent);
+
+	std::vector<double> nnpdfWeights; //Store e.g. weights of given PDF set
+
+	// create the PDF
+	//LHAPDF::PDFSet nnpdfSet("NNPDF30_nlo_as_0118");
+
+	// sums for renormalization
+	//double nnpdfWeightSumUp = 0.;
+	//double nnpdfWeightSumDown = 0.;
+
+	// obtain weights, identify with mapping
+	auto& mcWeights = lheEventProduct->weights();
+	//std::cout<<"mcWeights.size() = "<<mcWeights.size()<<std::endl;
+	for (size_t i = 0; i < mcWeights.size(); i++)
+	{
+   	 	int idInt = stoi(mcWeights[i].id);
+   	 	//std::cout<<"idInt = "<<idInt<<std::endl;
+
+    		if (pdfIdMap_.find(idInt) != pdfIdMap_.end()) //Look for index correspondance in map
+    		{
+       	 		int PDF_id = pdfIdMap_[idInt];
+			//std::cout<<"LHE index = "<<idInt<<" / PDF = "<<PDF_id<<std::endl;
+
+        		if (PDF_id >= 306000 && PDF_id <= 306102) // NNPDF30_nlo_as_0118
+       			{
+				//std::cout<<"my PDF found !!"<<std::endl;
+            			// divide by original weight to get scale-factor-like number
+            			nnpdfWeights.push_back(mcWeights[i].wgt / lheEventProduct->originalXWGTUP());
+        		}
+    		}
+		// else {std::cout<<"LHE index "<<idInt<<" not found in LHE mapping !"<<std::endl;}
+	}
+
+	//std::cout<<__LINE__<<endl;
+*/
+
+//----------------------------
 
 
     // ####################################
@@ -1304,9 +1381,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if( n_bc == 0 )
             {
                 ftree->mc_pu_intime_NumInt = pvi->getPU_NumInteractions();
-                ftree->mc_pu_trueNumInt = pvi->getTrueNumInteractions();
-		
-		hpileup->Fill(pvi->getTrueNumInteractions(), ftree->mc_weight);
+                ftree->mc_pu_trueNumInt = pvi->getTrueNumInteractions(); //The final PDF reweighting depends on *this* variable !
+
+		hpileup->Fill(pvi->getTrueNumInteractions(), ftree->mc_weight_originalValue);
             }
             else if( n_bc == -1 ) ftree->mc_pu_before_npu = pvi->getPU_NumInteractions();
             else if( n_bc == +1 ) ftree->mc_pu_after_npu  = pvi->getPU_NumInteractions();
@@ -1388,7 +1465,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if(!reqMCTruth ) mc_truth->Init(*ftree);
         mc_truth->fillTopStopDecayChain(iEvent,iSetup,*ftree,genParticlesHandle);
 	reqMCTruth = 1;
-    
+
     }
     if( !isData_ )
     {
@@ -1422,9 +1499,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 //    bool pass_badChargedCandidateFilter = *badChargedCandidateFilter;
 
     // https://twiki.cern.ch/twiki/bin/view/CMS/MissingETOptionalFiltersRun2#Moriond_2018
-   
+
     if( triggerBitsPAT.isValid() )
-    {	
+    {
         for (unsigned int i = 0, n = triggerBitsPAT->size(); i < n; ++i)
         {
             std::string triggerName = namesPAT.triggerName(i);
@@ -1473,7 +1550,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     passMETFilters = (pass_HBHENoiseFilter &&
             pass_HBHENoiseIsoFilter &&
             pass_EcalDeadCellTriggerPrimitiveFilter &&
-            pass_goodVertices && 
+            pass_goodVertices &&
             pass_eeBadScFilter &&
             pass_globalTightHalo2016Filter &&
             pass_BadPFMuonFilter &&
@@ -1526,24 +1603,24 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
    if( ftree->doWrite("triggerobject_do") )
-     {	
+     {
 	//std::cout << "\n === TRIGGER OBJECTS === " << std::endl;
 	for (pat::TriggerObjectStandAlone obj : *triggerObjects)
 	  {
 	     // note: not "const &" since we want to call unpackPathNames
 	     obj.unpackPathNames(names);
-	     
+
 	     // Trigger object basic informations (pt, eta, phi)
 	     //std::cout << "\tTrigger object:  pt " << obj.pt() << ", eta " << obj.eta() << ", phi " << obj.phi() << std::endl;
-	     
+
 	     ftree->triggerobject_pt.push_back(obj.pt());
 	     ftree->triggerobject_eta.push_back(obj.eta());
 	     ftree->triggerobject_phi.push_back(obj.phi());
-	     
+
 	     // Trigger object collection
 	     //std::cout << "\t   Collection: " << obj.collection() << std::endl;
 	     ftree->triggerobject_collection.push_back(obj.collection());
-	     
+
 	     // Trigger object type IDs
 	     ftree->triggerobject_filterIds_n.push_back(obj.filterIds().size());
 	     for (unsigned h = 0; h < obj.filterIds().size(); ++h)
@@ -1565,7 +1642,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  ftree->triggerobject_isTriggerL1Castor.push_back(obj.filterIds()[h] == -95 ? true : false);
 		  ftree->triggerobject_isTriggerL1BPTX.push_back(obj.filterIds()[h] == -96 ? true : false);
 		  ftree->triggerobject_isTriggerL1GtExternal.push_back(obj.filterIds()[h] == -97 ? true : false);
-		  
+
 		  ftree->triggerobject_isHLT_TriggerPhoton.push_back(obj.filterIds()[h] == 81 ? true : false);
 		  ftree->triggerobject_isHLT_TriggerElectron.push_back(obj.filterIds()[h] == 82 ? true : false);
 		  ftree->triggerobject_isHLT_TriggerMuon.push_back(obj.filterIds()[h] == 83 ? true : false);
@@ -1582,10 +1659,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  ftree->triggerobject_isHLT_TriggerELongit.push_back(obj.filterIds()[h] == 94 ? true : false);
 		  ftree->triggerobject_isHLT_TriggerMHTSig.push_back(obj.filterIds()[h] == 95 ? true : false);
 		  ftree->triggerobject_isHLT_TriggerHLongit.push_back(obj.filterIds()[h] == 96 ? true : false);
-		  
+
 		  ftree->triggerobject_filterIds.push_back(obj.filterIds()[h]);
 	       }
-	     
+
 	     // Trigger object filter
 	     ftree->triggerobject_filterLabels_n.push_back(obj.filterLabels().size());
 	     for (unsigned h = 0; h < obj.filterLabels().size(); ++h)
@@ -1593,11 +1670,11 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  //std::cout << "FilterLabel: " << obj.filterLabels()[h] << std::endl;
 		  ftree->triggerobject_filterLabels.push_back(obj.filterLabels()[h]);
 	       }
-	     
+
 	     //std::cout << std::endl;
 	     std::vector<std::string> pathNamesAll  = obj.pathNames(false);
 	     std::vector<std::string> pathNamesLast = obj.pathNames(true);
-	     
+
 	     // Print all trigger paths, for each one record also if the object is associated to a 'l3' filter (always true for the
 	     // definition used in the PAT trigger producer) and if it's associated to the last filter of a successfull path (which
 	     // means that this object did cause this trigger to succeed; however, it doesn't work on some multi-object triggers)
@@ -1614,18 +1691,18 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		  //if (isL3 && !isBoth) std::cout << "(*,3)" << std::endl;
 		  //if (isLF && !isBoth) std::cout << "(L,*)" << std::endl;
 		  //if (isNone && !isBoth && !isL3 && !isLF) std::cout << "(*,*)" << std::endl;
-		  
+
 		  ftree->triggerobject_pathNamesAll.push_back(pathNamesAll[h]);
 		  ftree->triggerobject_pathNamesAll_isBoth.push_back(isBoth);
 		  ftree->triggerobject_pathNamesAll_isL3.push_back(isL3);
 		  ftree->triggerobject_pathNamesAll_isLF.push_back(isLF);
 		  ftree->triggerobject_pathNamesAll_isNone.push_back(isNone);
 	       }
-	     
+
 	     ftree->triggerobject_n = ftree->triggerobject_pt.size();
 	  }
      }
-   
+
     reco::Vertex *primVtx = NULL;
 
     ftree->nvertex = int(vertices->size());
@@ -1841,20 +1918,20 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_E.push_back(elec.energy()); //before smearing
         ftree->el_id.push_back(elec.pdgId());
         ftree->el_charge.push_back(elec.charge());
-	
+
 	//Electron pT smearing
 	float E_PreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
 	float E_PostCorr = elec.userFloat("ecalTrkEnergyPostCorr"); //smeared E
 	float ErrCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
 	float smearCorr = E_PostCorr / E_PreCorr;
 	float pt_postCorr = elec.pt() * smearCorr; //smeared pT
-	
+
 	//std::cout<<std::endl<<"E_PreCorr = "<<E_PreCorr<<std::endl;
 	//std::cout<<"E_PostCorr = "<<E_PostCorr<<std::endl;
 	//std::cout<<"ErrCorr = "<<ErrCorr<<std::endl;
 	//std::cout<<"smearCorr = "<<smearCorr<<std::endl;
 	//std::cout<<"pt_postCorr = "<<pt_postCorr<<std::endl;
-	  
+
 	ftree->el_pt_postCorr.push_back(pt_postCorr);
 	ftree->el_E_postCorr.push_back(E_PostCorr);
 	ftree->el_smearCorrFactor.push_back(smearCorr);
@@ -1971,7 +2048,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_Iso90MVAId.push_back((*Iso90_mvaid_decisions)[el]);
         ftree->el_Iso80MVAId.push_back((*Iso80_mvaid_decisions)[el]);
         ftree->el_IsoLooseMVAId.push_back((*IsoLoose_mvaid_decisions)[el]);
-       
+
         ftree->el_vetoCBId.push_back((*veto_cbid_decisions)[el]);
         ftree->el_looseCBId.push_back((*loose_cbid_decisions)[el]);
         ftree->el_mediumCBId.push_back((*medium_cbid_decisions)[el]);
@@ -2045,7 +2122,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //
             // Below: Variables used for tt-H analysis
             //
-	    
+
             float miniIsoR = 10.0/std::min(std::max(float(elec.pt()),float(50.)),float(200.)); //this is for muons?
 
             float EffArea = 0.;
@@ -2094,7 +2171,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         double el_pt = elec.pt();
         double el_eta = elec.eta();
-        double el_lepMVA = -666.;       
+        double el_lepMVA = -666.;
 
        //NB : should add pT cut on jet associated to lepton (15 in nanoAOD?) ?
        pat::Jet *elecjet = NULL;
@@ -2111,12 +2188,12 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			   jcl = ij;
 			   elecjet = const_cast<pat::Jet*>(&(jets->at(ij)));
 			   break;
-			}		     
-		   }	    
-	      }       
+			}
+		   }
+	      }
 	 }
 
-       lepMVA_pt = el_pt; 
+       lepMVA_pt = el_pt;
        lepMVA_eta = el_eta;
        lepMVA_miniRelIsoNeutral = miniIsoTTHNeutral;
        lepMVA_miniRelIsoCharged = miniIsoTTHCharged;
@@ -2130,7 +2207,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_dz = log(fabs(ftree->el_gsfTrack_PV_dz.back()));
        lepMVA_mvaId = ftree->el_mvaNoIso.back();
        lepMVA_jetNDauChargedMVASel = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&elec),*primVtx) : 0.0;
-       
+
         el_lepMVA = ele_reader->EvaluateMVA("BDTG method");
 
         ftree->el_lepMVA.push_back(el_lepMVA);
@@ -2142,16 +2219,16 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         {
             // Internal matching
             reco::GenParticle *genp = new reco::GenParticle();
-	    
+
             float drmin;
-	    
+
             int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
-						
+
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
 	    bool hasChargeMCMatch = (result_MCMatch == 2);
-	    bool el_hasPhotonMCMatch = (result_MCMatch == 3); //Check if electrons are matched to photons -- for conv bkg	
-						
+	    bool el_hasPhotonMCMatch = (result_MCMatch == 3); //Check if electrons are matched to photons -- for conv bkg
+
             ftree->el_hasMCMatch.push_back(hasMCMatch);
             ftree->el_hasChargeMCMatch.push_back(hasChargeMCMatch);
             ftree->el_hasPhotonMCMatch.push_back(el_hasPhotonMCMatch);
@@ -2536,7 +2613,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             miniIsoTTH        = (pfIsoCharged + pfIsoPUSubtracted) / muon.pt();
             miniIsoTTHCharged = pfIsoCharged / muon.pt();
             miniIsoTTHNeutral = pfIsoPUSubtracted / muon.pt();
-	    
+
 	    //NEW
 	    if(muon.pt() <= 0) {PFRelIso04 = -9999;}
 	    else {PFRelIso04 = (pfR04.sumChargedHadronPt + std::max(0.0, double(pfR04.sumNeutralHadronEt+pfR04.sumPhotonEt-pfR04.sumPUPt/2.)))/muon.pt();}
@@ -2619,7 +2696,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        pat::Jet *muonjet = NULL;
        int jcl = -1;
        for(unsigned int ij=0;ij<jets->size();ij++)
-	 {	    
+	 {
 	    for(unsigned int i1=0;i1<jets->at(ij).numberOfSourceCandidatePtrs();i1++)
 	      {
 		 auto c1s = jets->at(ij).sourceCandidatePtr(i1);
@@ -2630,11 +2707,11 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			   jcl = ij;
 			   muonjet = const_cast<pat::Jet*>(&(jets->at(ij)));
 			   break;
-			}		     
-		   }	    
-	      }       
-	 }       
-       
+			}
+		   }
+	      }
+	 }
+
         lepMVA_pt                                   = mu_pt;
         lepMVA_eta                                  = mu_eta;
         lepMVA_miniRelIsoNeutral                    = miniIsoTTHNeutral;
@@ -2653,7 +2730,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         mu_lepMVA = mu_reader->EvaluateMVA("BDTG method");
 
         ftree->mu_lepMVA.push_back(mu_lepMVA);
-        ftree->mu_lepMVA_pt.push_back(lepMVA_pt); 
+        ftree->mu_lepMVA_pt.push_back(lepMVA_pt);
         ftree->mu_lepMVA_eta.push_back(lepMVA_eta);
         ftree->mu_lepMVA_miniRelIsoCharged.push_back(lepMVA_miniRelIsoCharged);
         ftree->mu_lepMVA_miniRelIsoNeutral.push_back(lepMVA_miniRelIsoNeutral);
@@ -2678,13 +2755,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             float drmin;
             int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						muon.pt(),muon.eta(),muon.phi(),muon.pdgId(),0);
-						
+
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
 	    bool hasChargeMCMatch = (result_MCMatch == 2);
-	    						
+
             ftree->mu_hasMCMatch.push_back(hasMCMatch);
             ftree->mu_hasChargeMCMatch.push_back(hasChargeMCMatch);
-	    
+
             if( hasMCMatch )
             {
                 ftree->mu_gen_pt.push_back(genp->pt());
@@ -2782,32 +2859,32 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             tau_leadingTrackDz = packedLeadTauCand->dz();
             tau_leadingTrackDxy = packedLeadTauCand->dxy();
         }
-       
-       ftree->tau_leadingTrackPt.push_back(tau_leadingTrackPt);       
+
+       ftree->tau_leadingTrackPt.push_back(tau_leadingTrackPt);
        ftree->tau_leadingTrackCharge.push_back(tau_leadingTrackCharge);
        ftree->tau_leadingTrackDz.push_back(tau_leadingTrackDz);
        ftree->tau_leadingTrackDxy.push_back(tau_leadingTrackDxy);
-       
-       ftree->tau_decayMode.push_back(tau.decayMode());       
+
+       ftree->tau_decayMode.push_back(tau.decayMode());
        ftree->tau_decayModeFinding.push_back(tau.tauID("decayModeFinding"));
 //       ftree->tau_decayModeFindingOldDMs.push_back(tau.tauID("decayModeFindingOldDMs"));
        ftree->tau_decayModeFindingNewDMs.push_back(tau.tauID("decayModeFindingNewDMs"));
-       
+
        ftree->tau_puCorrPtSum.push_back(tau.tauID("puCorrPtSum"));
        ftree->tau_neutralIsoPtSum.push_back(tau.tauID("neutralIsoPtSum"));
        ftree->tau_chargedIsoPtSum.push_back(tau.tauID("chargedIsoPtSum"));
        ftree->tau_byCombinedIsolationDeltaBetaCorrRaw3Hits.push_back(tau.tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-       
+
        ftree->tau_byLooseCombinedIsolationDeltaBetaCorr3Hits.push_back(tau.tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits"));
        ftree->tau_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back(tau.tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"));
        ftree->tau_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back(tau.tauID("byTightCombinedIsolationDeltaBetaCorr3Hits"));
-       
+
        ftree->tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byLooseIsolationMVArun2017v2DBoldDMdR0p3wLT2017"));
        ftree->tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byMediumIsolationMVArun2017v2DBoldDMdR0p3wLT2017"));
        ftree->tau_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byTightIsolationMVArun2017v2DBoldDMdR0p3wLT2017"));
        ftree->tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byVTightIsolationMVArun2017v2DBoldDMdR0p3wLT2017"));
        ftree->tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back(tau.tauID("byVLooseIsolationMVArun2017v2DBoldDMdR0p3wLT2017"));
-       
+
        ftree->tau_againstMuonLoose3.push_back(tau.tauID("againstMuonLoose3"));
        ftree->tau_againstMuonTight3.push_back(tau.tauID("againstMuonTight3"));
 
@@ -2820,7 +2897,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        ftree->tau_pfEssential_jet_eta.push_back(tau.pfEssential().p4Jet_.eta());
        ftree->tau_pfEssential_jet_phi.push_back(tau.pfEssential().p4Jet_.phi());
        ftree->tau_pfEssential_jet_m.push_back(tau.pfEssential().p4Jet_.mass());
-       
+
        ftree->tau_pfEssential_jetCorr_pt.push_back(tau.pfEssential().p4CorrJet_.pt());
        ftree->tau_pfEssential_jetCorr_eta.push_back(tau.pfEssential().p4CorrJet_.eta());
        ftree->tau_pfEssential_jetCorr_phi.push_back(tau.pfEssential().p4CorrJet_.phi());
@@ -2847,7 +2924,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->tau_pfEssential_dxy.push_back(tau.pfEssential().dxy_);
         ftree->tau_pfEssential_dxy_error.push_back(tau.pfEssential().dxy_error_);
         ftree->tau_pfEssential_dxy_Sig.push_back(tau.pfEssential().dxy_Sig_);
-       
+
         /*	ftree->tau_pfEssential_flightLengthSig.push_back(tau.pfEssential().flightLengthSig);
             ftree->tau_pfEssential_dxy.push_back(tau.pfEssential().dxy);
             ftree->tau_pfEssential_dxy_error.push_back(tau.pfEssential().dxy_error);
@@ -2860,13 +2937,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             float drmin;
             int result_MCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
 						tau.pt(),tau.eta(),tau.phi(),tau.pdgId(),1);
-						
+
 	    bool hasMCMatch = (result_MCMatch == 1 || result_MCMatch == 2); //1 <-> MC match // 2 <-> also charge match
 	    bool hasChargeMCMatch = (result_MCMatch == 2);
-	    						
+
             ftree->tau_hasMCMatch.push_back(hasMCMatch);
             ftree->tau_hasChargeMCMatch.push_back(hasChargeMCMatch);
-	    
+
             if( hasMCMatch )
             {
                 ftree->tau_gen_pt.push_back(genp->pt());
@@ -2893,7 +2970,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
             delete genp;
 	 }
-    }   
+    }
    ftree->tau_n = ftree->tau_pt.size();
 
     // ##########################
@@ -2948,23 +3025,23 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         float CSVIVF = jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
         ftree->jet_CSVv2.push_back(CSVIVF);
-       
+
         ftree->jet_DeepCSVProbudsg.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probudsg"));
         ftree->jet_DeepCSVProbb.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probb"));
         ftree->jet_DeepCSVProbc.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probc"));
         ftree->jet_DeepCSVProbbb.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probbb"));
         ftree->jet_DeepCSVProbcc.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probcc"));
-	
+
 	/*
 	ftree->jet_DeepFlavourProbuds.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probuds"));
-	std::cout<<"jet_DeepFlavourProbuds="<<jet.bDiscriminator("pfDeepFlavourJetTags:probuds")<<std::endl;	
+	std::cout<<"jet_DeepFlavourProbuds="<<jet.bDiscriminator("pfDeepFlavourJetTags:probuds")<<std::endl;
 	ftree->jet_DeepFlavourProbg.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probg"));
         ftree->jet_DeepFlavourProbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probb"));
         ftree->jet_DeepFlavourProbbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probbb"));
-        ftree->jet_DeepFlavourProblepb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:problepb"));	
+        ftree->jet_DeepFlavourProblepb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:problepb"));
 	ftree->jet_DeepFlavourProbc.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probc"));
-	
-	
+
+
 	cout<<"jet.bDiscriminator(pfCombinedInclusiveSecondaryVertexV2BJetTags) = "<<jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probudsg) = "<<jet.bDiscriminator("deepFlavourJetTags:probudsg")<<endl;
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probb) = "<<jet.bDiscriminator("deepFlavourJetTags:probb")<<endl;
@@ -2972,7 +3049,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probbb) = "<<jet.bDiscriminator("deepFlavourJetTags:probbb")<<endl;
 	cout<<"jet.bDiscriminator(deepFlavourJetTags:probcc) = "<<jet.bDiscriminator("deepFlavourJetTags:probcc")<<endl;
 	*/
-	
+
 
         ftree->jet_cMVAv2.push_back(jet.bDiscriminator("pfCombinedMVAV2BJetTags"));
         ftree->jet_CharmCvsL.push_back(jet.bDiscriminator("pfCombinedCvsLJetTags"));
@@ -2997,7 +3074,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         // Jet ID
 
 	// https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
-	
+
         float NHF = jet.neutralHadronEnergyFraction();
         float NEMF = jet.neutralEmEnergyFraction();
         float CHF = jet.chargedHadronEnergyFraction();
@@ -3011,13 +3088,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         bool tightJetID = 1;
         bool tightLepVetoJetID = 1;
-       
+
         //CHANGED -- boolean logic was not properly implemented for jets with eta<2.4
         if( fabs(eta) < 2.7 )
 	{
 	  tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8);
 	  tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1);
-	  
+
 	  if( fabs(eta) <= 2.4)
 	  {
 	    if(CHF<=0 || CHM<=0 || CEMF>0.80) {tightLepVetoJetID = false;}
@@ -3026,7 +3103,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	}
         else if( fabs(eta) >= 2.7 && fabs(eta) < 3.0 ) tightJetID = (NEMF>0.02 && NEMF<0.99 && NEM>2);
         else if( fabs(eta) >= 3.0 ) tightJetID = (NEMF<0.90 && NHF>0.02 && NEM>10);
-       
+
         ftree->jet_neutralHadronEnergyFraction.push_back(jet.neutralHadronEnergyFraction());
         ftree->jet_neutralEmEnergyFraction.push_back(jet.neutralEmEnergyFraction());
         ftree->jet_chargedHadronEnergyFraction.push_back(jet.chargedHadronEnergyFraction());
@@ -3043,7 +3120,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             ftree->jet_qgtag.push_back((*qgHandle)[jetRef]);
         else
             ftree->jet_qgtag.push_back(-666.);
-	    
+
         const reco::GenJet* genJet = jet.genJet();
         bool hasGenInfo = (genJet);
         ftree->jet_hasGenJet.push_back(hasGenInfo);
@@ -3111,9 +3188,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     // Puppi Jets
     //
-   
+
     bool jetPuppi_do = ftree->doWrite("jetPuppi_do");
-   
+
     if( jetsPuppi.isValid() && jetPuppi_do )
     {
         int nJetPuppi = jetsPuppi->size();
@@ -3232,9 +3309,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
     // ak8 jets (W-jets)
-    
+
    bool ak8jet_do = ftree->doWrite("ak8jet_do");
-    
+
     if( ak8jets.isValid() && ak8jet_do )
     {
         int nak8Jet = ak8jets->size();
@@ -3406,9 +3483,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     }
 
     // ak10 jets
-    
+
    bool ak10jet_do = ftree->doWrite("ak10jet_do");
-    
+
     if( ak10jets.isValid() && ak10jet_do )
     {
         int nak10Jet = ak10jets->size();
@@ -3601,23 +3678,23 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //   PF candidates
     // ##########################
     //
-   
+
    bool pfcand_do = ftree->doWrite("pfcand_do");
    if( pfcand_do )
-     {	   
+     {
 	int nPfcand = pfcands->size();
 	ftree->pfcand_n = nPfcand;
 	bool do_sel_pfc = ftree->doWrite("sel_pfcand");
-		
+
 	ftree->pfch_loose_n = 0;
 	ftree->pfch_loose_sumpt = 0;
 	ftree->pfch_tight_n = 0;
 	ftree->pfch_tight_sumpt = 0;
-	
+
 	for( const pat::PackedCandidate &pfc : *pfcands )
 	  {
 	     if( pfc.hasTrackDetails() )
-	       {	     	
+	       {
 		  //make a selection based on TOP-15-017
 		  if(pfc.charge()!=0 && pfc.pt()>0.5 && fabs(pfc.eta())<2.1)
 		    {
@@ -3632,7 +3709,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 			    ftree->pfch_tight_sumpt+=pfc.pt();
 			 }
 		    }
-		  
+
 		  //compute track Iso
 		  double trackIso = 0;
 		  // run over all pf candidates
@@ -3644,7 +3721,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		       if(pfc2.pt()<0) continue;
 		       if(deltaR(pfc,pfc2)<0.3) trackIso+=pfc2.pt();
 		    }
-		  
+
 		  if(do_sel_pfc)
 		    {
 		       if(pfc.charge()==0) continue;
@@ -3675,9 +3752,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		       ftree->pfcand_trackIso.push_back(trackIso);
 		    }
 	       }
-	  }   
+	  }
      }
-   
+
    this->KeepEvent();
     if( (applyMETFilters_ && passMETFilters) || !applyMETFilters_ ){
         //std::cout<<"here we are !"<<std::endl;
@@ -3729,39 +3806,211 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
 
     const char* cmssw_base = std::getenv("CMSSW_BASE");
     std::string JECUncertaintyPath;
-    
+
     if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_Uncertainty_AK4PFchs.txt";}
     else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V8_MC/Fall17_17Nov2017_V8_MC_Uncertainty_AK4PFchs.txt";}
-    	
+
     jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
+
+//---------------------------------------------------
+//Create map of LHE_ID <-> PDF_set_ID (NEW), and save it as text file
+    if(makeLHEmapping)
+    {
+        TString dir_outfile_mapping = "/home-pbs/ntonon/tHq/IPHCNtuple_2017/CMSSW_9_4_3/src/IPHCNtuple/NtupleAnalyzer/test/weights_2017/LHE/Mapping_LHE_indices/";
+        //TString outfile_mapping_path = dir_outfile_mapping + "LHE_index_mapping.txt";
+        TString outfile_mapping_path = dir_outfile_mapping + samplename + ".txt";
+        ofstream txtfile_out(outfile_mapping_path);
+
+        edm::Handle<LHERunInfoProduct> runInfo;
+        iRun.getByLabel("externalLHEProducer", runInfo); //NB : this throws a warning ("An attempt was made to read a Run product before endRun() was called")
+
+        //Different samples have different LHE conventions. Try to identify the right one, then make the LHE mapping
+        //With each type of LHE, is associated an element in the vector of string vectors => once the type of LHE is known, can use all the correct strings to parse
+        //NB : once know type of LHE, also know the order of scale variations
+        int sample_LHE_type = -1;
+        std::vector<std::string> v_LHE_ID_startStr; //string found before LHE ID
+        std::vector<std::string> v_scale_ID_startStr; //String found *only* in scale variations lines (to identify them)
+        std::vector<std::string> v_PDF_ID_startStr; //string found before PDF_set ID
+        std::string endStr = "</weight>"; //string found at eol -- always the same ; or need to change ?
+        std::string weightTagStr = "initrwgt"; //Tag associated with LHE weights
+
+        { //sample_LHE_type = 0 (e.g. ttHJetToNonbb_M125_TuneCP5_13TeV_amcatnloFXFX_madspin_pythia8)
+            v_LHE_ID_startStr.push_back("<weight id=");
+            v_PDF_ID_startStr.push_back(" PDF=  ");
+            v_scale_ID_startStr.push_back("dyn=");
+        }
+
+        { //sample_LHE_type = 1 (e.g. THQ_ctcvcp_4f_Hincl_13TeV_madgraph_pythia8)
+            v_LHE_ID_startStr.push_back(" id=");
+            v_PDF_ID_startStr.push_back(" PDF=");
+            v_scale_ID_startStr.push_back("> mur=");
+        }
+
+        { //sample_LHE_type = 2 (e.g. ZZTo4L_13TeV_powheg_pythia8)
+            v_LHE_ID_startStr.push_back("<weight id=");
+            v_PDF_ID_startStr.push_back("lhapdf=");
+            v_scale_ID_startStr.push_back("renscfact=");
+        }
+
+        { //sample_LHE_type = 3 (e.g. ZZZ_TuneCP5_13TeV-amcatnlo-pythia8)
+            v_LHE_ID_startStr.push_back("<weight id=");
+            v_PDF_ID_startStr.push_back("pdfset=");
+            v_scale_ID_startStr.push_back("> muR=");
+        }
+
+        bool found_LHE_weights = false;
+        for (std::vector<LHERunInfoProduct::Header>::const_iterator it = runInfo->headers_begin(); it != runInfo->headers_end(); it++)
+        {
+       	    // std::cout << it->tag() << std::endl;
+
+            if (it->tag() != weightTagStr) //Skip parts of printout not related to LHE weights
+            {
+                continue;
+            }
+
+            found_LHE_weights = true;
+
+        	std::vector<std::string> lines = it->lines(); //Store printout
+
+            //The first 15 lines of this block must contain the scale variations definitions
+            //From there, can determine what kind of LHE conventions we are dealing with
+            for (size_t i = 0; i < 15; i++)
+            {
+                size_t found_scaleStr;
+
+                //Check the type of LHE convention followed in file (looking at scale variations)
+                for(unsigned int itype=0; itype<v_scale_ID_startStr.size(); itype++)
+                {
+                    found_scaleStr = lines[i].find(v_scale_ID_startStr[itype]);
+                    if(found_scaleStr != std::string::npos)
+                    {
+                        sample_LHE_type = itype;
+                        break;
+                    }
+                }
+            }
+
+            //Store the order of the renorm/factor. scales
+            if(sample_LHE_type == 0)
+            {
+                txtfile_out<<1<<" muR1muF1"<<std::endl;
+                txtfile_out<<2<<" muR2muF1"<<std::endl;
+                txtfile_out<<3<<" muR0p5muF1"<<std::endl;
+                txtfile_out<<4<<" muR1muF2"<<std::endl;
+                txtfile_out<<5<<" muR2muF2"<<std::endl;
+                txtfile_out<<6<<" muR0p5muF2"<<std::endl;
+                txtfile_out<<7<<" muR1muF0p5"<<std::endl;
+                txtfile_out<<8<<" muR2muF0p5"<<std::endl;
+                txtfile_out<<9<<" muR0p5muF0p5"<<std::endl;
+            }
+            else if(sample_LHE_type == 1 || sample_LHE_type == 2 || sample_LHE_type == 3)
+            {
+                txtfile_out<<1<<" muR1muF1"<<std::endl;
+                txtfile_out<<2<<" muR1muF2"<<std::endl;
+                txtfile_out<<3<<" muR1muF0p5"<<std::endl;
+                txtfile_out<<4<<" muR2muF1"<<std::endl;
+                txtfile_out<<5<<" muR2muF2"<<std::endl;
+                txtfile_out<<6<<" muR2muF0p5"<<std::endl;
+                txtfile_out<<7<<" muR0p5muF1"<<std::endl;
+                txtfile_out<<8<<" muR0p5muF2"<<std::endl;
+                txtfile_out<<9<<" muR0p5muF0p5"<<std::endl;
+            }
+            else
+            {
+                std::cout<<std::endl<<"UNKNOWN TYPE OF LHE FILE ! Can not create a mapping [LHE ID <-> PDF/SCALE ID] ! You should check it manually, and add the new LHE convention !"<<std::endl<<std::endl;
+                break;
+            }
+
+            std::cout<<std::endl<<"==> FOUND TYPE OF LHE CONVENTION = "<<sample_LHE_type<<std::endl<<std::endl;
+
+            for (size_t i = 0; i < lines.size(); i++)
+            {
+    	        // std::cout <<"LINE : " << lines.at(i);
+
+                //Find substring in line ; index starts at 0, gives position of beginning of match
+                size_t startPos_LHE_id = lines[i].find(v_LHE_ID_startStr[sample_LHE_type]);
+                size_t startPos_PDF_id = lines[i].find(v_PDF_ID_startStr[sample_LHE_type]);
+                size_t startPos_scale_id = lines[i].find(v_scale_ID_startStr[sample_LHE_type]);
+                size_t endPosLine = lines[i].find(endStr);
+
+                //Want to match start/end substring & PDF substring, but *not* the scale substring (scales hardcoded above)
+                if(startPos_scale_id != std::string::npos || startPos_LHE_id == std::string::npos || startPos_PDF_id == std::string::npos || endPosLine == std::string::npos) //If line doesn't match expected pattern, skip
+                {
+                    continue;
+                }
+
+                //Cut string into substrings we want to access (PDF_set id, ...)
+                //NB : 'PDF_id' string contains PDF_set id + name of PDF set ! Get rid of text by using stoi(xxx)
+                std::string LHE_id;
+                std::string PDF_id;
+                if(sample_LHE_type == 0)
+                {
+                    LHE_id = lines[i].substr(startPos_LHE_id + v_LHE_ID_startStr[sample_LHE_type].size()+1, 4); //first
+                    PDF_id = lines[i].substr(startPos_PDF_id + v_PDF_ID_startStr[sample_LHE_type].size(), 7); //second
+                }
+                else if(sample_LHE_type == 1)
+                {
+                    LHE_id = lines[i].substr(startPos_LHE_id + v_LHE_ID_startStr[sample_LHE_type].size()+1, 5); //second
+                    PDF_id = lines[i].substr(startPos_PDF_id + v_PDF_ID_startStr[sample_LHE_type].size()+1, 7); //first
+                }
+                else if(sample_LHE_type == 2 || sample_LHE_type == 3)
+                {
+                    LHE_id = lines[i].substr(startPos_LHE_id + v_LHE_ID_startStr[sample_LHE_type].size()+1, 4); //first
+                    PDF_id = lines[i].substr(startPos_PDF_id + v_PDF_ID_startStr[sample_LHE_type].size(), 7); //second
+                }
+
+                // std::cout<<std::endl<<"LHE_id = "<<LHE_id<<std::endl;
+                // std::cout<<"-> stoi(LHE_id) = "<<stoi(LHE_id)<<std::endl;
+                // std::cout<<"PDF_id = "<<PDF_id<<std::endl;
+                // std::cout<<"-> stoi(PDF_id) = "<<stoi(PDF_id)<<std::endl;
+
+                try //Fill map
+                {
+                    pdfIdMap_[stoi(LHE_id)] = stoi(PDF_id);
+    		        txtfile_out<<stoi(LHE_id)<<" "<<stoi(PDF_id)<<std::endl;
+                }
+                catch (...) //Error
+                {
+                    std::cerr << "FlatTreeProducer.cc : error while parsing the lhe run xml header: ";
+                    std::cerr<<std::endl<<"cannot interpret as ints:" << LHE_id << " -> " << PDF_id << std::endl;
+                }
+            }
+        }
+
+        if(found_LHE_weights) {std::cout<<std::endl<<std::endl<<"===> Wrote mapping of [LHE index <-> LHAPDF index] in : "<<outfile_mapping_path<<std::endl<<std::endl;}
+        else {std::cout<<std::endl<<std::endl<<"! DID NOT FIND LHE WEIGHTS IN SAMPLE !"<<std::endl<<std::endl;}
+    }
+//---------------------------------------------------
 }
 
 // ------------ method called when ending the processing of a run  ------------
 void FlatTreeProducer::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
     delete jecUnc;
-    
+
     //Can printout here infos on all the LHE weights (else comment out)
     //-------------------
-    /*
-    cout << "[MiniAnalyzer::endRun]" << endl;
-    edm::Handle<LHERunInfoProduct> run; 
-    typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
- 
-    //iRun.getByLabel( "externalLHEProducer", run );
-    iRun.getByToken(generatorRunInfoToken_, run );
-    
-    LHERunInfoProduct myLHERunInfoProduct = *(run.product());
- 
-    for (headers_const_iterator iter=myLHERunInfoProduct.headers_begin(); iter!=myLHERunInfoProduct.headers_end(); iter++)
+    if(printLHEcontent)
     {
-      std::cout << iter->tag() << std::endl;
-      std::vector<std::string> lines = iter->lines();
-      for (unsigned int iLine = 0; iLine<lines.size(); iLine++) 
-      {
-        std::cout << lines.at(iLine);
-      }
-    }*/
+        cout<<endl<<endl << "[MiniAnalyzer::endRun]" << endl<<endl;
+        edm::Handle<LHERunInfoProduct> run;
+        typedef std::vector<LHERunInfoProduct::Header>::const_iterator headers_const_iterator;
+
+        //iRun.getByLabel( "externalLHEProducer", run );
+        iRun.getByToken(generatorRunInfoToken_, run );
+
+        LHERunInfoProduct myLHERunInfoProduct = *(run.product());
+
+        for (headers_const_iterator iter=myLHERunInfoProduct.headers_begin(); iter!=myLHERunInfoProduct.headers_end(); iter++)
+        {
+            std::cout << iter->tag() << std::endl;
+            std::vector<std::string> lines = iter->lines();
+            for (unsigned int iLine = 0; iLine<lines.size(); iLine++)
+            {
+                std::cout << lines.at(iLine);
+            }
+        }
+    }
     //--------------------
 }
 
@@ -3791,4 +4040,3 @@ bool FlatTreeProducer::foundTrigger(const std::string& name) const
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(FlatTreeProducer);
-

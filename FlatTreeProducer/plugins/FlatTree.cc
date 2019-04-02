@@ -156,12 +156,14 @@ void FlatTree::Init()
    mc_ptHat = DEFVAL;
    
    weight_originalXWGTUP = DEFVAL;
-   weight_scale_muF0p5 = DEFVAL;
-   weight_scale_muF2   = DEFVAL;
-   weight_scale_muR0p5 = DEFVAL;
-   weight_scale_muR2   = DEFVAL;
-   weight_scale_muR2muF2   = DEFVAL;
-   weight_scale_muR0p5muF0p5   = DEFVAL;
+   weight_scale_index2   = DEFVAL;
+   weight_scale_index3 = DEFVAL;
+   weight_scale_index4   = DEFVAL;
+   weight_scale_index5   = DEFVAL;
+   weight_scale_index6   = DEFVAL;
+   weight_scale_index7   = DEFVAL;
+   weight_scale_index8   = DEFVAL;
+   weight_scale_index9 = DEFVAL;
    mc_pdfweights.clear();
    mc_pdfweightIds.clear();
 
@@ -1338,12 +1340,14 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mc_ptHat") ) tree->Branch("mc_ptHat", &mc_ptHat, "mc_ptHat/F", buffersize);
    
    if( doWrite("weight_originalXWGTUP") ) tree->Branch("weight_originalXWGTUP", &weight_originalXWGTUP, "weight_originalXWGTUP/F", buffersize);
-   if( doWrite("weight_scale_muF0p5") ) tree->Branch("weight_scale_muF0p5", &weight_scale_muF0p5, "weight_scale_muF0p5/F", buffersize);
-   if( doWrite("weight_scale_muF2"  ) ) tree->Branch("weight_scale_muF2",   &weight_scale_muF2,   "weight_scale_muF2/F", buffersize);
-   if( doWrite("weight_scale_muR0p5") ) tree->Branch("weight_scale_muR0p5", &weight_scale_muR0p5, "weight_scale_muR0p5/F", buffersize);
-   if( doWrite("weight_scale_muR2"  ) ) tree->Branch("weight_scale_muR2",   &weight_scale_muR2,   "weight_scale_muR2/F", buffersize);
-   if( doWrite("weight_scale_muR2muF2"  ) ) tree->Branch("weight_scale_muR2muF2",   &weight_scale_muR2muF2,   "weight_scale_muR2muF2/F", buffersize);
-   if( doWrite("weight_scale_muR0p5muF0p5"  ) ) tree->Branch("weight_scale_muR0p5muF0p5",   &weight_scale_muR0p5muF0p5,   "weight_scale_muR0p5muF0p5/F", buffersize);
+   if( doWrite("weight_scale_index2") ) tree->Branch("weight_scale_index2", &weight_scale_index2, "weight_scale_index2/F", buffersize);
+   if( doWrite("weight_scale_index3") ) tree->Branch("weight_scale_index3", &weight_scale_index3, "weight_scale_index3/F", buffersize);
+   if( doWrite("weight_scale_index4") ) tree->Branch("weight_scale_index4", &weight_scale_index4, "weight_scale_index4/F", buffersize);
+   if( doWrite("weight_scale_index5") ) tree->Branch("weight_scale_index5", &weight_scale_index5, "weight_scale_index5/F", buffersize);
+   if( doWrite("weight_scale_index6") ) tree->Branch("weight_scale_index6", &weight_scale_index6, "weight_scale_index6/F", buffersize);
+   if( doWrite("weight_scale_index7") ) tree->Branch("weight_scale_index7", &weight_scale_index7, "weight_scale_index7/F", buffersize);
+   if( doWrite("weight_scale_index8") ) tree->Branch("weight_scale_index8", &weight_scale_index8, "weight_scale_index8/F", buffersize);
+   if( doWrite("weight_scale_index9") ) tree->Branch("weight_scale_index9", &weight_scale_index9, "weight_scale_index9/F", buffersize);
    if( doWrite("mc_pdfweights") ) tree->Branch("mc_pdfweights", "std::vector<float>", &mc_pdfweights, buffersize);
    if( doWrite("mc_pdfweightIds") ) tree->Branch("mc_pdfweightIds", "std::vector<std::string>", &mc_pdfweightIds, buffersize);
    

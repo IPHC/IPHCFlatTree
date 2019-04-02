@@ -1,6 +1,6 @@
 #!/bin/env zsh
 
-ver="tHq2017_v4"
+ver="tHq2017_v2"
 
 slist="list.txt"
 pset="crabConfigTemplate.py"
@@ -23,7 +23,7 @@ do
   nam=$(echo "${spl[1]}" | sed 's%-%_%g')
   reqn=$(echo "${nam}_${pubdn}" | sed 's%_RunIISummer16MiniAODv2.*%%g')
   
-  #reqn="DY50_madgraph_ext"
+  #reqn=""
     
   size=${#reqn}
   #echo $size

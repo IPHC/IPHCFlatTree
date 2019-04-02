@@ -182,14 +182,19 @@ class FlatTree
    float mc_x2;
    float mc_scale;
    float mc_ptHat;
-
+ 
+   //CHANGED : used to directly set weights for scale variations
+   //But : found that order or scale variations vary between samples
+   //Now : store variations as they are in sample ; must find manually (possible printout in FlatTreeProducer.cc code) the order of LHE weights
    float weight_originalXWGTUP;
-   float weight_scale_muF0p5;
-   float weight_scale_muF2;
-   float weight_scale_muR0p5;
-   float weight_scale_muR2;
-   float weight_scale_muR2muF2;
-   float weight_scale_muR0p5muF0p5;
+   float weight_scale_index2;
+   float weight_scale_index3;
+   float weight_scale_index4;
+   float weight_scale_index5;
+   float weight_scale_index6;
+   float weight_scale_index7;
+   float weight_scale_index8;
+   float weight_scale_index9;
    
    std::vector<float> mc_pdfweights;
    std::vector<std::string> mc_pdfweightIds;
