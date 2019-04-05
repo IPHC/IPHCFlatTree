@@ -222,6 +222,11 @@ class FlatTreeProducer : public edm::EDAnalyzer
 	// token and mapping definition
 	edm::EDGetTokenT<LHEEventProduct> lheEventToken_;
 	std::map<int, int> pdfIdMap_; // this is the map we want to fill
+	
+	//-- Prefiring proba ; see : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe#Introduction
+	edm::EDGetTokenT< double > prefweight_token;
+	edm::EDGetTokenT< double > prefweightup_token;
+	edm::EDGetTokenT< double > prefweightdown_token;
 };
 
 bool FlatTreeProducer::isInt(const boost::any & operand)
@@ -990,6 +995,10 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",10,0.,10.);
     hktkv = fs->make<TH1D>("hktkv","hktkv",100,0.,100.); //Sum of weights for kT/kV reweights, for THQ/THW samples
     hLHE = fs->make<TH1D>("hLHE","hLHE",1300,0.,1300.);
+    
+    prefweight_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProb"));
+    prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbUp"));
+    prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbDown"));
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1358,6 +1367,26 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 */
 
 //----------------------------
+//Get prefiring proba
+	edm::Handle< double > theprefweight;
+	iEvent.getByToken(prefweight_token, theprefweight ) ;
+	double _prefiringweight =(*theprefweight);
+
+	edm::Handle< double > theprefweightup;
+	iEvent.getByToken(prefweightup_token, theprefweightup ) ;
+	double _prefiringweightup =(*theprefweightup);
+
+	edm::Handle< double > theprefweightdown;
+	iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
+	double _prefiringweightdown =(*theprefweightdown);
+	
+	//NB : I exchange the up/down variations on purpose... looks like they were switched ?
+	ftree->prefiringWeight = _prefiringweight;
+	ftree->prefiringWeightUp = _prefiringweightdown;
+	ftree->prefiringWeightDown = _prefiringweightup;
+	std::cout<<"prefiringWeight = "<<ftree->prefiringWeight<<std::endl;
+	std::cout<<"prefiringWeightUp = "<<ftree->prefiringWeightUp<<std::endl;
+	std::cout<<"prefiringWeightDown = "<<ftree->prefiringWeightDown<<std::endl;
 
 
     // ####################################

@@ -129,6 +129,9 @@
     <var name="weight_scale_index9" save="1" mc="1"></var>
     <var name="mc_pdfweights" save="1" mc="1"></var>
     <var name="mc_pdfweightIds" save="1" mc="1"></var>
+    <var name="prefiringWeight" save="1" mc="1"></var>
+    <var name="prefiringWeightUp" save="1" mc="1"></var>
+    <var name="prefiringWeightDown" save="1" mc="1"></var>
     <var name="mc_id" save="1" mc="1"></var>
     <var name="mc_f1" save="1" mc="1"></var>
     <var name="mc_f2" save="1" mc="1"></var>

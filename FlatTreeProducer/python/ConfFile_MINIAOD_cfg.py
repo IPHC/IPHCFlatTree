@@ -319,6 +319,21 @@ if options.runQG:
     process.QGTagger.srcJets          = cms.InputTag(jetsNameAK4) # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
     process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
+
+
+#######################
+# Prefiring probability #
+#######################
+#See : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe#Introduction
+process.prefiringweight = cms.EDProducer("L1ECALPrefiringWeightProducer",
+                                 ThePhotons = cms.InputTag("slimmedPhotons"),
+	                         TheJets = cms.InputTag("slimmedJets"),
+                                 L1Maps = cms.string("../../../L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root"), # update this line with the location of this file
+                                 DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
+                                 UseJetEMPt = cms.bool(False), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
+	                         PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
+                                 )
+
 ###########
 #  Input  #
 ###########
@@ -478,5 +493,6 @@ process.p = cms.Path(
                      process.jecSequence+
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
+		     process.prefiringweight +
                      process.FlatTree
-                    )
+                   )

@@ -199,6 +199,11 @@ class FlatTree
    std::vector<float> mc_pdfweights;
    std::vector<std::string> mc_pdfweightIds;
    
+   //prefiring probabilities
+   float prefiringWeight;
+   float prefiringWeightUp;
+   float prefiringWeightDown;
+   
    int mc_pu_intime_NumInt;
    int mc_pu_trueNumInt;
    int mc_pu_before_npu;
