@@ -120,7 +120,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         TH1D* hweight; //Store +-1 weight and original generator weight (can be different)
         TH1D* hpileup; //Store pileup distribution
         TH1D* hSumWeights; //Store all sum of weights needed later : nominal generator, nominal LHE, scale variations, ...
-        TH1D* hktkv; //Store sums of kt/kV LHE weights
+        //TH1D* hktkv; //Store sums of kt/kV LHE weights
         TH1D* hLHE; //Store sums of LHE weights
 
         TMVA::Reader* ele_reader;
@@ -150,7 +150,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         int nPdf_;
 
         ////NEW : user_defined variables (in python cfg file)
-        bool makeLHEmapping; //true <-> write/store mapping of LHE id <-> scale/LHAPDF id correspondance
+        bool makeLHEmapping; //true <-> write/store mapping of LHE id <-> scale/LHAPDF id correspondance //Idea from here : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#66-pdf-weight
         bool printLHEcontent; //true <-> printout LHE infos at end of job
         std::string samplename; //samplename (for output renaming, etc.)
 
@@ -992,9 +992,9 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hcount = fs->make<TH1D>("hcount","hcount",1,0.,1.);
     hweight = fs->make<TH1D>("hweight","hweight",2,0.,2.);
     hpileup = fs->make<TH1D>("hpileup","hpileup",100,0.,100.);
-    hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",10,0.,10.);
-    hktkv = fs->make<TH1D>("hktkv","hktkv",100,0.,100.); //Sum of weights for kT/kV reweights, for THQ/THW samples
-    hLHE = fs->make<TH1D>("hLHE","hLHE",1300,0.,1300.);
+    hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",15,0.,15.);
+    //hktkv = fs->make<TH1D>("hktkv","hktkv",100,0.,100.); //Sum of weights for kT/kV reweights, for THQ/THW samples
+    hLHE = fs->make<TH1D>("hLHE","hLHE",1300,0.,1300.); //Sums of weights all LHE weights
     
     prefweight_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProb"));
     prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbUp"));
@@ -1224,7 +1224,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         mc_weight = (wGen > 0 ) ? 1. : -1.;
 
         ftree->mc_weight = mc_weight;
-	       ftree->mc_weight_originalValue = wGen;
+	ftree->mc_weight_originalValue = wGen;
 
         ftree->mc_id = genEventInfo->signalProcessID();
         ftree->mc_f1 = genEventInfo->pdf()->id.first;
@@ -1246,7 +1246,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     //-- To printout infos on all LHE weights (e.g. to know their meanings), uncomment block in endRun function
 
-    //-- Clearest explanation about PDF/... : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#6-event-weights-and-scale-factors
+    //-- Clearest explanation about PDF/... : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#66-pdf-weight
 
     if(!lheEventProduct.failedToGet())
     {
@@ -1254,6 +1254,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         {
     	    //"Weights from scale variations, PDFs etc. are stored in the relative product. Notice that to be used they need to be renormalized to the central event weight at LHE level which may be different from genEvtInfo->weight()"
             //--> That's why need to normalize scale weights by "genEventInfo->weight() / lheEventProduct->originalXWGTUP()" (even though they are most often the same)
+	    //When applying the weights, will ned to renormalize them by the sum of the particular weight (and by sum_nominal/sum_variation if want to norm. to nominal)
     	    ftree->weight_originalXWGTUP = lheEventProduct->originalXWGTUP(); //central event weight
 
             //CHANGED : used to directly relate the LHE weights to scale variations
@@ -1271,8 +1272,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
                 ftree->weight_scale_index8 = (genEventInfo->weight())*(lheEventProduct->weights()[7].wgt)/(lheEventProduct->originalXWGTUP()); //element 8 of LHE vector
                 ftree->weight_scale_index9 = (genEventInfo->weight())*(lheEventProduct->weights()[8].wgt)/(lheEventProduct->originalXWGTUP()); //element 9 of LHE vector
             }
-	    //std::cout<<"wgen = "<<genEventInfo->weight()<<" / lheEventProduct->weights()[6].wgt = "<<lheEventProduct->weights()[6].wgt;
-	    //std::cout<<" / lheEventProduct->originalXWGTUP() = "<<lheEventProduct->originalXWGTUP()<<" => weight_scale_muR0p5 = "<<ftree->weight_scale_muR0p5<<std::endl<<std::endl;
+	    
+	    //std::cout<<"mc_weight_originalValue="<<ftree->mc_weight_originalValue<<"/lheEventProduct->originalXWGTUP()="<<lheEventProduct->originalXWGTUP()<<"/lheEventProduct->weights()[1].wgt="<<lheEventProduct->weights()[1].wgt<<"=>"<<ftree->weight_scale_index2<<std::endl<<std::endl;
 
 	    //Store the sum of weights of each scale variation in different histo bins //Bin width is 1
 	    hSumWeights->Fill(0+0.5, ftree->mc_weight);
@@ -1283,39 +1284,36 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	    hSumWeights->Fill(5+0.5, ftree->weight_scale_index4);
 	    hSumWeights->Fill(6+0.5, ftree->weight_scale_index5);
 	    hSumWeights->Fill(7+0.5, ftree->weight_scale_index6);
-        hSumWeights->Fill(8+0.5, ftree->weight_scale_index7);
-        hSumWeights->Fill(8+0.5, ftree->weight_scale_index8);
-        hSumWeights->Fill(8+0.5, ftree->weight_scale_index9);
-
-	    //std::cout<<__LINE__<<endl;
+	    hSumWeights->Fill(8+0.5, ftree->weight_scale_index7);
+            hSumWeights->Fill(9+0.5, ftree->weight_scale_index8);
+            hSumWeights->Fill(10+0.5, ftree->weight_scale_index9);
 
 	    //std::cout<<"lheEventProduct->weights().size(); = "<<lheEventProduct->weights().size()<<endl;
             int nPdfAll = lheEventProduct->weights().size();
             if( nPdf_ < nPdfAll && nPdf_ >= 0 ) nPdfAll = nPdf_;
-	        int bin_x = 0; //Increment bin position for each kT/kV point
+	    
+	    //int bin_x = 0; //Increment bin position for each kT/kV point
             for( int w=0;w<nPdfAll;w++ )
             {
                 const LHEEventProduct::WGT& wgt = lheEventProduct->weights().at(w);
                 ftree->mc_pdfweights.push_back(wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP);
                 ftree->mc_pdfweightIds.push_back(wgt.id);
 
-        		hLHE->Fill(w+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP);
+        	hLHE->Fill(w+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP);
 
-        		// std::cout<<"- Index w = "<<w<<" of "<<nPdfAll<<" / weight = "<<wgt.wgt<<std::endl;
+        	// std::cout<<"- Index w = "<<w<<" of "<<nPdfAll<<" / weight = "<<wgt.wgt<<std::endl;
 
-        		//HARDCODED : THW_ctcvcp has 1080+69=1149 LHE weights, THQ_ctcvcp has 880+69=2049
-        		//Store the last 69 weights, corresponding to the 69 couplings (only relevant for these 2 samples !)
-        		// !!NB : could also store sums of weights for *all* LHE weights (heavy, ~1K weights per events!)
-        		if( (nPdfAll == 1149 || nPdfAll == 951) && (nPdfAll-w) <= 69)
-        		{
-        			//std::cout<<"Bin center = "<<bin_x+0.5<<" / weight = "<<wgt.wgt<<std::endl;
-
-        			hktkv->Fill(bin_x+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP); //Store sum of eight for each kT/kV //Bin width is 1
-        			//hktkv->Fill(bin_x+0.5, wgt.wgt * ftree->mc_weight_originalValue);
-        			bin_x++; //Get correct binning
-        		}
-
-        		//std::cout<<"PDF weight = "<<wgt.wgt<<" / ID = "<<wgt.id<<std::endl;
+        	//Hardcoded : THW_ctcvcp has 1080+69=1149 LHE weights, THQ_ctcvcp has 880+69=2049
+        	//Store the last 69 weights, corresponding to the 69 couplings (only relevant for these 2 samples !)
+        	// NB : lighter than storing sums for all LHE weights (~1K per event) ; depends of your needs
+		/*
+        	if( (nPdfAll == 1149 || nPdfAll == 951) && (nPdfAll-w) <= 69)
+        	{
+        		//std::cout<<"Bin center = "<<bin_x+0.5<<" / weight = "<<wgt.wgt<<std::endl;
+       			hktkv->Fill(bin_x+0.5, wgt.wgt * ftree->mc_weight_originalValue / ftree->weight_originalXWGTUP); //Store sum of eight for each kT/kV //Bin width is 1
+       			bin_x++; //Get correct binning
+       		}
+		*/
             }
         }
     }
@@ -1384,9 +1382,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	ftree->prefiringWeight = _prefiringweight;
 	ftree->prefiringWeightUp = _prefiringweightdown;
 	ftree->prefiringWeightDown = _prefiringweightup;
-	std::cout<<"prefiringWeight = "<<ftree->prefiringWeight<<std::endl;
-	std::cout<<"prefiringWeightUp = "<<ftree->prefiringWeightUp<<std::endl;
-	std::cout<<"prefiringWeightDown = "<<ftree->prefiringWeightDown<<std::endl;
+	//std::cout<<"prefiringWeight = "<<ftree->prefiringWeight<<std::endl;
+	//std::cout<<"prefiringWeightUp = "<<ftree->prefiringWeightUp<<std::endl;
+	//std::cout<<"prefiringWeightDown = "<<ftree->prefiringWeightDown<<std::endl;
 
 
     // ####################################
@@ -1410,7 +1408,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if( n_bc == 0 )
             {
                 ftree->mc_pu_intime_NumInt = pvi->getPU_NumInteractions();
-                ftree->mc_pu_trueNumInt = pvi->getTrueNumInteractions(); //The final PDF reweighting depends on *this* variable !
+                ftree->mc_pu_trueNumInt = pvi->getTrueNumInteractions(); //The final PU reweighting depends on *this* variable !
 
 		hpileup->Fill(pvi->getTrueNumInteractions(), ftree->mc_weight_originalValue);
             }

@@ -493,6 +493,6 @@ process.p = cms.Path(
                      process.jecSequence+
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
-		     process.prefiringweight +
+		     process.prefiringweight+
                      process.FlatTree
                    )
