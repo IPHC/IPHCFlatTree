@@ -154,30 +154,30 @@ from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 #    'deepFlavourJetTags:probcc',
 #]
 
-updateJetCollection(
-    process,
-    jetSource = cms.InputTag('slimmedJets'),
-    labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', corList, 'None')
-)
+#updateJetCollection(
+#    process,
+#    jetSource = cms.InputTag('slimmedJets'),
+#    labelName = 'UpdatedJEC',
+#    jetCorrections = ('AK4PFchs', corList, 'None')
+#)
 
 #DF
-#updateJetCollection(
-#   process,
-#   jetSource = cms.InputTag('slimmedJets'),
-#   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
-#   svSource = cms.InputTag('slimmedSecondaryVertices'),
-#   jetCorrections = ('AK4PFchs', corList, 'None'),
-#   btagDiscriminators = [
-#      	'pfDeepFlavourJetTags:probb',
-#      	'pfDeepFlavourJetTags:probbb',
-#      	'pfDeepFlavourJetTags:problepb',
-#      	'pfDeepFlavourJetTags:probc',
-#      	'pfDeepFlavourJetTags:probuds',
-#      	'pfDeepFlavourJetTags:probg'
-#      ],
-#   postfix='NewDFTraining'
-#)
+updateJetCollection(
+   process,
+   jetSource = cms.InputTag('slimmedJets'),
+   pvSource = cms.InputTag('offlineSlimmedPrimaryVertices'),
+   svSource = cms.InputTag('slimmedSecondaryVertices'),
+   jetCorrections = ('AK4PFchs', corList, 'None'),
+   btagDiscriminators = [
+      	'pfDeepFlavourJetTags:probb',
+      	'pfDeepFlavourJetTags:probbb',
+      	'pfDeepFlavourJetTags:problepb',
+      	'pfDeepFlavourJetTags:probc',
+      	'pfDeepFlavourJetTags:probuds',
+      	'pfDeepFlavourJetTags:probg'
+      ],
+   postfix='NewDFTraining'
+)
 
 #updateJetCollection(
 #    process,
@@ -196,12 +196,13 @@ updateJetCollection(
     jetCorrections = ('AK8PFchs', corList, 'None')
 )
 
-process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
+#process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
 
 #process.jecSequence = cms.Sequence(process.pfDeepFlavourJetTagsNewDFTraining * process.patJetCorrFactorsNewDFTraining * process.updatedPatJetsNewDFTraining * process.patJetCorrFactorsTransientCorrectedNewDFTraining * process.updatedPatJetsTransientCorrectedNewDFTraining) #DF
 
 #jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
-jetsNameAK4="updatedPatJetsUpdatedJEC"
+#jetsNameAK4="updatedPatJetsUpdatedJEC"
+jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
 #jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
 #jetsNameAK4="slimmedJets"
 jetsNameAK8="selectedUpdatedPatJetsUpdatedJECAK8"
@@ -508,7 +509,17 @@ process.p = cms.Path(
 #                     process.fullPatMetSequence+
                      process.METSignificance+
                      process.NewTauIDsEmbedded+
-                     process.jecSequence+
+                     process.patJetCorrFactorsNewDFTraining+
+                     process.updatedPatJetsNewDFTraining+
+                     process.pfImpactParameterTagInfosNewDFTraining+
+                     process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining+
+                     process.pfDeepCSVTagInfosNewDFTraining+
+                     process.pfDeepFlavourTagInfosNewDFTraining+
+                     process.pfDeepFlavourJetTagsNewDFTraining+
+                     process.patJetCorrFactorsTransientCorrectedNewDFTraining+
+                     process.updatedPatJetsTransientCorrectedNewDFTraining+
+                     process.selectedUpdatedPatJetsNewDFTraining+
+#                     process.jecSequence+
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
 		     process.prefiringweight+
