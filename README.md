@@ -33,6 +33,9 @@ cd CMSSW_X_Y_Z/src
 cmsenv
 git cms-init
 
+# Prefiring
+git cms-merge-topic lathomas:L1Prefiring_9_4_9
+
 # Egamma
 git cms-merge-topic guitargeek:EgammaID_9_4_X
 git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
