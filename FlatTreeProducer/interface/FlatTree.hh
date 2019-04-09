@@ -474,6 +474,7 @@ class FlatTree
    std::vector<float> el_lepMVA_jetPtRelv2;
    std::vector<float> el_lepMVA_jetBTagCSV;
    std::vector<float> el_lepMVA_jetBTagDeepCSV;
+   std::vector<float> el_lepMVA_jetBTagDeepFlavour;
    std::vector<float> el_lepMVA_sip3d;
    std::vector<float> el_lepMVA_dxy;
    std::vector<float> el_lepMVA_dz;
@@ -803,6 +804,7 @@ class FlatTree
    std::vector<float> mu_lepMVA_jetPtRelv2;
    std::vector<float> mu_lepMVA_jetBTagCSV;
    std::vector<float> mu_lepMVA_jetBTagDeepCSV;
+   std::vector<float> mu_lepMVA_jetBTagDeepFlavour;
    std::vector<float> mu_lepMVA_sip3d;
    std::vector<float> mu_lepMVA_dxy;
    std::vector<float> mu_lepMVA_dz;
@@ -939,14 +941,12 @@ class FlatTree
    std::vector<int> jet_partonFlavour;
    std::vector<int> jet_hadronFlavour;
 
-   /*
    std::vector<float> jet_DeepFlavourProbuds;
    std::vector<float> jet_DeepFlavourProbg;
    std::vector<float> jet_DeepFlavourProbb;
    std::vector<float> jet_DeepFlavourProbbb;
    std::vector<float> jet_DeepFlavourProblepb;
    std::vector<float> jet_DeepFlavourProbc;
-   */
    
    std::vector<float> jet_neutralHadronEnergy;
    std::vector<float> jet_neutralEmEnergy;

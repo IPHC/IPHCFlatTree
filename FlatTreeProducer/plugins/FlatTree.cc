@@ -434,6 +434,7 @@ void FlatTree::Init()
    el_lepMVA_jetPtRelv2.clear();
    el_lepMVA_jetBTagCSV.clear();
    el_lepMVA_jetBTagDeepCSV.clear();
+   el_lepMVA_jetBTagDeepFlavour.clear();
    el_lepMVA_sip3d.clear();
    el_lepMVA_dxy.clear();
    el_lepMVA_dz.clear();
@@ -759,6 +760,7 @@ void FlatTree::Init()
    mu_lepMVA_jetPtRelv2.clear();
    mu_lepMVA_jetBTagCSV.clear();
    mu_lepMVA_jetBTagDeepCSV.clear();
+   mu_lepMVA_jetBTagDeepFlavour.clear();
    mu_lepMVA_sip3d.clear();
    mu_lepMVA_dxy.clear();
    mu_lepMVA_dz.clear();
@@ -886,6 +888,13 @@ void FlatTree::Init()
    jet_DeepCSVProbc.clear();
    jet_DeepCSVProbbb.clear();
    jet_DeepCSVProbcc.clear();
+   jet_DeepFlavourProbuds.clear();
+   jet_DeepFlavourProbg.clear();
+   jet_DeepFlavourProbb.clear();
+   jet_DeepFlavourProbbb.clear();
+   jet_DeepFlavourProblepb.clear();
+   jet_DeepFlavourProbc.clear();
+
    jet_cMVAv2.clear();
    jet_CharmCvsL.clear();
    jet_CharmCvsB.clear();
@@ -1623,6 +1632,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_lepMVA_jetPtRelv2") ) tree->Branch("el_lepMVA_jetPtRelv2", "std::vector<float>", &el_lepMVA_jetPtRelv2, buffersize);
    if( doWrite("el_lepMVA_jetBTagCSV") ) tree->Branch("el_lepMVA_jetBTagCSV", "std::vector<float>", &el_lepMVA_jetBTagCSV, buffersize);
    if( doWrite("el_lepMVA_jetBTagDeepCSV") ) tree->Branch("el_lepMVA_jetBTagDeepCSV", "std::vector<float>", &el_lepMVA_jetBTagDeepCSV, buffersize);
+   if( doWrite("el_lepMVA_jetBTagDeepFlavour") ) tree->Branch("el_lepMVA_jetBTagDeepFlavour", "std::vector<float>", &el_lepMVA_jetBTagDeepFlavour, buffersize);
    if( doWrite("el_lepMVA_sip3d") ) tree->Branch("el_lepMVA_sip3d", "std::vector<float>", &el_lepMVA_sip3d, buffersize);
    if( doWrite("el_lepMVA_dxy") ) tree->Branch("el_lepMVA_dxy", "std::vector<float>", &el_lepMVA_dxy, buffersize);
    if( doWrite("el_lepMVA_dz") ) tree->Branch("el_lepMVA_dz", "std::vector<float>", &el_lepMVA_dz, buffersize);
@@ -1948,6 +1958,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_lepMVA_jetPtRelv2") ) tree->Branch("mu_lepMVA_jetPtRelv2", "std::vector<float>", &mu_lepMVA_jetPtRelv2, buffersize);
    if( doWrite("mu_lepMVA_jetBTagCSV") ) tree->Branch("mu_lepMVA_jetBTagCSV", "std::vector<float>", &mu_lepMVA_jetBTagCSV, buffersize);
    if( doWrite("mu_lepMVA_jetBTagDeepCSV") ) tree->Branch("mu_lepMVA_jetBTagDeepCSV", "std::vector<float>", &mu_lepMVA_jetBTagDeepCSV, buffersize);
+   if( doWrite("mu_lepMVA_jetBTagDeepFlavour") ) tree->Branch("mu_lepMVA_jetBTagDeepFlavour", "std::vector<float>", &mu_lepMVA_jetBTagDeepFlavour, buffersize);
    if( doWrite("mu_lepMVA_sip3d") ) tree->Branch("mu_lepMVA_sip3d", "std::vector<float>", &mu_lepMVA_sip3d, buffersize);
    if( doWrite("mu_lepMVA_dxy") ) tree->Branch("mu_lepMVA_dxy", "std::vector<float>", &mu_lepMVA_dxy, buffersize);
    if( doWrite("mu_lepMVA_dz") ) tree->Branch("mu_lepMVA_dz", "std::vector<float>", &mu_lepMVA_dz, buffersize);
@@ -2075,6 +2086,12 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_DeepCSVProbc") ) tree->Branch("jet_DeepCSVProbc", "std::vector<float>", &jet_DeepCSVProbc, buffersize);
    if( doWrite("jet_DeepCSVProbbb") ) tree->Branch("jet_DeepCSVProbbb", "std::vector<float>", &jet_DeepCSVProbbb, buffersize);
    if( doWrite("jet_DeepCSVProbcc") ) tree->Branch("jet_DeepCSVProbcc", "std::vector<float>", &jet_DeepCSVProbcc, buffersize);
+   if( doWrite("jet_DeepFlavourProbuds") ) tree->Branch("jet_DeepFlavourProbuds", "std::vector<float>", &jet_DeepFlavourProbuds, buffersize);
+   if( doWrite("jet_DeepFlavourProbg") ) tree->Branch("jet_DeepFlavourProbg", "std::vector<float>", &jet_DeepFlavourProbg, buffersize);
+   if( doWrite("jet_DeepFlavourProbb") ) tree->Branch("jet_DeepFlavourProbb", "std::vector<float>", &jet_DeepFlavourProbb, buffersize);
+   if( doWrite("jet_DeepFlavourProbbb") ) tree->Branch("jet_DeepFlavourProbbb", "std::vector<float>", &jet_DeepFlavourProbbb, buffersize);
+   if( doWrite("jet_DeepFlavourProblepb") ) tree->Branch("jet_DeepFlavourProblepb", "std::vector<float>", &jet_DeepFlavourProblepb, buffersize);
+   if( doWrite("jet_DeepFlavourProbc") ) tree->Branch("jet_DeepFlavourProbc", "std::vector<float>", &jet_DeepFlavourProbc, buffersize);
    if( doWrite("jet_cMVAv2") ) tree->Branch("jet_cMVAv2", "std::vector<float>", &jet_cMVAv2, buffersize);
    if( doWrite("jet_CharmCvsL") ) tree->Branch("jet_CharmCvsL", "std::vector<float>", &jet_CharmCvsL, buffersize);
    if( doWrite("jet_CharmCvsB") ) tree->Branch("jet_CharmCvsB", "std::vector<float>", &jet_CharmCvsB, buffersize);

@@ -12,6 +12,7 @@ options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.var
 options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply MET filters')
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
+options.register('datasetsYear', '2017', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Run on 2016, 2017 or 2018 samples")
 
 options.register('makeLHEmapping',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Create mapping of LHE id <-> scale/LHAPDF id')
 options.register('printLHEcontent',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Printout of LHE infos')
@@ -24,6 +25,7 @@ options.register('fillPUInfo',True,VarParsing.multiplicity.singleton,VarParsing.
 options.register('nPDF', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "nPDF")
 options.register('confFile', 'conf.xml', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Flattree variables configuration")
 options.register('bufferSize', 32000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Buffer size for branches of the flat tree")
+#options.register('prefiringFile', 'L1PrefiringMaps_new.root', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Map prefiring proba")
 options.parseArguments()
 
 #-- Can use these filenames only to produce LHE mapping with proper naming -- 
@@ -76,14 +78,25 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 if options.isData:
-    process.GlobalTag.globaltag = '94X_dataRun2_v6'    
+    if options.datasetsYear=="2016":
+	process.GlobalTag.globaltag = 'xxx'  
+    elif options.datasetsYear=="2017":
+    	process.GlobalTag.globaltag = '94X_dataRun2_v11' 
+    elif options.datasetsYear=="2018":
+    	process.GlobalTag.globaltag = 'xxx' 
+	   
 else:
-    process.GlobalTag.globaltag = '94X_mc2017_realistic_v14'
+    if options.datasetsYear=="2016":
+	process.GlobalTag.globaltag = 'xxx'  
+    elif options.datasetsYear=="2017":
+    	process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
+    elif options.datasetsYear=="2018":
+    	process.GlobalTag.globaltag = 'xxx' 
 
-corName="Fall17_17Nov2017_V8_MC"
+corName="Fall17_17Nov2017_V32_94X_MC"
 corTag="JetCorrectorParametersCollection_"+corName
 if options.isData:
-    corName="Fall17_17Nov2017BCDEF_V6_DATA"
+    corName="Fall17_17Nov2017_V32_94X_DATA"
     corTag="JetCorrectorParametersCollection_"+corName
 dBFile=corName+".db"
 
@@ -211,12 +224,18 @@ na.runTauID()
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
 
+#FIXME -- get for each year
 # https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
 # https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
 my_id_modules = [
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff',
-'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff'
+'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff',
+
+#NEW -- v2
+'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
+'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
+'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'
 ]
 
 for idmod in my_id_modules:
@@ -224,15 +243,8 @@ for idmod in my_id_modules:
 
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
-# to be used only for 2017 MiniAODv1
-#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-#setupEgammaPostRecoSeq(process,
-#                       applyEnergyCorrections=True,
-#                       applyVIDOnCorrectedEgamma=True,
-#                       runVID=True,
-#                       eleIDModules=my_id_modules,
-#                       era='2017-Nov17ReReco')
-
+# to be used for 2017 MiniAODv1 and v2
+#See : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=False,
@@ -325,10 +337,11 @@ if options.runQG:
 # Prefiring probability #
 #######################
 #See : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe#Introduction
+#FIXME -- change for 2016/2018 ?
 process.prefiringweight = cms.EDProducer("L1ECALPrefiringWeightProducer",
                                  ThePhotons = cms.InputTag("slimmedPhotons"),
 	                         TheJets = cms.InputTag("slimmedJets"),
-                                 L1Maps = cms.string("../../../L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root"), # update this line with the location of this file
+                                 L1Maps = cms.string("L1PrefiringMaps_new.root"),
                                  DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
                                  UseJetEMPt = cms.bool(False), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
 	                         PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
@@ -375,6 +388,7 @@ process.source = cms.Source("PoolSource",
 	 #'/store/mc/RunIIFall17MiniAOD/TTWH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/CC80714B-6402-E811-BCCE-003048CB8584.root'
 	 #'/store/mc/RunIIFall17MiniAOD/TTTW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v3/40000/F826CD28-2E0A-E811-B6AF-1CB72C1B6568.root'
 	 #'/store/mc/RunIIFall17MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E6C44E02-F7FA-E711-9134-24BE05CEED81.root'
+	 '/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
 	 #''
 	 )
 )
@@ -406,16 +420,18 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 
                   bufferSize        = cms.int32(options.bufferSize),
                   confFile          = cms.string(options.confFile),
+                  #prefiringFile     = cms.string(options.prefiringFile),
 
                   isData            = cms.bool(options.isData),
                   applyMETFilters   = cms.bool(options.applyMETFilters),
                   fillMCScaleWeight = cms.bool(options.fillMCScaleWeight),
                   fillPUInfo	    = cms.bool(options.fillPUInfo),
                   nPDF              = cms.int32(options.nPDF),
+                  datasetsYear      = cms.string(options.datasetsYear),
 
-                  makeLHEmapping  = cms.bool(options.makeLHEmapping), #NEW
-                  samplename        = cms.string(options.samplename), #NEW
-		  printLHEcontent = cms.bool(options.printLHEcontent), #NEW
+                  makeLHEmapping  = cms.bool(options.makeLHEmapping),
+                  samplename        = cms.string(options.samplename),
+		  printLHEcontent = cms.bool(options.printLHEcontent),
                   
                   vertexInput              = cms.InputTag("offlineSlimmedPrimaryVertices"),
                   electronInput            = cms.InputTag("slimmedElectrons"),
@@ -435,8 +451,10 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   ele80IsoMVAIdMap         = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V1-wp80"),
                   eleLooseIsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V1-wpLoose"),
                   
-                  mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
-                  mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+                  #mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+                  #mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+		  mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"), #FIXME -- also update CB IDs to v2?
+                  mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"),
 
 #                  mvaCategoriesMap         = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
 

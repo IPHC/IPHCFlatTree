@@ -368,6 +368,7 @@
     <var name="el_lepMVA_jetPtRelv2" save="1"></var>
     <var name="el_lepMVA_jetBTagCSV" save="1"></var>
     <var name="el_lepMVA_jetBTagDeepCSV" save="1"></var>
+    <var name="el_lepMVA_jetBTagDeepFlavour" save="1"></var>
     <var name="el_lepMVA_sip3d" save="1"></var>
     <var name="el_lepMVA_dxy" save="1"></var>
     <var name="el_lepMVA_dz" save="1"></var>
@@ -666,6 +667,7 @@
     <var name="mu_lepMVA_jetPtRelv2" save="1"></var>
     <var name="mu_lepMVA_jetBTagCSV" save="1"></var>
     <var name="mu_lepMVA_jetBTagDeepCSV" save="1"></var>
+    <var name="mu_lepMVA_jetBTagDeepFlavour" save="1"></var>
     <var name="mu_lepMVA_sip3d" save="1"></var>
     <var name="mu_lepMVA_dxy" save="1"></var>
     <var name="mu_lepMVA_dz" save="1"></var>
@@ -767,18 +769,18 @@
     <var name="jet_SSVHP" save="1"></var>
     <var name="jet_CMVA" save="1"></var>
     <var name="jet_CSVv2" save="1"></var>
-    <var name="jet_cMVAv2" save="1"></var>
+    <var name="jet_cMVAv2" save="1"></var>s
     <var name="jet_DeepCSVProbudsg" save="1"></var>
     <var name="jet_DeepCSVProbb" save="1"></var>
     <var name="jet_DeepCSVProbbb" save="1"></var>
     <var name="jet_DeepCSVProbc" save="1"></var>
     <var name="jet_DeepCSVProbcc" save="1"></var>
-    <var name="jet_DeepFlavourProbuds" save="0"></var>
-    <var name="jet_DeepFlavourProbg" save="0"></var>
-    <var name="jet_DeepFlavourProbb" save="0"></var>
-    <var name="jet_DeepFlavourProbbb" save="0"></var>
-    <var name="jet_DeepFlavourProblepb" save="0"></var>
-    <var name="jet_DeepFlavourProbc" save="0"></var>
+    <var name="jet_DeepFlavourProbuds" save="1"></var>
+    <var name="jet_DeepFlavourProbg" save="1"></var>
+    <var name="jet_DeepFlavourProbb" save="1"></var>
+    <var name="jet_DeepFlavourProbbb" save="1"></var>
+    <var name="jet_DeepFlavourProblepb" save="1"></var>
+    <var name="jet_DeepFlavourProbc" save="1"></var>
     <var name="jet_CharmCvsL" save="1"></var>
     <var name="jet_CharmCvsB" save="1"></var>
     <var name="jet_partonFlavour" save="1"></var>

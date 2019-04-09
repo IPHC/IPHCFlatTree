@@ -87,6 +87,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         virtual void endRun(const edm::Run&, const edm::EventSetup&);
 
         TMVA::Reader* BookLeptonMVAReaderMoriond18(std::string basePath, std::string weightFileName, std::string type);
+        TMVA::Reader* BookLeptonMVAReaderApril19(std::string basePath, std::string weightFileName, std::string type); //new lepMVA xml files from April 2019
 
         void KeepEvent();
         bool isFloat(const std::string& s);
@@ -134,6 +135,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         float lepMVA_jetPtRelv2;
         float lepMVA_jetBTagCSV;
         float lepMVA_jetBTagDeepCSV;
+        float lepMVA_jetBTagDeepFlavour;
         float lepMVA_sip3d;
         float lepMVA_dxy;
         float lepMVA_dz;
@@ -148,6 +150,7 @@ class FlatTreeProducer : public edm::EDAnalyzer
         bool fillMCScaleWeight_;
         bool fillPUInfo_;
         int nPdf_;
+        std::string datasetsYear_;
 
         ////NEW : user_defined variables (in python cfg file)
         bool makeLHEmapping; //true <-> write/store mapping of LHE id <-> scale/LHAPDF id correspondance //Idea from here : https://gitlab.cern.ch/ttH/reference/blob/master/definitions/Moriond17.md#66-pdf-weight
@@ -843,31 +846,35 @@ TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderMoriond18(std::string basePat
    return reader;
 }
 
+//See : https://gitlab.cern.ch/ttH_leptons/doc/blob/master/Legacy/objects.md#213-prompt-lepton-mva
+TMVA::Reader* FlatTreeProducer::BookLeptonMVAReaderApril19(std::string basePath, std::string weightFileName, std::string type)
+{
+   TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+   
+   reader->AddVariable("LepGood_pt",                                    &lepMVA_pt);
+   reader->AddVariable("LepGood_eta",                                   &lepMVA_eta);
+   reader->AddVariable("LepGood_jetNDauChargedMVASel",                  &lepMVA_jetNDauChargedMVASel);
+   reader->AddVariable("LepGood_miniRelIsoCharged",                     &lepMVA_miniRelIsoCharged);
+   reader->AddVariable("LepGood_miniRelIsoNeutral",                     &lepMVA_miniRelIsoNeutral);
+   reader->AddVariable("LepGood_jetPtRelv2",                            &lepMVA_jetPtRelv2);
+   reader->AddVariable("LepGood_jetDF",                      		&lepMVA_jetBTagDeepFlavour);
+   reader->AddVariable("LepGood_jetPtRatio", 				&lepMVA_jetPtRatio);
+   reader->AddVariable("LepGood_dxy",                          		&lepMVA_dxy);
+   reader->AddVariable("LepGood_sip3d",                                 &lepMVA_sip3d);
+   reader->AddVariable("LepGood_dz",                           		&lepMVA_dz);
+   if( type == "ele" ) {reader->AddVariable("LepGood_mvaFall17V2noIso",  &lepMVA_mvaId);}
+   else {reader->AddVariable("LepGood_segmentComp",              	&lepMVA_mvaId);}
+   
+   reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+   return reader;
+}
+
+
 FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hltPrescale_(iConfig,consumesCollector(),*this),
     generatorRunInfoToken_(consumes<LHERunInfoProduct,edm::InRun>({"externalLHEProducer"}))
 {
-    // ###
-    // Temporarily redirecting stdout to avoid huge TMVA loading dump
-    // ###
-//    std::cout << "Temporarily redirecting stdout to avoid huge TMVA dump when loading MVA readers..." << std::endl;
-//    std::stringstream tmpBuffer;
-//    std::streambuf* oldStdout = std::cout.rdbuf(tmpBuffer.rdbuf());
-
-    // ###############
-    // #  Load MVAs  #
-    // ###############
-    //
-    const char* cmssw_base = std::getenv("CMSSW_BASE");
-    std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/lepMVA";
-    mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu");
-    ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele");
-
-    // ###
-    // Restore stdout
-    // ###
-//    std::cout.rdbuf(oldStdout);
-//    std::cout << "Stdout now restored." << std::endl;
 
     // ########################
     // #  Create output tree  #
@@ -887,6 +894,7 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     fillMCScaleWeight_    = iConfig.getParameter<bool>("fillMCScaleWeight");
     fillPUInfo_           = iConfig.getParameter<bool>("fillPUInfo");
     isData_               = iConfig.getParameter<bool>("isData");
+    datasetsYear_         = iConfig.getParameter<std::string>("datasetsYear");
     makeLHEmapping      = iConfig.getParameter<bool>("makeLHEmapping");
     printLHEcontent      = iConfig.getParameter<bool>("printLHEcontent");
     applyMETFilters_      = iConfig.getParameter<bool>("applyMETFilters");
@@ -950,6 +958,42 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     qgToken_                = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
 
     lheEventToken_ = consumes<LHEEventProduct>(edm::InputTag(std::string("externalLHEProducer") ));
+    
+    
+// Temporarily redirecting stdout to avoid huge TMVA loading dump
+//    std::cout << "Temporarily redirecting stdout to avoid huge TMVA dump when loading MVA readers..." << std::endl;
+//    std::stringstream tmpBuffer;
+//    std::streambuf* oldStdout = std::cout.rdbuf(tmpBuffer.rdbuf());
+
+    // ###############
+    // #  Load MVAs  #
+    // ###############
+    
+    const char* cmssw_base = std::getenv("CMSSW_BASE");
+    std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/lepMVA";
+    if(datasetsYear_ == "2016")
+    {
+       	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
+    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
+	
+	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2016.weights.xml", "mu");
+    	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2016.weights.xml", "ele");
+    }
+    else if(datasetsYear_ == "2017" || datasetsYear_ == "2018")
+    {  	
+    	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
+    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
+	
+	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2017.weights.xml", "mu");
+    	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2017.weights.xml", "ele");
+    }
+    else {cout<<__LINE__<<" : error !"<<endl;}
+
+    // ###
+    // Restore stdout
+    // ###
+//    std::cout.rdbuf(oldStdout);
+//    std::cout << "Stdout now restored." << std::endl;
 
 
     // #########################
@@ -1008,6 +1052,8 @@ FlatTreeProducer::~FlatTreeProducer()
 void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
     using namespace edm;
+    
+    //std::cout<<endl<<"== ENTER analyze() function =="<<endl<<endl;
 
     hcount->SetBinContent(1,hcount->GetBinContent(1)+1);
 
@@ -1385,7 +1431,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	//std::cout<<"prefiringWeight = "<<ftree->prefiringWeight<<std::endl;
 	//std::cout<<"prefiringWeightUp = "<<ftree->prefiringWeightUp<<std::endl;
 	//std::cout<<"prefiringWeightDown = "<<ftree->prefiringWeightDown<<std::endl;
-
+	
 
     // ####################################
     // #   ____  _ _                      #
@@ -1958,7 +2004,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	//std::cout<<"ErrCorr = "<<ErrCorr<<std::endl;
 	//std::cout<<"smearCorr = "<<smearCorr<<std::endl;
 	//std::cout<<"pt_postCorr = "<<pt_postCorr<<std::endl;
-
+	
 	ftree->el_pt_postCorr.push_back(pt_postCorr);
 	ftree->el_E_postCorr.push_back(E_PostCorr);
 	ftree->el_smearCorrFactor.push_back(smearCorr);
@@ -2228,16 +2274,20 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_jetPtRelv2 = (jcl >= 0) ? ptRelElec(elec,jets->at(jcl)) : 0.0;
        float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
-       lepMVA_jetBTagDeepCSV = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
-       lepMVA_sip3d = fabs(ftree->el_ip3d.back()/ftree->el_ip3dErr.back());
-       lepMVA_dxy = log(fabs(ftree->el_gsfTrack_PV_dxy.back()));
-       lepMVA_dz = log(fabs(ftree->el_gsfTrack_PV_dz.back()));
+       lepMVA_jetBTagDeepCSV = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -1;
+       lepMVA_jetBTagDeepFlavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb"): 0;
+       lepMVA_sip3d = abs(ftree->el_ip3d.back()/ftree->el_ip3dErr.back());
+       lepMVA_dxy = log(abs(ftree->el_gsfTrack_PV_dxy.back()));
+       lepMVA_dz = log(abs(ftree->el_gsfTrack_PV_dz.back()));
        lepMVA_mvaId = ftree->el_mvaNoIso.back();
        lepMVA_jetNDauChargedMVASel = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&elec),*primVtx) : 0.0;
 
         el_lepMVA = ele_reader->EvaluateMVA("BDTG method");
 
+	cout<<"lepMVA_mvaId = "<<lepMVA_mvaId<<endl;
+
         ftree->el_lepMVA.push_back(el_lepMVA);
+	//cout<<"el_lepMVA = "<<el_lepMVA<<endl;
 
         float conept = conePtElec(elec,elecjet,el_lepMVA, PFRelIso04, pt_postCorr);
         ftree->el_conept.push_back( conept );
@@ -2319,6 +2369,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
         ftree->el_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
         ftree->el_lepMVA_jetBTagDeepCSV.push_back(lepMVA_jetBTagDeepCSV);
+        ftree->el_lepMVA_jetBTagDeepFlavour.push_back(lepMVA_jetBTagDeepFlavour);
         ftree->el_lepMVA_sip3d.push_back(lepMVA_sip3d);
         ftree->el_lepMVA_dxy.push_back(lepMVA_dxy);
         ftree->el_lepMVA_dz.push_back(lepMVA_dz);
@@ -2748,13 +2799,15 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         float csv                                   = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
         lepMVA_jetBTagCSV                           = std::max(double(csv),0.);
         lepMVA_jetBTagDeepCSV                       = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
-        lepMVA_sip3d                                = fabs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
-        lepMVA_dxy                                  = log(fabs(ftree->mu_innerTrack_PV_dxy.back()));
-        lepMVA_dz                                   = log(fabs(ftree->mu_innerTrack_PV_dz.back()));
+        lepMVA_jetBTagDeepFlavour 		    = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb"): 0;
+	lepMVA_sip3d                                = abs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
+        lepMVA_dxy                                  = log(abs(ftree->mu_innerTrack_PV_dxy.back()));
+        lepMVA_dz                                   = log(abs(ftree->mu_innerTrack_PV_dz.back()));
         lepMVA_mvaId                                = ftree->mu_segmentCompatibility.back();
         lepMVA_jetNDauChargedMVASel                 = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&muon),*primVtx) : 0.0; //?? correct default value
 
         mu_lepMVA = mu_reader->EvaluateMVA("BDTG method");
+	//cout<<"mu_lepMVA = "<<mu_lepMVA<<endl;
 
         ftree->mu_lepMVA.push_back(mu_lepMVA);
         ftree->mu_lepMVA_pt.push_back(lepMVA_pt);
@@ -2765,6 +2818,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
         ftree->mu_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
         ftree->mu_lepMVA_jetBTagDeepCSV.push_back(lepMVA_jetBTagDeepCSV);
+        ftree->mu_lepMVA_jetBTagDeepFlavour.push_back(lepMVA_jetBTagDeepFlavour);
         ftree->mu_lepMVA_sip3d.push_back(lepMVA_sip3d);
         ftree->mu_lepMVA_dxy.push_back(lepMVA_dxy);
         ftree->mu_lepMVA_dz.push_back(lepMVA_dz);
@@ -3059,24 +3113,20 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_DeepCSVProbbb.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probbb"));
         ftree->jet_DeepCSVProbcc.push_back(jet.bDiscriminator("pfDeepCSVJetTags:probcc"));
 
-	/*
 	ftree->jet_DeepFlavourProbuds.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probuds"));
-	std::cout<<"jet_DeepFlavourProbuds="<<jet.bDiscriminator("pfDeepFlavourJetTags:probuds")<<std::endl;
 	ftree->jet_DeepFlavourProbg.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probg"));
         ftree->jet_DeepFlavourProbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probb"));
         ftree->jet_DeepFlavourProbbb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probbb"));
         ftree->jet_DeepFlavourProblepb.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:problepb"));
 	ftree->jet_DeepFlavourProbc.push_back(jet.bDiscriminator("pfDeepFlavourJetTags:probc"));
 
-
-	cout<<"jet.bDiscriminator(pfCombinedInclusiveSecondaryVertexV2BJetTags) = "<<jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
-	cout<<"jet.bDiscriminator(deepFlavourJetTags:probudsg) = "<<jet.bDiscriminator("deepFlavourJetTags:probudsg")<<endl;
-	cout<<"jet.bDiscriminator(deepFlavourJetTags:probb) = "<<jet.bDiscriminator("deepFlavourJetTags:probb")<<endl;
-	cout<<"jet.bDiscriminator(deepFlavourJetTags:probc) = "<<jet.bDiscriminator("deepFlavourJetTags:probc")<<endl;
-	cout<<"jet.bDiscriminator(deepFlavourJetTags:probbb) = "<<jet.bDiscriminator("deepFlavourJetTags:probbb")<<endl;
-	cout<<"jet.bDiscriminator(deepFlavourJetTags:probcc) = "<<jet.bDiscriminator("deepFlavourJetTags:probcc")<<endl;
-	*/
-
+	//cout<<"jet.bDiscriminator(pfCombinedInclusiveSecondaryVertexV2BJetTags) = "<<jet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:probuds) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:probuds")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:probg) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:probg")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:probb) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:probb")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:probbb) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:probbb")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:problepb) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:problepb")<<endl;
+	//cout<<"jet.bDiscriminator(deepFlavourJetTags:probc) = "<<jet.bDiscriminator("pfDeepFlavourJetTags:probc")<<endl;
 
         ftree->jet_cMVAv2.push_back(jet.bDiscriminator("pfCombinedMVAV2BJetTags"));
         ftree->jet_CharmCvsL.push_back(jet.bDiscriminator("pfCombinedCvsLJetTags"));
@@ -3834,8 +3884,12 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
     const char* cmssw_base = std::getenv("CMSSW_BASE");
     std::string JECUncertaintyPath;
 
-    if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_Uncertainty_AK4PFchs.txt";}
-    else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V8_MC/Fall17_17Nov2017_V8_MC_Uncertainty_AK4PFchs.txt";}
+    //Old
+    //if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_Uncertainty_AK4PFchs.txt";}
+    //else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V8_MC/Fall17_17Nov2017_V8_MC_Uncertainty_AK4PFchs.txt";}
+    
+    if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V32_DATA/Fall17_17Nov2017F_V32_DATA_Uncertainty_AK4PFchs.txt";}
+    else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V32_MC/Fall17_17Nov2017_V32_MC_Uncertainty_AK4PFchs.txt";}
 
     jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
 
