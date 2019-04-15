@@ -8,9 +8,10 @@ config.section_('JobType')
 
 config.JobType.psetName = '../runFlatTreeMINIAOD_cfg.py'
 config.JobType.pluginName = 'Analysis'
-config.JobType.inputFiles = ['../conf.xml','../Fall17_17Nov2017_V8_MC.db','../Fall17_17Nov2017BCDEF_V6_DATA.db']
+config.JobType.inputFiles = ['../conf.xml','../Fall17_17Nov2017_V32_94X_MC.db','../Fall17_17Nov2017_V32_94X_DATA.db','../L1PrefiringMaps_new.root']
+#config.JobType.inputFiles = ['../conf.xml','../Fall17_17Nov2017_V8_MC.db','../Fall17_17Nov2017BCDEF_V6_DATA.db','../Fall17_17Nov2017_V32_94X_MC.db','../Fall17_17Nov2017_V32_94X_DATA.db','../L1PrefiringMaps_new.root']
 #config.JobType.outputFiles = ['output.root']
-config.JobType.pyCfgParams = ['isData=0','runAK10=0']
+config.JobType.pyCfgParams = ['isData=0','runAK10=0','datasetsYear=2017']
 config.section_('Data')
 
 config.Data.totalUnits = -1 #nof files (or lumisection) to analyze in total (-1=all)

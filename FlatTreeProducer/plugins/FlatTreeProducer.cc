@@ -126,6 +126,8 @@ class FlatTreeProducer : public edm::EDAnalyzer
 
         TMVA::Reader* ele_reader;
         TMVA::Reader* mu_reader;
+	
+	Int_t ievt;
 
         float lepMVA_pt;
         float lepMVA_eta;
@@ -973,19 +975,19 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/lepMVA";
     if(datasetsYear_ == "2016")
     {
-       	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
-    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
+       	mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
+    	ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
 	
-	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2016.weights.xml", "mu");
-    	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2016.weights.xml", "ele");
+	//mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2016.weights.xml", "mu");
+    	//ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2016.weights.xml", "ele");
     }
     else if(datasetsYear_ == "2017" || datasetsYear_ == "2018")
     {  	
-    	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
-    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
+    	mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
+    	ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
 	
-	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2017.weights.xml", "mu");
-    	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2017.weights.xml", "ele");
+	//mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2017.weights.xml", "mu");
+    	//ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2017.weights.xml", "ele");
     }
     else {cout<<__LINE__<<" : error !"<<endl;}
 
@@ -1043,6 +1045,8 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     prefweight_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProb"));
     prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbUp"));
     prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbDown"));
+    
+    ievt = 0; //Event number for debug
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1054,6 +1058,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     using namespace edm;
     
     //std::cout<<endl<<"== ENTER analyze() function =="<<endl<<endl;
+    //cout<<endl<<endl<<"---- Event "<<ievt<<endl; ievt++;
 
     hcount->SetBinContent(1,hcount->GetBinContent(1)+1);
 
@@ -2284,7 +2289,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         el_lepMVA = ele_reader->EvaluateMVA("BDTG method");
 
-	cout<<"lepMVA_mvaId = "<<lepMVA_mvaId<<endl;
+	//cout<<endl<<"Electron : "<<ie<<endl;
+	//cout<<"el_lepMVA = "<<el_lepMVA<<endl;
 
         ftree->el_lepMVA.push_back(el_lepMVA);
 	//cout<<"el_lepMVA = "<<el_lepMVA<<endl;
@@ -2807,6 +2813,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         lepMVA_jetNDauChargedMVASel                 = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&muon),*primVtx) : 0.0; //?? correct default value
 
         mu_lepMVA = mu_reader->EvaluateMVA("BDTG method");
+	
+	//cout<<endl<<"Muon "<<im<<endl;
 	//cout<<"mu_lepMVA = "<<mu_lepMVA<<endl;
 
         ftree->mu_lepMVA.push_back(mu_lepMVA);

@@ -1,6 +1,6 @@
 #!/bin/env zsh
 
-ver="tHq2017_v2"
+ver="tHq2017_v6"
 
 slist="list.txt"
 pset="crabConfigTemplate.py"

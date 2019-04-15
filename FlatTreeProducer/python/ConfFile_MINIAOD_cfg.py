@@ -25,7 +25,7 @@ options.register('fillPUInfo',True,VarParsing.multiplicity.singleton,VarParsing.
 options.register('nPDF', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "nPDF")
 options.register('confFile', 'conf.xml', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Flattree variables configuration")
 options.register('bufferSize', 32000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Buffer size for branches of the flat tree")
-#options.register('prefiringFile', 'L1PrefiringMaps_new.root', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Map prefiring proba")
+options.register('prefiringFile', 'L1PrefiringMaps_new.root', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Map prefiring proba")
 options.parseArguments()
 
 #-- Can use these filenames only to produce LHE mapping with proper naming -- 
@@ -139,6 +139,14 @@ process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi") # needs for electron smearing of miniAODv1
 
+
+##########################
+#  Jets  #
+##########################
+
+#See : https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrPatJets
+#See : https://twiki.cern.ch/twiki/bin/view/CMS/DeepJet#94X_installation_recipe_X_10
+
 corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 if options.isData:
     corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
@@ -146,14 +154,7 @@ if options.isData:
 # Re-apply JEC to AK4
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
-#bTagDiscriminators = [
-#    'deepFlavourJetTags:probudsg',
-#    'deepFlavourJetTags:probb',
-#    'deepFlavourJetTags:probc',
-#    'deepFlavourJetTags:probbb',
-#    'deepFlavourJetTags:probcc',
-#]
-
+#Used for tH-ttH sync
 updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJets'),
@@ -161,7 +162,7 @@ updateJetCollection(
     jetCorrections = ('AK4PFchs', corList, 'None')
 )
 
-#DF
+#DF -- for legacy, use DF for updated lepMVA
 #updateJetCollection(
 #   process,
 #   jetSource = cms.InputTag('slimmedJets'),
@@ -196,13 +197,12 @@ updateJetCollection(
     jetCorrections = ('AK8PFchs', corList, 'None')
 )
 
-process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
+process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC) #Used for tH-ttH sync (remove when will use NewDFTraining)
 
-#process.jecSequence = cms.Sequence(process.pfDeepFlavourJetTagsNewDFTraining * process.patJetCorrFactorsNewDFTraining * process.updatedPatJetsNewDFTraining * process.patJetCorrFactorsTransientCorrectedNewDFTraining * process.updatedPatJetsTransientCorrectedNewDFTraining) #DF
 
 #jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
-jetsNameAK4="updatedPatJetsUpdatedJEC"
-#jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
+jetsNameAK4="updatedPatJetsUpdatedJEC" #Used for tH-ttH sync
+#jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #use with DF
 #jetsNameAK4="slimmedJets"
 jetsNameAK8="selectedUpdatedPatJetsUpdatedJECAK8"
 #jetsNameAK8="slimmedJets"
@@ -224,10 +224,11 @@ na.runTauID()
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
 
-#FIXME -- get for each year
+#-- Get for each year
 # https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
 # https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
 my_id_modules = [
+#v1 -- Used for tH-ttH sync
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff',
@@ -310,14 +311,21 @@ if options.runAK10:
 #######################
 # Quark gluon tagging #
 #######################
+#See : https://twiki.cern.ch/twiki/bin/viewauth/CMS/QuarkGluonLikelihood#2017_data_CMSSW_9_4_X_training
+#See : https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+#See : https://github.com/cms-nanoAOD/cmssw/pull/271
+#FIXME -- what to do ?
+
 if options.runQG:
-    qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+    qgDatabaseVersion = 'v2b' 
+    #qgDatabaseVersion = 'v1'  #changed
 
     from CondCore.DBCommon.CondDBSetup_cfi import *
     QGPoolDBESSource = cms.ESSource("PoolDBESSource",
           CondDBSetup,
           toGet = cms.VPSet(),
-          connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+          connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000')
+          #connect = cms.string('sqlite:qg/QGL_AK4chs_94X.db') #changed
     )
 
     for type in ['AK4PFchs','AK4PFchs_antib']:
@@ -331,6 +339,7 @@ if options.runQG:
     process.QGTagger.srcJets          = cms.InputTag(jetsNameAK4) # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
     process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
+    #process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource') #changed #bug crab
 
 
 #######################
@@ -341,7 +350,8 @@ if options.runQG:
 process.prefiringweight = cms.EDProducer("L1ECALPrefiringWeightProducer",
                                  ThePhotons = cms.InputTag("slimmedPhotons"),
 	                         TheJets = cms.InputTag("slimmedJets"),
-                                 L1Maps = cms.string("L1PrefiringMaps_new.root"),
+                                 L1Maps = cms.string("L1PrefiringMaps_new.root"), 
+                                 #L1Maps = cms.string("../../../L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root"), #not found by crab
                                  DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
                                  UseJetEMPt = cms.bool(False), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
 	                         PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
@@ -388,7 +398,8 @@ process.source = cms.Source("PoolSource",
 	 #'/store/mc/RunIIFall17MiniAOD/TTWH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/CC80714B-6402-E811-BCCE-003048CB8584.root'
 	 #'/store/mc/RunIIFall17MiniAOD/TTTW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v3/40000/F826CD28-2E0A-E811-B6AF-1CB72C1B6568.root'
 	 #'/store/mc/RunIIFall17MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E6C44E02-F7FA-E711-9134-24BE05CEED81.root'
-	 '/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
+	 #'/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
+	 #'/store/mc/RunIIFall17MiniAODv2/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/80000/FE6CEE38-1CB2-E811-ABDB-0CC47A4DEDF0.root'
 	 #''
 	 )
 )
@@ -451,10 +462,10 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   ele80IsoMVAIdMap         = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V1-wp80"),
                   eleLooseIsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V1-wpLoose"),
                   
-                  #mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
-                  #mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
-		  mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"), #FIXME -- also update CB IDs to v2?
-                  mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"),
+                  mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV1Values"),
+                  mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
+		  #mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"), #for legacy
+                  #mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"), #for legacy
 
 #                  mvaCategoriesMap         = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV1Values"),
 
@@ -508,7 +519,20 @@ process.p = cms.Path(
 #                     process.fullPatMetSequence+
                      process.METSignificance+
                      process.NewTauIDsEmbedded+
-                     process.jecSequence+
+
+#For using DF		     
+                     #process.patJetCorrFactorsNewDFTraining+
+                     #process.updatedPatJetsNewDFTraining+
+                     #process.pfImpactParameterTagInfosNewDFTraining+
+                     #process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining+
+                     #process.pfDeepCSVTagInfosNewDFTraining+
+                     #process.pfDeepFlavourTagInfosNewDFTraining+
+                     #process.pfDeepFlavourJetTagsNewDFTraining+
+                     #process.patJetCorrFactorsTransientCorrectedNewDFTraining+
+                     #process.updatedPatJetsTransientCorrectedNewDFTraining+
+                     #process.selectedUpdatedPatJetsNewDFTraining+
+                     
+		     process.jecSequence+ #used for tH-ttH sync
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
 		     process.prefiringweight+
