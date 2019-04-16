@@ -25,7 +25,7 @@ mkdir MyAnalysis
 cd MyAnalysis
 
 # CMSSW Release
-RELEASE=9_4_10
+RELEASE=10_2_13
 
 # Setup release
 cmsrel CMSSW_$RELEASE
@@ -33,22 +33,20 @@ cd CMSSW_X_Y_Z/src
 cmsenv
 git cms-init
 
-# Prefiring
-git cms-merge-topic lathomas:L1Prefiring_9_4_9
-
 # Egamma
-git cms-merge-topic guitargeek:EgammaID_9_4_X
-git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
+git cms-merge-topic cms-egamma:EgammaPostRecoTools
+# Egamma energy corrections
+git clone git@github.com:cms-egamma/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data
+cd EgammaAnalysis/ElectronTools/data
+git checkout ScalesSmearing2018_Dev
+cd -
+git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev
 
-# MET filters
-git cms-merge-topic cms-met:METFixEE2017_949_v2
-
-# Use the latest DeepJet training
-git cms-addpkg RecoBTag/TensorFlow
-git cherry-pick 94ceae257f846998c357fcad408986cc8a039152
+# EE noize mitigation
+git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
 
 # Tools needed for AK10 jet collection
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox 
+git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
 
 # Clone this repo
 git clone https://github.com/IPHC/IPHCFlatTree.git

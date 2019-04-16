@@ -3,7 +3,7 @@
 <use name="FWCore/ParameterSet"/>
 <use name="DataFormats/PatCandidates"/>
 <use name="PhysicsTools/UtilAlgos"/>
-<use name="EgammaAnalysis/ElectronTools"/>
+<use name="RecoEgamma/EgammaTools"/>
 <use name="CondFormats/JetMETObjects"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="HLTrigger/HLTcore"/>
