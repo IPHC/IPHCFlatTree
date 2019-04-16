@@ -72,42 +72,29 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 #process.MessageLogger.cerr.FwkJob.limit=1
 #process.MessageLogger.cerr.ERROR = cms.untracked.PSet( limit = cms.untracked.int32(0) )
 
+is2016 = (options.datasetsYear == "2016")
+is2017 = (options.datasetsYear == "2017")
+is2018 = (options.datasetsYear == "2018")
+
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 
-if options.isData:
-    
-    if options.datasetsYear == "2016":
-	process.GlobalTag.globaltag = '94X_dataRun2_v10'
-    elif options.datasetsYear == "2017":
-    	process.GlobalTag.globaltag = '94X_dataRun2_v11' 
-    elif options.datasetsYear == "2018":
-    	process.GlobalTag.globaltag = '102X_dataRun2_Sep2018ABC_v2'
-	   
-else:
-    
-    if options.datasetsYear == "2016":
-        process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3'  
-    elif options.datasetsYear == "2017":
-        process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
-    elif options.datasetsYear == "2018":
-        process.GlobalTag.globaltag = '102X_upgrade2018_realisic_v18'
+if options.isData:    
+    if is2016: process.GlobalTag.globaltag = '94X_dataRun2_v10'
+    elif is2017: process.GlobalTag.globaltag = '94X_dataRun2_v11' 
+    elif is2018: process.GlobalTag.globaltag = '102X_dataRun2_Sep2018ABC_v2'	   
+else:    
+    if is2016: process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3'  
+    elif is2017: process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
+    elif is2018: process.GlobalTag.globaltag = '102X_upgrade2018_realisic_v18'
 
-if options.datasetsYear == "2016":
-    corName="Summer16_07Aug2017_V11_MC"
-elif options.datasetsYear == "2017":
-    corName="Fall17_17Nov2017_V32_94X_MC"
-elif options.datasetsYear == "2018":
-    corName="Autumn18_V8_MC"
-    
-if options.isData:
-    
-    if options.datasetsYear == "2016":
-        corName="Summer16_07Aug2017All_V11_DATA"
-    elif options.datasetsYear == "2017":
-        corName="Fall17_17Nov2017_V32_94X_DATA"
-    elif options.datasetsYear == "2018":
-        corName="Autumn18_RunABCD_V8_DATA"
+if is2016: corName="Summer16_07Aug2017_V11_MC"
+elif is2017: corName="Fall17_17Nov2017_V32_94X_MC"
+elif is2018: corName="Autumn18_V8_MC"    
+if options.isData:    
+    if is2016: corName="Summer16_07Aug2017All_V11_DATA"
+    elif is2017: corName="Fall17_17Nov2017_V32_94X_DATA"
+    elif is2018: corName="Autumn18_RunABCD_V8_DATA"
 
 corTag="JetCorrectorParametersCollection_"+corName
 dBFile=corName+".db"
@@ -201,6 +188,20 @@ na = TauIDEmbedder(process, cms,
 )
 na.runTauID()
 
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+if is2017:
+    runMetCorAndUncFromMiniAOD(process,
+                               isData = isData,
+                               fixEE2017 = True,
+                               fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold':3.139},
+                               postfix = "ModifiedMET"
+    )
+else:
+    runMetCorAndUncFromMiniAOD(process,
+                               isData = isData,
+                               postfix = "ModifiedMET"
+    )
+
 # egamma
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
@@ -219,25 +220,15 @@ for idmod in my_id_modules:
 
 process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
 
-# to be used for 2017 MiniAODv1 and v2
-#See : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(process,
-                       runVID=False,
-                       era='2017-Nov17ReReco')
+
+if is2016: setupEgammaPostRecoSeq(process,runVID=False,era='2016-Legacy')
+elif is2017: setupEgammaPostRecoSeq(process,runVID=True,era='2017-Nov17ReReco')
+elif is2018: setupEgammaPostRecoSeq(process,runVID=True,era='2018-Prompt')
 
 process.egmGsfElectronIDs.physicsObjectSrc = 'slimmedElectrons'
 process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
 process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
-                       
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(
-        process,
-        isData = options.isData,
-        fixEE2017 = True,
-        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-        postfix = "ModifiedMET"
-)
 
 #####################
 # MET Significance  #
@@ -287,10 +278,8 @@ if options.runQG:
 # Prefiring probability #
 #########################
 
-if options.datasetsYear == "2016":
-    prefName = "2016BtoH"
-elif options.datasetsYear == "2017":
-    prefName = "2017BtoF"
+if is2016: prefName = "2016BtoH"
+elif is2017: prefName = "2017BtoF"
 
 from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
 process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
@@ -299,8 +288,8 @@ process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
     PrefiringRateSystematicUncty = cms.double(0.2),
     SkipWarnings = False
 )
-    
-if options.datasetsYear == "2018":    
+
+if is2018:
     process.prefiringweight = cms.Sequence()
 
 ###########
@@ -365,12 +354,9 @@ process.slimmedPatTriggerUnpacked = cms.EDProducer('PATTriggerObjectStandAloneUn
                                                    unpackFilterLabels = cms.bool(True)
 )
 
-if options.datasetsYear == "2016":
-    rhoName="fixedGridRhoFastjetCentralNeutral"
-elif options.datasetsYear == "2017":
-    rhoName="fixedGridRhoFastjetAll"
-elif options.datasetsYear == "2018":
-    rhoName="fixedGridRhoFastjetAll"
+if is2016: rhoName="fixedGridRhoFastjetCentralNeutral"
+elif is2017: rhoName="fixedGridRhoFastjetAll"
+elif is2018: rhoName="fixedGridRhoFastjetAll"
 
 #############################
 #  Flat Tree configuration  #
@@ -462,7 +448,6 @@ process.p = cms.Path(
                      process.electronMVAValueMapProducer+
                      process.egmGsfElectronIDs+
                      process.fullPatMetSequenceModifiedMET+
-#                     process.fullPatMetSequence+
                      process.METSignificance+
                      process.NewTauIDsEmbedded+
                      process.patJetCorrFactorsNewDFTraining+

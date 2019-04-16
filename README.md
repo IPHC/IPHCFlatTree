@@ -42,9 +42,6 @@ git checkout ScalesSmearing2018_Dev
 cd -
 git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev
 
-# EE noize mitigation
-git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X
-
 # Tools needed for AK10 jet collection
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
 
