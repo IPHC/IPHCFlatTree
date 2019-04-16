@@ -389,8 +389,8 @@ process.source = cms.Source("PoolSource",
 	 #'/store/mc/RunIIFall17MiniAOD/TTWH_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/80000/CC80714B-6402-E811-BCCE-003048CB8584.root'
 	 #'/store/mc/RunIIFall17MiniAOD/TTTW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v3/40000/F826CD28-2E0A-E811-B6AF-1CB72C1B6568.root'
 	 #'/store/mc/RunIIFall17MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E6C44E02-F7FA-E711-9134-24BE05CEED81.root'
-	 '/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
-	 #''
+	 #'/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
+	 '/store/mc/RunIISummer16MiniAODv3/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/F24F2D5E-DDEC-E811-AF50-90B11C08AD7D.root'
 	 )
 )
 
