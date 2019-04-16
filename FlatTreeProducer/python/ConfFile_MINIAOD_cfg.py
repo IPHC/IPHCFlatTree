@@ -12,20 +12,19 @@ options.register('isData',False,VarParsing.multiplicity.singleton,VarParsing.var
 options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply MET filters')
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
-options.register('datasetsYear', '2017', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Run on 2016, 2017 or 2018 samples")
+options.register('datasetsYear','2016',VarParsing.multiplicity.singleton,VarParsing.varType.string,'Run on 2016, 2017 or 2018 samples')
 
 options.register('makeLHEmapping',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Create mapping of LHE id <-> scale/LHAPDF id')
 options.register('printLHEcontent',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Printout of LHE infos')
-options.register('samplename','',VarParsing.multiplicity.singleton,VarParsing.varType.string,"User-defined samplename") #NEW : can user-define a samplename here (to rename output, etc.)
+options.register('samplename','',VarParsing.multiplicity.singleton,VarParsing.varType.string,'User-defined samplename')
 
 options.register('runQG',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run QGTagger')
 
 options.register('fillMCScaleWeight',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PDF weights')
 options.register('fillPUInfo',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PU info')
-options.register('nPDF', -1, VarParsing.multiplicity.singleton, VarParsing.varType.int, "nPDF")
-options.register('confFile', 'conf.xml', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Flattree variables configuration")
-options.register('bufferSize', 32000, VarParsing.multiplicity.singleton, VarParsing.varType.int, "Buffer size for branches of the flat tree")
-#options.register('prefiringFile', 'L1PrefiringMaps_new.root', VarParsing.multiplicity.singleton, VarParsing.varType.string, "Map prefiring proba")
+options.register('nPDF',-1,VarParsing.multiplicity.singleton,VarParsing.varType.int,'nPDF')
+options.register('confFile','conf.xml',VarParsing.multiplicity.singleton,VarParsing.varType.string,'Flattree variables configuration')
+options.register('bufferSize',32000,VarParsing.multiplicity.singleton,VarParsing.varType.int,'Buffer size for branches of the flat tree')
 options.parseArguments()
 
 #-- Can use these filenames only to produce LHE mapping with proper naming -- 
@@ -58,7 +57,6 @@ options.parseArguments()
 #TTTW_TuneCP5_13TeV-madgraph-pythia8
 #GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8
 
-
 ##########################
 #  Global configuration  #
 ##########################
@@ -78,26 +76,40 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag import GlobalTag
 
 if options.isData:
-    if options.datasetsYear=="2016":
-	process.GlobalTag.globaltag = 'xxx'  
-    elif options.datasetsYear=="2017":
+    
+    if options.datasetsYear == "2016":
+	process.GlobalTag.globaltag = '94X_dataRun2_v10'
+    elif options.datasetsYear == "2017":
     	process.GlobalTag.globaltag = '94X_dataRun2_v11' 
-    elif options.datasetsYear=="2018":
-    	process.GlobalTag.globaltag = 'xxx' 
+    elif options.datasetsYear == "2018":
+    	process.GlobalTag.globaltag = '102X_dataRun2_Sep2018ABC_v2'
 	   
 else:
-    if options.datasetsYear=="2016":
-	process.GlobalTag.globaltag = 'xxx'  
-    elif options.datasetsYear=="2017":
-    	process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
-    elif options.datasetsYear=="2018":
-    	process.GlobalTag.globaltag = 'xxx' 
+    
+    if options.datasetsYear == "2016":
+        process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3'  
+    elif options.datasetsYear == "2017":
+        process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
+    elif options.datasetsYear == "2018":
+        process.GlobalTag.globaltag = '102X_upgrade2018_realisic_v18'
 
-corName="Fall17_17Nov2017_V32_94X_MC"
-corTag="JetCorrectorParametersCollection_"+corName
+if options.datasetsYear == "2016":
+    corName="Summer16_07Aug2017_V11_MC"
+elif options.datasetsYear == "2017":
+    corName="Fall17_17Nov2017_V32_94X_MC"
+elif options.datasetsYear == "2018":
+    corName="Autumn18_V8_MC"
+    
 if options.isData:
-    corName="Fall17_17Nov2017_V32_94X_DATA"
-    corTag="JetCorrectorParametersCollection_"+corName
+    
+    if options.datasetsYear == "2016":
+        corName="Summer16_07Aug2017All_V11_DATA"
+    elif options.datasetsYear == "2017":
+        corName="Fall17_17Nov2017_V32_94X_DATA"
+    elif options.datasetsYear == "2018":
+        corName="Autumn18_RunABCD_V8_DATA"
+
+corTag="JetCorrectorParametersCollection_"+corName
 dBFile=corName+".db"
 
 process.load("CondCore.CondDB.CondDB_cfi")
@@ -143,25 +155,8 @@ corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 if options.isData:
     corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
 
-# Re-apply JEC to AK4
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 
-#bTagDiscriminators = [
-#    'deepFlavourJetTags:probudsg',
-#    'deepFlavourJetTags:probb',
-#    'deepFlavourJetTags:probc',
-#    'deepFlavourJetTags:probbb',
-#    'deepFlavourJetTags:probcc',
-#]
-
-#updateJetCollection(
-#    process,
-#    jetSource = cms.InputTag('slimmedJets'),
-#    labelName = 'UpdatedJEC',
-#    jetCorrections = ('AK4PFchs', corList, 'None')
-#)
-
-#DF
 updateJetCollection(
    process,
    jetSource = cms.InputTag('slimmedJets'),
@@ -179,16 +174,6 @@ updateJetCollection(
    postfix='NewDFTraining'
 )
 
-#updateJetCollection(
-#    process,
-    #jetSource = cms.InputTag('slimmedJets','','PAT'), #FIXME -- jets reclustering to add DeepFlav caused bug -- fixed by Kirill  !
-#    jetSource = cms.InputTag('slimmedJets'),
-#    jetCorrections = ('AK4PFchs', corList, 'None'),
-#    labelName = 'UpdatedJEC'
-#    btagDiscriminators = bTagDiscriminators,
-#)
-
-# Re-apply JEC to AK8
 updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJets'),
@@ -196,14 +181,9 @@ updateJetCollection(
     jetCorrections = ('AK8PFchs', corList, 'None')
 )
 
-#process.jecSequence = cms.Sequence(process.patJetCorrFactorsUpdatedJEC * process.updatedPatJetsUpdatedJEC)
-
-#process.jecSequence = cms.Sequence(process.pfDeepFlavourJetTagsNewDFTraining * process.patJetCorrFactorsNewDFTraining * process.updatedPatJetsNewDFTraining * process.patJetCorrFactorsTransientCorrectedNewDFTraining * process.updatedPatJetsTransientCorrectedNewDFTraining) #DF
-
 #jetsNameAK4="selectedUpdatedPatJetsUpdatedJEC"
 #jetsNameAK4="updatedPatJetsUpdatedJEC"
-jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
-#jetsNameAK4="selectedUpdatedPatJetsNewDFTraining" #DF
+jetsNameAK4="selectedUpdatedPatJetsNewDFTraining"
 #jetsNameAK4="slimmedJets"
 jetsNameAK8="selectedUpdatedPatJetsUpdatedJECAK8"
 #jetsNameAK8="slimmedJets"
@@ -225,15 +205,10 @@ na.runTauID()
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
 
-#FIXME -- get for each year
-# https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2
-# https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
 my_id_modules = [
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V1_cff',
 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff',
-
-#NEW -- v2
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'
@@ -263,32 +238,6 @@ runMetCorAndUncFromMiniAOD(
         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
 )
-#runMetCorAndUncFromMiniAOD(process,isData=options.isData)
-
-# MET
-# https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2
-#process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
-#process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-#process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False)
-#process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
-
-#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-#process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-
-#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-#process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-#process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
-
-#process.ApplyBaselineHBHENoiseFilter = cms.EDFilter('BooleanFlagFilter',
-#    inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHENoiseFilterResult'),
-#    reverseDecision = cms.bool(False)
-#)
-
-#process.ApplyBaselineHBHEIsoNoiseFilter = cms.EDFilter('BooleanFlagFilter',
-#    inputLabel = cms.InputTag('HBHENoiseFilterResultProducer','HBHEIsoNoiseFilterResult'),
-#    reverseDecision = cms.bool(False)
-#)
 
 #####################
 # MET Significance  #
@@ -312,47 +261,51 @@ if options.runAK10:
 # Quark gluon tagging #
 #######################
 if options.runQG:
-    qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
-    from CondCore.DBCommon.CondDBSetup_cfi import *
+    from CondCore.CondDB.CondDB_cfi import CondDB
+
     QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-          CondDBSetup,
-          toGet = cms.VPSet(),
-          connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-    )
-
-    for type in ['AK4PFchs','AK4PFchs_antib']:
-        QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
+          CondDB.clone(
+            connect = cms.string('frontier://FrontierProd/CMS_CONDITIONS'),
+          ),
+          toGet = cms.VPSet(
+            cms.PSet(
               record = cms.string('QGLikelihoodRcd'),
-              tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-              label  = cms.untracked.string('QGL_'+type)
-        )))
+              tag    = cms.string('QGLikelihoodObject_v1_AK4PFchs_2017'), # to be used for the full Run2
+              label  = cms.untracked.string('QGL_AK4PFchs'),
+            ),
+          ),
+    )
+    
+    es_prefer_qgl = cms.ESPrefer("PoolDBESSource", "QGPoolDBESSource")
 
     process.load('RecoJets.JetProducers.QGTagger_cfi')
-    process.QGTagger.srcJets          = cms.InputTag(jetsNameAK4) # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
-    process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+    process.QGTagger.srcJets          = cms.InputTag(jetsNameAK4)
+    process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
 
-
-
-#######################
+#########################
 # Prefiring probability #
-#######################
-#See : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe#Introduction
-#FIXME -- change for 2016/2018 ?
-process.prefiringweight = cms.EDProducer("L1ECALPrefiringWeightProducer",
-                                 ThePhotons = cms.InputTag("slimmedPhotons"),
-	                         TheJets = cms.InputTag("slimmedJets"),
-                                 L1Maps = cms.string("../../../L1Prefiring/EventWeightProducer/files/L1PrefiringMaps_new.root"),
-                                 DataEra = cms.string("2017BtoF"), #Use 2016BtoH for 2016
-                                 UseJetEMPt = cms.bool(False), #can be set to true to use jet prefiring maps parametrized vs pt(em) instead of pt
-	                         PrefiringRateSystematicUncty = cms.double(0.2) #Minimum relative prefiring uncty per object
-                                 )
+#########################
+
+if options.datasetsYear == "2016":
+    prefName = "2016BtoH"
+elif options.datasetsYear == "2017":
+    prefName = "2017BtoF"
+
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string(prefName),
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False
+)
+    
+if options.datasetsYear == "2018":    
+    process.prefiringweight = cms.Sequence()
 
 ###########
 #  Input  #
 ###########
-
-#Write here the filenames to be processed interactively ! #FIXME -- set accordingly the 'isData' variable (0,1) at beginning of code
 
 process.source = cms.Source("PoolSource",
     duplicateCheckMode = cms.untracked.string("noDuplicateCheck"), # WARNING -- for test only !
@@ -390,7 +343,8 @@ process.source = cms.Source("PoolSource",
 	 #'/store/mc/RunIIFall17MiniAOD/TTTW_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v3/40000/F826CD28-2E0A-E811-B6AF-1CB72C1B6568.root'
 	 #'/store/mc/RunIIFall17MiniAOD/GluGluHToZZTo4L_M125_13TeV_powheg2_JHUGenV7011_pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/70000/E6C44E02-F7FA-E711-9134-24BE05CEED81.root'
 	 #'/store/mc/RunIIFall17MiniAOD/TTToSemiLeptonic_TuneCP5_PSweights_13TeV-powheg-pythia8/MINIAODSIM/94X_mc2017_realistic_v10-v1/60000/4EB10D50-DBE7-E711-BBDD-90B11C27E5BE.root'
-	 '/store/mc/RunIISummer16MiniAODv3/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/F24F2D5E-DDEC-E811-AF50-90B11C08AD7D.root'
+	 #'/store/mc/RunIISummer16MiniAODv3/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v2/120000/F24F2D5E-DDEC-E811-AF50-90B11C08AD7D.root'
+         'file:F24F2D5E-DDEC-E811-AF50-90B11C08AD7D.root'
 	 )
 )
 
@@ -411,6 +365,13 @@ process.slimmedPatTriggerUnpacked = cms.EDProducer('PATTriggerObjectStandAloneUn
                                                    unpackFilterLabels = cms.bool(True)
 )
 
+if options.datasetsYear == "2016":
+    rhoName="fixedGridRhoFastjetCentralNeutral"
+elif options.datasetsYear == "2017":
+    rhoName="fixedGridRhoFastjetAll"
+elif options.datasetsYear == "2018":
+    rhoName="fixedGridRhoFastjetAll"
+
 #############################
 #  Flat Tree configuration  #
 #############################
@@ -421,7 +382,6 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 
                   bufferSize        = cms.int32(options.bufferSize),
                   confFile          = cms.string(options.confFile),
-                  #prefiringFile     = cms.string(options.prefiringFile),
 
                   isData            = cms.bool(options.isData),
                   applyMETFilters   = cms.bool(options.applyMETFilters),
@@ -437,7 +397,6 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   vertexInput              = cms.InputTag("offlineSlimmedPrimaryVertices"),
                   electronInput            = cms.InputTag("slimmedElectrons"),
                   electronPATInput         = cms.InputTag("slimmedElectrons"),
-                  #electronPATInput         = cms.InputTag("calibratedPatElectrons"),
 
                   eleVetoCBIdMap           = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto"),
                   eleLooseCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose"),
@@ -465,7 +424,6 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   filterTriggerNames       = cms.untracked.vstring("*"),
                   
                   muonInput                = cms.InputTag("slimmedMuons"),
-                  #tauInput                 = cms.InputTag("slimmedTaus"),
                   tauInput                 = cms.InputTag("NewTauIDsEmbedded"),
                   jetInput                 = cms.InputTag(jetsNameAK4),
                   jetPuppiInput            = cms.InputTag("slimmedJetsPuppi"),
@@ -478,8 +436,7 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   metNoHFInput             = cms.InputTag("slimmedMETsNoHF"),
                   metSigInput              = cms.InputTag("METSignificance"),
                   metCovInput              = cms.InputTag("METSignificance","METCovariance"),
-                  #rhoInput                 = cms.InputTag("fixedGridRhoFastjetCentralNeutral"),
-                  rhoInput                 = cms.InputTag("fixedGridRhoFastjetAll"),
+                  rhoInput                 = cms.InputTag(rhoName),
                   genParticlesInput        = cms.InputTag("prunedGenParticles"),
                   genEventInfoInput        = cms.InputTag("generator"),
                   LHEEventProductInput     = cms.InputTag("externalLHEProducer"),
@@ -487,7 +444,6 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   pfcandsInput             = cms.InputTag("packedPFCandidates"),
                   hConversionsInput        = cms.InputTag("reducedEgamma","reducedConversions"),
                   puInfoInput		   = cms.InputTag("slimmedAddPileupInfo"),
-#                  puInfoInput		   = cms.InputTag("addPileupInfo"),
                   objects                  = cms.InputTag("slimmedPatTriggerUnpacked")
 )
 
@@ -519,7 +475,6 @@ process.p = cms.Path(
                      process.patJetCorrFactorsTransientCorrectedNewDFTraining+
                      process.updatedPatJetsTransientCorrectedNewDFTraining+
                      process.selectedUpdatedPatJetsNewDFTraining+
-#                     process.jecSequence+
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
 		     process.prefiringweight+
