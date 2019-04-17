@@ -181,12 +181,13 @@ jetsNameAK10="selectedPatJetsAK10PFCHS"
 #  Additional modules  #
 ########################
 
-from IPHCFlatTree.FlatTreeProducer.runTauIdMVA import *
-na = TauIDEmbedder(process, cms,
-     debug=False,
-     toKeep = ["dR0p32017v2"]
+import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
+tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, 
+                debug = False,
+                updatedTauName = "NewTauIDsEmbedded",
+                toKeep = ["dR0p32017v2"]
 )
-na.runTauID()
+tauIdEmbedder.runTauID()
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 if is2017:
@@ -202,30 +203,15 @@ else:
                                postfix = "ModifiedMET"
     )
 
-# egamma
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-switchOnVIDElectronIdProducer(process,DataFormat.MiniAOD)
-
-my_id_modules = [
-'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
-'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
-'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'
-]
-
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
-process.load("RecoEgamma.ElectronIdentification.ElectronMVAValueMapProducer_cfi")
-
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 
 if is2016: setupEgammaPostRecoSeq(process,runVID=False,era='2016-Legacy')
 elif is2017: setupEgammaPostRecoSeq(process,runVID=True,era='2017-Nov17ReReco')
 elif is2018: setupEgammaPostRecoSeq(process,runVID=True,era='2018-Prompt')
 
-process.egmGsfElectronIDs.physicsObjectSrc = 'slimmedElectrons'
-process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
-process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
+#process.egmGsfElectronIDs.physicsObjectSrc = 'slimmedElectrons'
+#process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
+#process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
 
 #####################
 # MET Significance  #
@@ -380,22 +366,6 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   vertexInput              = cms.InputTag("offlineSlimmedPrimaryVertices"),
                   electronInput            = cms.InputTag("slimmedElectrons"),
                   electronPATInput         = cms.InputTag("slimmedElectrons"),
-
-                  eleVetoCBIdMap           = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-veto"),
-                  eleLooseCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-loose"),
-                  eleMediumCBIdMap         = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-medium"),
-                  eleTightCBIdMap          = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V2-tight"),
-
-                  ele90NoIsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp90"),
-                  ele80NoIsoMVAIdMap         = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wp80"),
-                  eleLooseNoIsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-noIso-V2-wpLoose"),
-
-                  ele90IsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp90"),
-                  ele80IsoMVAIdMap         = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wp80"),
-                  eleLooseIsoMVAIdMap        = cms.InputTag("egmGsfElectronIDs:mvaEleID-Fall17-iso-V2-wpLoose"),
-                  
-		  mvaIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17IsoV2Values"),
-                  mvaNoIsoValuesMap             = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Fall17NoIsoV2Values"),
                   
                   filterTriggerNames       = cms.untracked.vstring("*"),
                   
@@ -433,13 +403,6 @@ if options.runQG:
 
 process.p = cms.Path(
                      process.egammaPostRecoSeq+
-                     process.rerunMvaIsolationSequence+
-                     process.electronMVAVariableHelper+
-                     process.electronMVAValueMapProducer+
-                     process.egmGsfElectronIDs+
-                     process.fullPatMetSequenceModifiedMET+
-                     process.METSignificance+
-                     process.NewTauIDsEmbedded+
                      process.patJetCorrFactorsNewDFTraining+
                      process.updatedPatJetsNewDFTraining+
                      process.pfImpactParameterTagInfosNewDFTraining+
@@ -450,8 +413,13 @@ process.p = cms.Path(
                      process.patJetCorrFactorsTransientCorrectedNewDFTraining+
                      process.updatedPatJetsTransientCorrectedNewDFTraining+
                      process.selectedUpdatedPatJetsNewDFTraining+
+                     process.rerunMvaIsolationSequence+
+                     process.NewTauIDsEmbedded+
+                     getattr(process,"NewTauIDsEmbedded")+
+                     process.fullPatMetSequenceModifiedMET+
+                     process.METSignificance+
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
-		     process.prefiringweight+
+                     process.prefiringweight+
                      process.FlatTree
                    )

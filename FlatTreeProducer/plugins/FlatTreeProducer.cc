@@ -192,27 +192,6 @@ class FlatTreeProducer : public edm::EDAnalyzer
 //        edm::EDGetTokenT<bool> badMuonFilterToken_;
 //        edm::EDGetTokenT<bool> badChargedCandidateFilterToken_;
 
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoCBIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseCBIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumCBIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleTightCBIdMapToken_;
-
-        edm::EDGetTokenT<edm::ValueMap<bool> > ele90NoIsoMVAIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > ele80NoIsoMVAIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseNoIsoMVAIdMapToken_;
-
-        edm::EDGetTokenT<edm::ValueMap<bool> > ele90IsoMVAIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > ele80IsoMVAIdMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIsoMVAIdMapToken_;
-
-        edm::EDGetTokenT<edm::ValueMap<float> > mvaIsoValuesMapToken_;
-        edm::EDGetTokenT<edm::ValueMap<float> > mvaNoIsoValuesMapToken_;
-
-//        edm::EDGetTokenT<edm::ValueMap<int> > mvaCategoriesMapToken_;
-
-//        edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > vetoIdFullInfoMapToken_;
-//        edm::EDGetTokenT<edm::ValueMap<vid::CutFlowResult> > mediumIdFullInfoMapToken_;
-
         edm::EDGetTokenT<double> metSigToken_;
         edm::EDGetTokenT<math::Error<2>::type> metCovToken_;
         edm::EDGetTokenT<edm::ValueMap<float> > qgToken_;
@@ -930,27 +909,6 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
 //    badMuonFilterToken_   = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadMuonFilter"));
 //    badChargedCandidateFilterToken_ = consumes<bool>(iConfig.getParameter<edm::InputTag>("BadChargedCandidateFilter"));
 
-    eleVetoCBIdMapToken_    = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleVetoCBIdMap"));
-    eleLooseCBIdMapToken_   = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseCBIdMap"));
-    eleMediumCBIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleMediumCBIdMap"));
-    eleTightCBIdMapToken_   = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleTightCBIdMap"));
-
-    ele90NoIsoMVAIdMapToken_ = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele90NoIsoMVAIdMap"));
-    ele80NoIsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele80NoIsoMVAIdMap"));
-    eleLooseNoIsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseNoIsoMVAIdMap"));
-
-    ele90IsoMVAIdMapToken_ = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele90IsoMVAIdMap"));
-    ele80IsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("ele80IsoMVAIdMap"));
-    eleLooseIsoMVAIdMapToken_  = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("eleLooseIsoMVAIdMap"));
-
-    mvaIsoValuesMapToken_      = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaIsoValuesMap"));
-    mvaNoIsoValuesMapToken_      = consumes<edm::ValueMap<float> >(iConfig.getParameter<edm::InputTag>("mvaNoIsoValuesMap"));
-//    mvaCategoriesMapToken_  = consumes<edm::ValueMap<int> >(iConfig.getParameter<edm::InputTag>("mvaCategoriesMap"));
-
-    //for stop analysis
-//    vetoIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> >(iConfig.getParameter<edm::InputTag>("eleVetoCBIdMap"));
-//    mediumIdFullInfoMapToken_ = consumes<edm::ValueMap<vid::CutFlowResult> >(iConfig.getParameter<edm::InputTag>("eleMediumCBIdMap"));
-
     filterTriggerNames_     = iConfig.getUntrackedParameter<std::vector<std::string> >("filterTriggerNames");
 
     metSigToken_            = consumes<double>(iConfig.getParameter<edm::InputTag>("metSigInput"));
@@ -1184,46 +1142,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
     edm::Handle<pat::ElectronCollection> electronsPAT;
     iEvent.getByToken(electronPATToken_,electronsPAT);
-
-    edm::Handle<edm::ValueMap<bool> > veto_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > loose_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > medium_cbid_decisions;
-    edm::Handle<edm::ValueMap<bool> > tight_cbid_decisions;
-
-    edm::Handle<edm::ValueMap<bool> > NoIso90_mvaid_decisions;
-    edm::Handle<edm::ValueMap<bool> > NoIso80_mvaid_decisions;
-    edm::Handle<edm::ValueMap<bool> > NoIsoLoose_mvaid_decisions;
-
-    edm::Handle<edm::ValueMap<bool> > Iso90_mvaid_decisions;
-    edm::Handle<edm::ValueMap<bool> > Iso80_mvaid_decisions;
-    edm::Handle<edm::ValueMap<bool> > IsoLoose_mvaid_decisions;
-
-    iEvent.getByToken(eleVetoCBIdMapToken_,veto_cbid_decisions);
-    iEvent.getByToken(eleLooseCBIdMapToken_,loose_cbid_decisions);
-    iEvent.getByToken(eleMediumCBIdMapToken_,medium_cbid_decisions);
-    iEvent.getByToken(eleTightCBIdMapToken_,tight_cbid_decisions);
-
-    iEvent.getByToken(ele90NoIsoMVAIdMapToken_,NoIso90_mvaid_decisions);
-    iEvent.getByToken(ele80NoIsoMVAIdMapToken_,NoIso80_mvaid_decisions);
-    iEvent.getByToken(eleLooseNoIsoMVAIdMapToken_,NoIsoLoose_mvaid_decisions);
-
-    iEvent.getByToken(ele90IsoMVAIdMapToken_,Iso90_mvaid_decisions);
-    iEvent.getByToken(ele80IsoMVAIdMapToken_,Iso80_mvaid_decisions);
-    iEvent.getByToken(eleLooseIsoMVAIdMapToken_,IsoLoose_mvaid_decisions);
-
-    edm::Handle<edm::ValueMap<float> > mvaIsoValues;
-    edm::Handle<edm::ValueMap<float> > mvaNoIsoValues;
-//    edm::Handle<edm::ValueMap<int> > mvaCategories;
-
-    iEvent.getByToken(mvaIsoValuesMapToken_,mvaIsoValues);
-    iEvent.getByToken(mvaNoIsoValuesMapToken_,mvaNoIsoValues);
-//    iEvent.getByToken(mvaCategoriesMapToken_,mvaCategories);
-
-//    edm::Handle<edm::ValueMap<vid::CutFlowResult> > veto_id_cutflow_;
-//    edm::Handle<edm::ValueMap<vid::CutFlowResult> > medium_id_cutflow_;
-
-//    iEvent.getByToken(vetoIdFullInfoMapToken_, veto_id_cutflow_);
-//    iEvent.getByToken(mediumIdFullInfoMapToken_, medium_id_cutflow_);
 
     // Taus
     edm::Handle<pat::TauCollection> taus;
@@ -2145,31 +2063,22 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_deltaPhiSeedClusterTrackAtCalo.push_back(elec.deltaPhiSeedClusterTrackAtCalo());
         ftree->el_eSuperClusterOverP.push_back(elec.eSuperClusterOverP());
 
-        const auto el = electrons->ptrAt(ie);
-        ftree->el_mvaIso.push_back((*mvaIsoValues)[el]);
-        ftree->el_mvaNoIso.push_back((*mvaNoIsoValues)[el]);
-//        ftree->el_mvaNonTrigCat.push_back((*mvaCategories)[el]);
+       ftree->el_mvaIso.push_back(elec.userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values"));
+       ftree->el_mvaNoIso.push_back(elec.userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values"));
+       
+       ftree->el_vetoCBId.push_back(elec.electronID("cutBasedElectronID-Fall17-94X-V2-veto"));
+       ftree->el_looseCBId.push_back(elec.electronID("cutBasedElectronID-Fall17-94X-V2-loose"));
+       ftree->el_mediumCBId.push_back(elec.electronID("cutBasedElectronID-Fall17-94X-V2-medium"));
+       ftree->el_tightCBId.push_back(elec.electronID("cutBasedElectronID-Fall17-94X-V2-tight"));
+       
+       ftree->el_NoIso90MVAId.push_back(elec.electronID("mvaEleID-Fall17-noIso-V2-wp90"));
+       ftree->el_NoIso80MVAId.push_back(elec.electronID("mvaEleID-Fall17-noIso-V2-wp80"));
+       ftree->el_NoIsoLooseMVAId.push_back(elec.electronID("mvaEleID-Fall17-noIso-V2-wpLoose"));
 
-        ftree->el_NoIso90MVAId.push_back((*NoIso90_mvaid_decisions)[el]);
-        ftree->el_NoIso80MVAId.push_back((*NoIso80_mvaid_decisions)[el]);
-        ftree->el_NoIsoLooseMVAId.push_back((*NoIsoLoose_mvaid_decisions)[el]);
-
-        ftree->el_Iso90MVAId.push_back((*Iso90_mvaid_decisions)[el]);
-        ftree->el_Iso80MVAId.push_back((*Iso80_mvaid_decisions)[el]);
-        ftree->el_IsoLooseMVAId.push_back((*IsoLoose_mvaid_decisions)[el]);
-
-        ftree->el_vetoCBId.push_back((*veto_cbid_decisions)[el]);
-        ftree->el_looseCBId.push_back((*loose_cbid_decisions)[el]);
-        ftree->el_mediumCBId.push_back((*medium_cbid_decisions)[el]);
-        ftree->el_tightCBId.push_back((*tight_cbid_decisions)[el]);
-
-        //for stop analysis
-//        vid::CutFlowResult vetoIdIsoMasked = (*veto_id_cutflow_)[el].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
-//        ftree->el_vetoStopID.push_back(vetoIdIsoMasked.cutFlowPassed());
-//        vid::CutFlowResult mediumIdIsoMasked = (*medium_id_cutflow_)[el].getCutFlowResultMasking("GsfEleEffAreaPFIsoCut_0");
-//        ftree->el_mediumStopID.push_back(mediumIdIsoMasked.cutFlowPassed());
-        //end
-
+       ftree->el_Iso90MVAId.push_back(elec.electronID("mvaEleID-Fall17-iso-V2-wp90"));
+       ftree->el_Iso80MVAId.push_back(elec.electronID("mvaEleID-Fall17-iso-V2-wp80"));
+       ftree->el_IsoLooseMVAId.push_back(elec.electronID("mvaEleID-Fall17-iso-V2-wpLoose"));
+       
         ftree->el_ecalEnergy.push_back(elec.ecalEnergy());
         ftree->el_correctedEcalEnergy.push_back(elec.correctedEcalEnergy());
         ftree->el_correctedEcalEnergyError.push_back(elec.correctedEcalEnergyError());
