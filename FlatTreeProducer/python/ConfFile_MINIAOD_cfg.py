@@ -209,10 +209,6 @@ if is2016: setupEgammaPostRecoSeq(process,runVID=False,era='2016-Legacy')
 elif is2017: setupEgammaPostRecoSeq(process,runVID=True,era='2017-Nov17ReReco')
 elif is2018: setupEgammaPostRecoSeq(process,runVID=True,era='2018-Prompt')
 
-#process.egmGsfElectronIDs.physicsObjectSrc = 'slimmedElectrons'
-#process.electronMVAValueMapProducer.srcMiniAOD = 'slimmedElectrons'
-#process.electronMVAVariableHelper.srcMiniAOD = 'slimmedElectrons'
-
 #####################
 # MET Significance  #
 #####################
