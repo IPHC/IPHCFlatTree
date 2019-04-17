@@ -1039,10 +1039,10 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     hSumWeights = fs->make<TH1D>("hSumWeights","hSumWeights",15,0.,15.);
     //hktkv = fs->make<TH1D>("hktkv","hktkv",100,0.,100.); //Sum of weights for kT/kV reweights, for THQ/THW samples
     hLHE = fs->make<TH1D>("hLHE","hLHE",1300,0.,1300.); //Sums of weights all LHE weights
-    
-    prefweight_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProb"));
-    prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbUp"));
-    prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:NonPrefiringProbDown"));
+
+    prefweight_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProb"));
+    prefweightup_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+    prefweightdown_token = consumes< double >(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
 }
 
 FlatTreeProducer::~FlatTreeProducer()
@@ -1424,14 +1424,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
 	double _prefiringweightdown =(*theprefweightdown);
 	
-	//NB : I exchange the up/down variations on purpose... looks like they were switched ?
-	ftree->prefiringWeight = _prefiringweight;
-	ftree->prefiringWeightUp = _prefiringweightdown;
-	ftree->prefiringWeightDown = _prefiringweightup;
-	//std::cout<<"prefiringWeight = "<<ftree->prefiringWeight<<std::endl;
-	//std::cout<<"prefiringWeightUp = "<<ftree->prefiringWeightUp<<std::endl;
-	//std::cout<<"prefiringWeightDown = "<<ftree->prefiringWeightDown<<std::endl;
-	
+   ftree->prefiringWeight = _prefiringweight;
+   ftree->prefiringWeightUp = _prefiringweightup;
+   ftree->prefiringWeightDown = _prefiringweightdown;	
 
     // ####################################
     // #   ____  _ _                      #
@@ -1984,31 +1979,69 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         // Skimming electrons with pT < 5 GeV.
         //if (elec.pt() < 5) continue;
 
-        ftree->el_pt.push_back(elec.pt()); //before smearing
+        ftree->el_pt.push_back(elec.pt());
         ftree->el_eta.push_back(elec.eta());
         ftree->el_phi.push_back(elec.phi());
         ftree->el_m.push_back(elec.mass());
-        ftree->el_E.push_back(elec.energy()); //before smearing
+        ftree->el_E.push_back(elec.energy());
         ftree->el_id.push_back(elec.pdgId());
         ftree->el_charge.push_back(elec.charge());
 
-	//Electron pT smearing
-	float E_PreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
-	float E_PostCorr = elec.userFloat("ecalTrkEnergyPostCorr"); //smeared E
-	float ErrCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
-	float smearCorr = E_PostCorr / E_PreCorr;
-	float pt_postCorr = elec.pt() * smearCorr; //smeared pT
-
-	//std::cout<<std::endl<<"E_PreCorr = "<<E_PreCorr<<std::endl;
-	//std::cout<<"E_PostCorr = "<<E_PostCorr<<std::endl;
-	//std::cout<<"ErrCorr = "<<ErrCorr<<std::endl;
-	//std::cout<<"smearCorr = "<<smearCorr<<std::endl;
-	//std::cout<<"pt_postCorr = "<<pt_postCorr<<std::endl;
+       float el_ecalEnergyPreCorr = elec.userFloat("ecalEnergyPreCorr");
+       float el_ecalEnergyErrPreCorr = elec.userFloat("ecalEnergyErrPreCorr");
+       float el_ecalEnergyPostCorr = elec.userFloat("ecalEnergyPostCorr");
+       float el_ecalEnergyErrPostCorr = elec.userFloat("ecalEnergyErrPostCorr");
+       float el_ecalTrkEnergyPreCorr = elec.userFloat("ecalTrkEnergyPreCorr");
+       float el_ecalTrkEnergyErrPreCorr = elec.userFloat("ecalTrkEnergyErrPreCorr");
+       float el_ecalTrkEnergyPostCorr = elec.userFloat("ecalTrkEnergyPostCorr");
+       float el_ecalTrkEnergyErrPostCorr = elec.userFloat("ecalTrkEnergyErrPostCorr");
+       float el_energyScaleValue = elec.userFloat("energyScaleValue");
+       float el_energySigmaValue = elec.userFloat("energySigmaValue");
+       float el_energySmearNrSigma = elec.userFloat("energySmearNrSigma");
+       float el_energyScaleUp = elec.userFloat("energyScaleUp");
+       float el_energyScaleDown = elec.userFloat("energyScaleDown");
+       float el_energyScaleStatUp = elec.userFloat("energyScaleStatUp");
+       float el_energyScaleStatDown = elec.userFloat("energyScaleStatDown");
+       float el_energyScaleSystUp = elec.userFloat("energyScaleSystUp");
+       float el_energyScaleSystDown = elec.userFloat("energyScaleSystDown");
+       float el_energyScaleGainUp = elec.userFloat("energyScaleGainUp");
+       float el_energyScaleGainDown = elec.userFloat("energyScaleGainDown");
+       float el_energyScaleEtUp = elec.userFloat("energyScaleEtUp");
+       float el_energyScaleEtDown = elec.userFloat("energyScaleEtDown");
+       float el_energySigmaUp = elec.userFloat("energySigmaUp");
+       float el_energySigmaDown = elec.userFloat("energySigmaDown");
+       float el_energySigmaPhiUp = elec.userFloat("energySigmaPhiUp");
+       float el_energySigmaPhiDown = elec.userFloat("energySigmaPhiDown");
+       float el_energySigmaRhoUp = elec.userFloat("energySigmaRhoUp");
+       float el_energySigmaRhoDown = elec.userFloat("energySigmaRhoDown");
 	
-	ftree->el_pt_postCorr.push_back(pt_postCorr);
-	ftree->el_E_postCorr.push_back(E_PostCorr);
-	ftree->el_smearCorrFactor.push_back(smearCorr);
-	ftree->el_smearCorrError.push_back(ErrCorr);
+       ftree->el_ecalEnergyPreCorr.push_back(el_ecalEnergyPreCorr);
+       ftree->el_ecalEnergyErrPreCorr.push_back(el_ecalEnergyErrPreCorr);
+       ftree->el_ecalEnergyPostCorr.push_back(el_ecalEnergyPostCorr);
+       ftree->el_ecalEnergyErrPostCorr.push_back(el_ecalEnergyErrPostCorr);
+       ftree->el_ecalTrkEnergyPreCorr.push_back(el_ecalTrkEnergyPreCorr);
+       ftree->el_ecalTrkEnergyErrPreCorr.push_back(el_ecalTrkEnergyErrPreCorr);
+       ftree->el_ecalTrkEnergyPostCorr.push_back(el_ecalTrkEnergyPostCorr);
+       ftree->el_ecalTrkEnergyErrPostCorr.push_back(el_ecalTrkEnergyErrPostCorr);
+       ftree->el_energyScaleValue.push_back(el_energyScaleValue);
+       ftree->el_energySigmaValue.push_back(el_energySigmaValue);
+       ftree->el_energySmearNrSigma.push_back(el_energySmearNrSigma);
+       ftree->el_energyScaleUp.push_back(el_energyScaleUp);
+       ftree->el_energyScaleDown.push_back(el_energyScaleDown);
+       ftree->el_energyScaleStatUp.push_back(el_energyScaleStatUp);
+       ftree->el_energyScaleStatDown.push_back(el_energyScaleStatDown);
+       ftree->el_energyScaleSystUp.push_back(el_energyScaleSystUp);
+       ftree->el_energyScaleSystDown.push_back(el_energyScaleSystDown);
+       ftree->el_energyScaleGainUp.push_back(el_energyScaleGainUp);
+       ftree->el_energyScaleGainDown.push_back(el_energyScaleGainDown);
+       ftree->el_energyScaleEtUp.push_back(el_energyScaleEtUp);
+       ftree->el_energyScaleEtDown.push_back(el_energyScaleEtDown);
+       ftree->el_energySigmaUp.push_back(el_energySigmaUp);
+       ftree->el_energySigmaDown.push_back(el_energySigmaDown);
+       ftree->el_energySigmaPhiUp.push_back(el_energySigmaPhiUp);
+       ftree->el_energySigmaPhiDown.push_back(el_energySigmaPhiDown);
+       ftree->el_energySigmaRhoUp.push_back(el_energySigmaRhoUp);
+       ftree->el_energySigmaRhoDown.push_back(el_energySigmaRhoDown);
 
         ftree->el_isGsfCtfScPixChargeConsistent.push_back(elec.isGsfCtfScPixChargeConsistent());
         ftree->el_isGsfScPixChargeConsistent.push_back(elec.isGsfScPixChargeConsistent());
@@ -2284,7 +2317,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         el_lepMVA = ele_reader->EvaluateMVA("BDTG method");
 
-	cout<<"lepMVA_mvaId = "<<lepMVA_mvaId<<endl;
+//	cout<<"lepMVA_mvaId = "<<lepMVA_mvaId<<endl;
 
         ftree->el_lepMVA.push_back(el_lepMVA);
 	//cout<<"el_lepMVA = "<<el_lepMVA<<endl;

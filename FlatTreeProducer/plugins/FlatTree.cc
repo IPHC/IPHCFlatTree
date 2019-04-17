@@ -261,11 +261,6 @@ void FlatTree::Init()
    el_E.clear();
    el_id.clear();
    el_charge.clear();
-   
-   el_pt_postCorr.clear();
-   el_E_postCorr.clear();
-   el_smearCorrFactor.clear();
-   el_smearCorrError.clear();
 
    el_isGsfCtfScPixChargeConsistent.clear();
    el_isGsfScPixChargeConsistent.clear();
@@ -405,6 +400,34 @@ void FlatTree::Init()
    el_eleEoPout.clear();
    el_PreShowerOverRaw.clear();
 
+   el_ecalEnergyPreCorr.clear();
+   el_ecalEnergyErrPreCorr.clear();
+   el_ecalEnergyPostCorr.clear();
+   el_ecalEnergyErrPostCorr.clear();
+   el_ecalTrkEnergyPreCorr.clear();
+   el_ecalTrkEnergyErrPreCorr.clear();
+   el_ecalTrkEnergyPostCorr.clear();
+   el_ecalTrkEnergyErrPostCorr.clear();
+   el_energyScaleValue.clear();
+   el_energySigmaValue.clear();
+   el_energySmearNrSigma.clear();
+   el_energyScaleUp.clear();
+   el_energyScaleDown.clear();
+   el_energyScaleStatUp.clear();
+   el_energyScaleStatDown.clear();
+   el_energyScaleSystUp.clear();
+   el_energyScaleSystDown.clear();
+   el_energyScaleGainUp.clear();
+   el_energyScaleGainDown.clear();
+   el_energyScaleEtUp.clear();
+   el_energyScaleEtDown.clear();
+   el_energySigmaUp.clear();
+   el_energySigmaDown.clear();
+   el_energySigmaPhiUp.clear();
+   el_energySigmaPhiDown.clear();
+   el_energySigmaRhoUp.clear();
+   el_energySigmaRhoDown.clear();
+   
    el_mvaIso.clear();
    el_mvaNoIso.clear();
    
@@ -1459,11 +1482,6 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_E") ) tree->Branch("el_E", "std::vector<float>", &el_E, buffersize);
    if( doWrite("el_id") ) tree->Branch("el_id", "std::vector<int>", &el_id, buffersize);
    if( doWrite("el_charge") ) tree->Branch("el_charge", "std::vector<int>", &el_charge, buffersize);
-   
-   if( doWrite("el_pt_postCorr") ) tree->Branch("el_pt_postCorr", "std::vector<float>", &el_pt_postCorr, buffersize);
-   if( doWrite("el_E_postCorr") ) tree->Branch("el_E_postCorr", "std::vector<float>", &el_E_postCorr, buffersize);
-   if( doWrite("el_smearCorrFactor") ) tree->Branch("el_smearCorrFactor", "std::vector<float>", &el_smearCorrFactor, buffersize);
-   if( doWrite("el_smearCorrError") ) tree->Branch("el_smearCorrError", "std::vector<float>", &el_smearCorrError, buffersize);
 
    if( doWrite("el_passConversionVeto") ) tree->Branch("el_passConversionVeto", "std::vector<int>", &el_passConversionVeto, buffersize);   
    if( doWrite("el_isGsfCtfScPixChargeConsistent") ) tree->Branch("el_isGsfCtfScPixChargeConsistent", "std::vector<int>", &el_isGsfCtfScPixChargeConsistent, buffersize);
@@ -1603,6 +1621,34 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_eleEoPout") ) tree->Branch("el_eleEoPout", "std::vector<float>", &el_eleEoPout, buffersize);
    if( doWrite("el_PreShowerOverRaw") ) tree->Branch("el_PreShowerOverRaw", "std::vector<float>", &el_PreShowerOverRaw, buffersize);
 
+   if( doWrite("el_ecalEnergyPreCorr") ) tree->Branch("el_ecalEnergyPreCorr", "std::vector<float>", &el_ecalEnergyPreCorr, buffersize);
+   if( doWrite("el_ecalEnergyErrPreCorr") ) tree->Branch("el_ecalEnergyErrPreCorr", "std::vector<float>", &el_ecalEnergyErrPreCorr, buffersize);
+   if( doWrite("el_ecalEnergyPostCorr") ) tree->Branch("el_ecalEnergyPostCorr", "std::vector<float>", &el_ecalEnergyPostCorr, buffersize);
+   if( doWrite("el_ecalEnergyErrPostCorr") ) tree->Branch("el_ecalEnergyErrPostCorr", "std::vector<float>", &el_ecalEnergyErrPostCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyPreCorr") ) tree->Branch("el_ecalTrkEnergyPreCorr", "std::vector<float>", &el_ecalTrkEnergyPreCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyErrPreCorr") ) tree->Branch("el_ecalTrkEnergyErrPreCorr", "std::vector<float>", &el_ecalTrkEnergyErrPreCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyPostCorr") ) tree->Branch("el_ecalTrkEnergyPostCorr", "std::vector<float>", &el_ecalTrkEnergyPostCorr, buffersize);
+   if( doWrite("el_ecalTrkEnergyErrPostCorr") ) tree->Branch("el_ecalTrkEnergyErrPostCorr", "std::vector<float>", &el_ecalTrkEnergyErrPostCorr, buffersize);
+   if( doWrite("el_energyScaleValue") ) tree->Branch("el_energyScaleValue", "std::vector<float>", &el_energyScaleValue, buffersize);
+   if( doWrite("el_energySigmaValue") ) tree->Branch("el_energySigmaValue", "std::vector<float>", &el_energySigmaValue, buffersize);
+   if( doWrite("el_energySmearNrSigma") ) tree->Branch("el_energySmearNrSigma", "std::vector<float>", &el_energySmearNrSigma, buffersize);
+   if( doWrite("el_energyScaleUp") ) tree->Branch("el_energyScaleUp", "std::vector<float>", &el_energyScaleUp, buffersize);
+   if( doWrite("el_energyScaleDown") ) tree->Branch("el_energyScaleDown", "std::vector<float>", &el_energyScaleDown, buffersize);
+   if( doWrite("el_energyScaleStatUp") ) tree->Branch("el_energyScaleStatUp", "std::vector<float>", &el_energyScaleStatUp, buffersize);
+   if( doWrite("el_energyScaleStatDown") ) tree->Branch("el_energyScaleStatDown", "std::vector<float>", &el_energyScaleStatDown, buffersize);
+   if( doWrite("el_energyScaleSystUp") ) tree->Branch("el_energyScaleSystUp", "std::vector<float>", &el_energyScaleSystUp, buffersize);
+   if( doWrite("el_energyScaleSystDown") ) tree->Branch("el_energyScaleSystDown", "std::vector<float>", &el_energyScaleSystDown, buffersize);
+   if( doWrite("el_energyScaleGainUp") ) tree->Branch("el_energyScaleGainUp", "std::vector<float>", &el_energyScaleGainUp, buffersize);
+   if( doWrite("el_energyScaleGainDown") ) tree->Branch("el_energyScaleGainDown", "std::vector<float>", &el_energyScaleGainDown, buffersize);
+   if( doWrite("el_energyScaleEtUp") ) tree->Branch("el_energyScaleEtUp", "std::vector<float>", &el_energyScaleEtUp, buffersize);
+   if( doWrite("el_energyScaleEtDown") ) tree->Branch("el_energyScaleEtDown", "std::vector<float>", &el_energyScaleEtDown, buffersize);
+   if( doWrite("el_energySigmaUp") ) tree->Branch("el_energySigmaUp", "std::vector<float>", &el_energySigmaUp, buffersize);
+   if( doWrite("el_energySigmaDown") ) tree->Branch("el_energySigmaDown", "std::vector<float>", &el_energySigmaDown, buffersize);
+   if( doWrite("el_energySigmaPhiUp") ) tree->Branch("el_energySigmaPhiUp", "std::vector<float>", &el_energySigmaPhiUp, buffersize);
+   if( doWrite("el_energySigmaPhiDown") ) tree->Branch("el_energySigmaPhiDown", "std::vector<float>", &el_energySigmaPhiDown, buffersize);
+   if( doWrite("el_energySigmaRhoUp") ) tree->Branch("el_energySigmaRhoUp", "std::vector<float>", &el_energySigmaRhoUp, buffersize);
+   if( doWrite("el_energySigmaRhoDown") ) tree->Branch("el_energySigmaRhoDown", "std::vector<float>", &el_energySigmaRhoDown, buffersize);
+   
    if( doWrite("el_mvaIso") ) tree->Branch("el_mvaIso", "std::vector<float>", &el_mvaIso, buffersize);
    if( doWrite("el_mvaNoIso") ) tree->Branch("el_mvaNoIso", "std::vector<float>", &el_mvaNoIso, buffersize);
    

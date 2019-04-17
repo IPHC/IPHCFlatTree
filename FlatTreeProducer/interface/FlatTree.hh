@@ -300,11 +300,6 @@ class FlatTree
    std::vector<int> el_id;
    std::vector<int> el_charge;
    
-   std::vector<float> el_pt_postCorr;
-   std::vector<float> el_E_postCorr;
-   std::vector<float> el_smearCorrFactor;
-   std::vector<float> el_smearCorrError;
-   
    std::vector<int> el_passConversionVeto;
    std::vector<int> el_isGsfCtfScPixChargeConsistent;
    std::vector<int> el_isGsfScPixChargeConsistent;
@@ -445,6 +440,34 @@ class FlatTree
    std::vector<float> el_eleEoPout;
    std::vector<float> el_PreShowerOverRaw;
 
+   std::vector<float> el_ecalEnergyPreCorr;
+   std::vector<float> el_ecalEnergyErrPreCorr;
+   std::vector<float> el_ecalEnergyPostCorr;
+   std::vector<float> el_ecalEnergyErrPostCorr;
+   std::vector<float> el_ecalTrkEnergyPreCorr;
+   std::vector<float> el_ecalTrkEnergyErrPreCorr;
+   std::vector<float> el_ecalTrkEnergyPostCorr;
+   std::vector<float> el_ecalTrkEnergyErrPostCorr;
+   std::vector<float> el_energyScaleValue;
+   std::vector<float> el_energySigmaValue;
+   std::vector<float> el_energySmearNrSigma;
+   std::vector<float> el_energyScaleUp;
+   std::vector<float> el_energyScaleDown;
+   std::vector<float> el_energyScaleStatUp;
+   std::vector<float> el_energyScaleStatDown;
+   std::vector<float> el_energyScaleSystUp;
+   std::vector<float> el_energyScaleSystDown;
+   std::vector<float> el_energyScaleGainUp;
+   std::vector<float> el_energyScaleGainDown;
+   std::vector<float> el_energyScaleEtUp;
+   std::vector<float> el_energyScaleEtDown;
+   std::vector<float> el_energySigmaUp;
+   std::vector<float> el_energySigmaDown;
+   std::vector<float> el_energySigmaPhiUp;
+   std::vector<float> el_energySigmaPhiDown;
+   std::vector<float> el_energySigmaRhoUp;
+   std::vector<float> el_energySigmaRhoDown;
+   
    std::vector<float> el_mvaIso;
    std::vector<float> el_mvaNoIso;
    

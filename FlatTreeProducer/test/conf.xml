@@ -221,10 +221,6 @@
     <var name="el_E" save="1"></var>
     <var name="el_id" save="1"></var>
     <var name="el_charge" save="1"></var>
-    <var name="el_pt_postCorr" save="1"></var>
-    <var name="el_E_postCorr" save="1"></var>
-    <var name="el_smearCorrFactor" save="1"></var>   
-    <var name="el_smearCorrError" save="1"></var>   
     <var name="el_passConversionVeto" save="1"></var>
     <var name="el_isGsfCtfScPixChargeConsistent" save="1"></var>
     <var name="el_isGsfScPixChargeConsistent" save="1"></var>
@@ -345,6 +341,33 @@
     <var name="el_ooEmooP" save="1"></var>
     <var name="el_eleEoPout" save="1"></var>
     <var name="el_PreShowerOverRaw" save="0"></var>
+    <var name="el_ecalEnergyPreCorr" save="1"></var>
+    <var name="el_ecalEnergyErrPreCorr" save="1"></var>
+    <var name="el_ecalEnergyPostCorr" save="1"></var>
+    <var name="el_ecalEnergyErrPostCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyPreCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyErrPreCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyPostCorr" save="1"></var>
+    <var name="el_ecalTrkEnergyErrPostCorr" save="1"></var>
+    <var name="el_energyScaleValue" save="1"></var>
+    <var name="el_energySigmaValue" save="1"></var>
+    <var name="el_energySmearNrSigma" save="1"></var>
+    <var name="el_energyScaleUp" save="1"></var>
+    <var name="el_energyScaleDown" save="1"></var>
+    <var name="el_energyScaleStatUp" save="1"></var>
+    <var name="el_energyScaleStatDown" save="1"></var>
+    <var name="el_energyScaleSystUp" save="1"></var>
+    <var name="el_energyScaleSystDown" save="1"></var>
+    <var name="el_energyScaleGainUp" save="1"></var>
+    <var name="el_energyScaleGainDown" save="1"></var>
+    <var name="el_energyScaleEtUp" save="1"></var>
+    <var name="el_energyScaleEtDown" save="1"></var>
+    <var name="el_energySigmaUp" save="1"></var>
+    <var name="el_energySigmaDown" save="1"></var>
+    <var name="el_energySigmaPhiUp" save="1"></var>
+    <var name="el_energySigmaPhiDown" save="1"></var>
+    <var name="el_energySigmaRhoUp" save="1"></var>
+    <var name="el_energySigmaRhoDown" save="1"></var>
     <var name="el_mvaIso" save="1"></var>
     <var name="el_mvaNoIso" save="1"></var>
     <var name="el_vetoCBId" save="1"></var>
