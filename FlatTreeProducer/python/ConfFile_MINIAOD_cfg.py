@@ -232,7 +232,7 @@ else:
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 
-if is2016: setupEgammaPostRecoSeq(process,runVID=False,era='2016-Legacy')
+if is2016: setupEgammaPostRecoSeq(process,runVID=True,era='2016-Legacy')
 elif is2017: setupEgammaPostRecoSeq(process,runVID=True,era='2017-Nov17ReReco')
 elif is2018: setupEgammaPostRecoSeq(process,runVID=True,era='2018-Prompt')
 
