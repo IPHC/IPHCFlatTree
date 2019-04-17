@@ -2043,6 +2043,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        ftree->el_energySigmaRhoUp.push_back(el_energySigmaRhoUp);
        ftree->el_energySigmaRhoDown.push_back(el_energySigmaRhoDown);
 
+       float smearCorr = el_ecalTrkEnergyPostCorr / el_ecalTrkEnergyPreCorr;
+       float pt_postCorr = elec.pt() * smearCorr;
+       
         ftree->el_isGsfCtfScPixChargeConsistent.push_back(elec.isGsfCtfScPixChargeConsistent());
         ftree->el_isGsfScPixChargeConsistent.push_back(elec.isGsfScPixChargeConsistent());
         ftree->el_hadronicOverEm.push_back(elec.hadronicOverEm());
