@@ -1233,6 +1233,14 @@ class FlatTree
    std::vector<float> ak10jet_topMass;
    std::vector<int> ak10jet_nSubJets;
    
+   int genTTXJet_n;
+   std::vector<float> genTTXJet_pt;
+   std::vector<float> genTTXJet_eta;
+   std::vector<float> genTTXJet_phi;
+   std::vector<float> genTTXJet_m;
+   std::vector<float> genTTXJet_E;
+   std::vector<int>   genTTXJet_flavour;
+   
    // GenJets
 
    int genJet_n;
@@ -2516,6 +2524,8 @@ class FlatTree
    std::vector<std::vector<int> > gen_daughter_index;
    std::vector<float> gen_stop_m;
    std::vector<float> gen_neutralino_m;
+   
+   int genTTX_id;
 };
 
 #endif

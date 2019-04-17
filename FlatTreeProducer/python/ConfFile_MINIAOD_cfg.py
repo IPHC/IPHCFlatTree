@@ -66,11 +66,13 @@ process = cms.Process("FlatTree")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
-
-# remove verbose from patTrigger due to missing L1 prescales for some trigger paths
-#process.MessageLogger.suppressWarning.append('patTrigger')
-#process.MessageLogger.cerr.FwkJob.limit=1
-#process.MessageLogger.cerr.ERROR = cms.untracked.PSet( limit = cms.untracked.int32(0) )
+#process.MessageLogger.cerr.threshold = 'ERROR'
+process.MessageLogger.categories += cms.vstring('JetPtMismatch', 'MissingJetConstituent', 'JetPtMismatchAtLowPt', 'NullTransverseMomentum')
+process.MessageLogger.cerr.JetPtMismatch = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.MissingJetConstituent = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.JetPtMismatchAtLowPt = cms.untracked.PSet(limit = cms.untracked.int32(0))
+process.MessageLogger.cerr.NullTransverseMomentum = cms.untracked.PSet(limit = cms.untracked.int32(0))
+#process.MessageLogger.suppressWarning = cms.untracked.vstring(["JetPtMismatchAtLowPt","NullTransverseMomentum"])
 
 is2016 = (options.datasetsYear == "2016")
 is2017 = (options.datasetsYear == "2017")
@@ -136,7 +138,7 @@ process.load('Configuration.Geometry.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("TrackingTools/TransientTrack/TransientTrackBuilder_cfi")
 process.load("Configuration.StandardSequences.MagneticField_cff")
-process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi") # needs for electron smearing of miniAODv1
+process.load("Geometry.CaloEventSetup.CaloTowerConstituents_cfi")
 
 corList = cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute'])
 if options.isData:
@@ -188,6 +190,31 @@ tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms,
                 toKeep = ["dR0p32017v2"]
 )
 tauIdEmbedder.runTauID()
+
+if not options.isData:
+    process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
+            
+    from PhysicsTools.JetMCAlgos.HadronAndPartonSelector_cfi import selectedHadronsAndPartons
+    process.selectedHadronsAndPartons = selectedHadronsAndPartons.clone(
+            particles = "prunedGenParticles"
+    )
+                                    
+    from PhysicsTools.JetMCAlgos.AK4PFJetsMCFlavourInfos_cfi import ak4JetFlavourInfos
+    process.genJetFlavourInfos = ak4JetFlavourInfos.clone(
+            jets = "slimmedGenJets"
+    )
+    
+    from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenBHadron
+    process.matchGenBHadron = matchGenBHadron.clone(
+            genParticles = "prunedGenParticles",
+            jetFlavourInfos = "genJetFlavourInfos"
+    )
+                                                                                                
+    from PhysicsTools.JetMCAlgos.GenHFHadronMatcher_cff import matchGenCHadron
+    process.matchGenCHadron = matchGenCHadron.clone(
+            genParticles = "prunedGenParticles",
+            jetFlavourInfos = "genJetFlavourInfos"
+    )
 
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 if is2017:
@@ -386,7 +413,21 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
                   pfcandsInput             = cms.InputTag("packedPFCandidates"),
                   hConversionsInput        = cms.InputTag("reducedEgamma","reducedConversions"),
                   puInfoInput		   = cms.InputTag("slimmedAddPileupInfo"),
-                  objects                  = cms.InputTag("slimmedPatTriggerUnpacked")
+                  objects                  = cms.InputTag("slimmedPatTriggerUnpacked"),
+                  
+                  genTTXJets                    = cms.InputTag("slimmedGenJets"),
+                  genTTXBHadJetIndex            = cms.InputTag("matchGenBHadron","genBHadJetIndex"),
+                  genTTXBHadFlavour             = cms.InputTag("matchGenBHadron","genBHadFlavour"),
+                  genTTXBHadFromTopWeakDecay    = cms.InputTag("matchGenBHadron","genBHadFromTopWeakDecay"),
+                  genTTXBHadPlusMothers         = cms.InputTag("matchGenBHadron","genBHadPlusMothers"),
+                  genTTXBHadPlusMothersIndices  = cms.InputTag("matchGenBHadron","genBHadPlusMothersIndices"),
+                  genTTXBHadIndex               = cms.InputTag("matchGenBHadron","genBHadIndex"),
+                  genTTXBHadLeptonHadronIndex   = cms.InputTag("matchGenBHadron","genBHadLeptonHadronIndex"),
+                  genTTXBHadLeptonViaTau        = cms.InputTag("matchGenBHadron","genBHadLeptonViaTau"),
+                  genTTXCHadJetIndex            = cms.InputTag("matchGenCHadron","genCHadJetIndex"),
+                  genTTXCHadFlavour             = cms.InputTag("matchGenCHadron","genCHadFlavour"),
+                  genTTXCHadFromTopWeakDecay    = cms.InputTag("matchGenCHadron","genCHadFromTopWeakDecay"),
+                  genTTXCHadBHadronId           = cms.InputTag("matchGenCHadron","genCHadBHadronId")
 )
 
 ##########
@@ -396,7 +437,7 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 process.runQG = cms.Sequence()
 if options.runQG:
     process.runQG = cms.Sequence(process.QGTagger)
-
+    
 process.p = cms.Path(
                      process.egammaPostRecoSeq+
                      process.patJetCorrFactorsNewDFTraining+
@@ -417,5 +458,9 @@ process.p = cms.Path(
                      process.runQG+
                      process.slimmedPatTriggerUnpacked+
                      process.prefiringweight+
+                     process.selectedHadronsAndPartons+
+                     process.genJetFlavourInfos+
+                     process.matchGenBHadron+
+                     process.matchGenCHadron+
                      process.FlatTree
                    )

@@ -1215,6 +1215,14 @@ void FlatTree::Init()
    genJet_auxiliaryEnergy.clear();
    genJet_flavour.clear();
    
+   genTTXJet_n = 0;
+   genTTXJet_pt.clear();
+   genTTXJet_eta.clear();
+   genTTXJet_phi.clear();
+   genTTXJet_m.clear();
+   genTTXJet_E.clear();
+   genTTXJet_flavour.clear();
+   
    pfcand_n = 0;
    pfcand_pt.clear();
    pfcand_eta.clear();
@@ -1237,6 +1245,7 @@ void FlatTree::Init()
    gen_stop_m.clear();
    gen_neutralino_m.clear();
 
+   genTTX_id = DEFVAL;
 }
 
 void FlatTree::CreateBranches(int buffersize = 32000)
@@ -2445,6 +2454,14 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("genJet_auxiliaryEnergy") ) tree->Branch("genJet_auxiliaryEnergy", "std::vector<float>", &genJet_auxiliaryEnergy, buffersize);
    if( doWrite("genJet_flavour") ) tree->Branch("genJet_flavour", "std::vector<int>", &genJet_flavour, buffersize);
 
+   if( doWrite("genTTXJet_n") ) tree->Branch("genTTXJet_n", &genTTXJet_n, "genTTXJet_n/I", buffersize);
+   if( doWrite("genTTXJet_pt") ) tree->Branch("genTTXJet_pt", "std::vector<float>", &genTTXJet_pt, buffersize);
+   if( doWrite("genTTXJet_eta") ) tree->Branch("genTTXJet_eta", "std::vector<float>", &genTTXJet_eta, buffersize);
+   if( doWrite("genTTXJet_phi") ) tree->Branch("genTTXJet_phi", "std::vector<float>", &genTTXJet_phi, buffersize);
+   if( doWrite("genTTXJet_m") ) tree->Branch("genTTXJet_m", "std::vector<float>", &genTTXJet_m, buffersize);
+   if( doWrite("genTTXJet_E") ) tree->Branch("genTTXJet_E", "std::vector<float>", &genTTXJet_E, buffersize);
+   if( doWrite("genTTXJet_flavour") ) tree->Branch("genTTXJet_flavour", "std::vector<int>", &genTTXJet_flavour, buffersize);
+   
    if( doWrite("pfcand_do") )
      {	
 	if( doWrite("pfcand_n") ) tree->Branch("pfcand_n", &pfcand_n, "pfcand_n/I", buffersize);
@@ -5073,12 +5090,13 @@ void FlatTree::CreateBranches(int buffersize = 32000)
 	tree->Branch("gen_neutralino_m", "std::vector<float>", &gen_neutralino_m, buffersize);
      }
 
+  if( doWrite("genTTX_id") ) tree->Branch("genTTX_id", &genTTX_id, "genTTX_id/I", buffersize);
+   
   tree->Branch("n_presel_jets",     &n_presel_jets,     "n_presel_jets/I",      buffersize);
   tree->Branch("n_presel_btag",     &n_presel_btag,     "n_presel_btag/I",      buffersize);
   tree->Branch("n_presel_electrons", &n_presel_electrons, "n_presel_electrons/I",  buffersize);
   tree->Branch("n_presel_muons",     &n_presel_muons,     "n_presel_muons/I",      buffersize);
   tree->Branch("n_presel_tau",      &n_presel_tau,      "n_presel_tau/I",       buffersize);
-
 }
 
 bool FlatTree::doWrite(const std::string& name)
