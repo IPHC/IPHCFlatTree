@@ -961,17 +961,11 @@ FlatTreeProducer::FlatTreeProducer(const edm::ParameterSet& iConfig):
     std::string FlatTreeProducerLepMVAPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/lepMVA";
     if(datasetsYear_ == "2016")
     {
-       	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
-    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
-	
 	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2016.weights.xml", "mu");
     	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2016.weights.xml", "ele");
     }
     else if(datasetsYear_ == "2017" || datasetsYear_ == "2018")
     {  	
-    	//mu_reader        = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "mu_BDTG.weights.xml", "mu"); //old
-    	//ele_reader       = BookLeptonMVAReaderMoriond18(FlatTreeProducerLepMVAPath, "el_BDTG.weights.xml", "ele"); //old
-	
 	mu_reader        = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "mu_BDTG_2017.weights.xml", "mu");
     	ele_reader       = BookLeptonMVAReaderApril19(FlatTreeProducerLepMVAPath, "el_BDTG_2017.weights.xml", "ele");
     }
@@ -3134,11 +3128,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         ftree->jet_jetArea.push_back(jet.jetArea());
 
-	//Compute and store JES uncert.
-	//NB -- the computation and application is re-implemented in NtupleProducer. Should compute JES after correcting for JER ? (see https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#JetCorUncertainties)
-	jecUnc->setJetEta(jet.eta()); //CHANGED -- use absolute eta
-        jecUnc->setJetPt(jet.pt());
-        ftree->jet_Unc.push_back(jecUnc->getUncertainty(true));
+       if( !isData_ )
+	 {	    
+	    jecUnc->setJetEta(jet.eta());
+	    jecUnc->setJetPt(jet.pt());
+	    ftree->jet_Unc.push_back(jecUnc->getUncertainty(true));
+	 }       
+       else ftree->jet_Unc.push_back(-777.);
 
         ftree->jet_ntrk.push_back(jet.associatedTracks().size());
         //	std::cout << jet.hasTagInfo("pfInclusiveSecondaryVertexFinderTagInfos") << std::endl;
@@ -3924,14 +3920,14 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
     const char* cmssw_base = std::getenv("CMSSW_BASE");
     std::string JECUncertaintyPath;
 
-    //Old
-    //if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V6_DATA/Fall17_17Nov2017F_V6_DATA_Uncertainty_AK4PFchs.txt";}
-    //else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V8_MC/Fall17_17Nov2017_V8_MC_Uncertainty_AK4PFchs.txt";}
-    
-    if(isData_) {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017F_V32_DATA/Fall17_17Nov2017F_V32_DATA_Uncertainty_AK4PFchs.txt";}
-    else {JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V32_MC/Fall17_17Nov2017_V32_MC_Uncertainty_AK4PFchs.txt";}
-
-    jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
+    if( !isData_ ) 
+     {
+	if( datasetsYear_ == "2016" ) JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Summer16_07Aug2017_V11_MC/Summer16_07Aug2017_V11_MC_Uncertainty_AK4PFchs.txt";
+        else if( datasetsYear_ == "2017" ) JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Fall17_17Nov2017_V32_MC/Fall17_17Nov2017_V32_MC_Uncertainty_AK4PFchs.txt";
+        else JECUncertaintyPath = std::string(cmssw_base)+"/src/IPHCFlatTree/FlatTreeProducer/data/jecFiles/Autumn18_V8_MC/Autumn18_V8_MC_Uncertainty_AK4PFchs.txt";
+   
+        jecUnc = new JetCorrectionUncertainty(JECUncertaintyPath.c_str());
+     }
 
 //---------------------------------------------------
 //Create map of LHE_ID <-> PDF_set_ID (NEW), and save it as text file
@@ -4107,7 +4103,7 @@ void FlatTreeProducer::beginRun(const edm::Run& iRun, const edm::EventSetup& iSe
 // ------------ method called when ending the processing of a run  ------------
 void FlatTreeProducer::endRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-    delete jecUnc;
+    if( !isData_ ) delete jecUnc;
 
     //Can printout here infos on all the LHE weights (else comment out)
     //-------------------
