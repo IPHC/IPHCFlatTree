@@ -232,9 +232,24 @@ else:
 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 
-if is2016: setupEgammaPostRecoSeq(process,runVID=True,era='2016-Legacy')
-elif is2017: setupEgammaPostRecoSeq(process,runVID=True,era='2017-Nov17ReReco')
-elif is2018: setupEgammaPostRecoSeq(process,runVID=True,era='2018-Prompt')
+if is2016: setupEgammaPostRecoSeq(process,
+                                  applyEnergyCorrections=False,
+                                  applyVIDOnCorrectedEgamma=False,
+                                  runEnergyCorrections=False,
+                                  runVID=True,                                  
+                                  era='2016-Legacy')
+elif is2017: setupEgammaPostRecoSeq(process,
+                                    applyEnergyCorrections=False,
+                                    applyVIDOnCorrectedEgamma=False,
+                                    runEnergyCorrections=False,
+                                    runVID=True,
+                                    era='2017-Nov17ReReco')
+elif is2018: setupEgammaPostRecoSeq(process,
+                                    applyEnergyCorrections=False,
+                                    applyVIDOnCorrectedEgamma=False,
+                                    runEnergyCorrections=False,
+                                    runVID=True,
+                                    era='2018-Prompt')
 
 #####################
 # MET Significance  #
@@ -360,9 +375,7 @@ process.slimmedPatTriggerUnpacked = cms.EDProducer('PATTriggerObjectStandAloneUn
                                                    unpackFilterLabels = cms.bool(True)
 )
 
-if is2016: rhoName="fixedGridRhoFastjetCentralNeutral"
-elif is2017: rhoName="fixedGridRhoFastjetAll"
-elif is2018: rhoName="fixedGridRhoFastjetAll"
+rhoName="fixedGridRhoFastjetAll"
 
 #############################
 #  Flat Tree configuration  #

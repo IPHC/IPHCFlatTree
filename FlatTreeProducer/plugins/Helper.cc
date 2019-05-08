@@ -78,7 +78,7 @@ float isoSumRaw(const std::vector<const pat::PackedCandidate *> & cands, const r
         if( threshold > 0 && (*icharged)->pt() < threshold ) continue;
         // cone
         float mydr2 = reco::deltaR2(**icharged, cand);
-        if( mydr2 > dR2 || mydr2 < innerR2 ) continue;
+        if( mydr2 >= dR2 || mydr2 < innerR2 ) continue;
         // veto
         if( std::find(vetos.begin(), vetos.end(), *icharged) != vetos.end() )
 	  {

@@ -1225,7 +1225,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //
     ftree->ev_run = iEvent.id().run();
     ftree->ev_id = iEvent.id().event();
-
+   
     ftree->ev_lumi = iEvent.id().luminosityBlock();
 
     //std::cout << " Event =================================================================== " << std::endl << "No: " << iEvent.id().event() << std::endl ;
@@ -2210,14 +2210,14 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_dr04HcalDepth1TowerSumEt.push_back(elec.dr04HcalDepth1TowerSumEt());
         ftree->el_dr04HcalDepth2TowerSumEt.push_back(elec.dr04HcalDepth2TowerSumEt());
         ftree->el_dr04TkSumPt.push_back(elec.dr04TkSumPt());
-
+       
         // mini-iso
         float miniIso           = -666;
         float miniIsoTTH        = -666;
 	float PFRelIso04	= -666;
         float miniIsoTTHCharged = -666;
         float miniIsoTTHNeutral = -666;
-
+       
         if( dataFormat_ != "AOD" )
         {
 
@@ -2232,31 +2232,61 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             float miniIsoR = 10.0/std::min(std::max(float(elec.pt()),float(50.)),float(200.)); //this is for muons?
 
             float EffArea = 0.;
+	   float EffAreaPF = EffArea;
             float eta = elec.superCluster()->eta();
-
-	    //CHANGED values from 92X to 94X -- from : https://github.com/cms-sw/cmssw/blob/CMSSW_10_4_X/RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt
-            if(      fabs(eta) > 0      && fabs(eta) < 1.0 )   EffArea = 0.1440;
-            else if( fabs(eta) >= 1.0   && fabs(eta) < 1.479 ) EffArea = 0.1562;
-            else if( fabs(eta) >= 1.479 && fabs(eta) < 2.0 )   EffArea = 0.1032;
-            else if( fabs(eta) >= 2.0   && fabs(eta) < 2.2 )   EffArea = 0.0859;
-            else if( fabs(eta) >= 2.2   && fabs(eta) < 2.3 )   EffArea = 0.1116;
-            else if( fabs(eta) >= 2.3   && fabs(eta) < 2.4 )   EffArea = 0.1321;
-            else if( fabs(eta) >= 2.4   && fabs(eta) < 2.5 )   EffArea = 0.1654;
+	   
+	   if( datasetsYear_ == "2016" )
+	     {		
+		if(      fabs(eta) > 0      && fabs(eta) < 1.0 )   EffArea = 0.1752;
+		else if( fabs(eta) >= 1.0   && fabs(eta) < 1.479 ) EffArea = 0.1862;
+		else if( fabs(eta) >= 1.479 && fabs(eta) < 2.0 )   EffArea = 0.1411;
+		else if( fabs(eta) >= 2.0   && fabs(eta) < 2.2 )   EffArea = 0.1534;
+		else if( fabs(eta) >= 2.2   && fabs(eta) < 2.3 )   EffArea = 0.1903;
+		else if( fabs(eta) >= 2.3   && fabs(eta) < 2.4 )   EffArea = 0.2243;
+		else if( fabs(eta) >= 2.4   && fabs(eta) < 2.5 )   EffArea = 0.2687;
+		
+		if(      fabs(eta) > 0      && fabs(eta) < 1.0 )   EffAreaPF = 0.1703;
+		else if( fabs(eta) >= 1.0   && fabs(eta) < 1.479 ) EffAreaPF = 0.1715;
+		else if( fabs(eta) >= 1.479 && fabs(eta) < 2.0 )   EffAreaPF = 0.1213;
+		else if( fabs(eta) >= 2.0   && fabs(eta) < 2.2 )   EffAreaPF = 0.1230;
+		else if( fabs(eta) >= 2.2   && fabs(eta) < 2.3 )   EffAreaPF = 0.1635;
+		else if( fabs(eta) >= 2.3   && fabs(eta) < 2.4 )   EffAreaPF = 0.1937;
+		else if( fabs(eta) >= 2.4   && fabs(eta) < 2.5 )   EffAreaPF = 0.2393;		
+	     }
+	   else if( datasetsYear_ == "2017" || datasetsYear_ == "2018" )
+	     {
+		if(      fabs(eta) > 0      && fabs(eta) < 1.0 )   EffArea = 0.1566;
+		else if( fabs(eta) >= 1.0   && fabs(eta) < 1.479 ) EffArea = 0.1626;
+		else if( fabs(eta) >= 1.479 && fabs(eta) < 2.0 )   EffArea = 0.1073;
+		else if( fabs(eta) >= 2.0   && fabs(eta) < 2.2 )   EffArea = 0.0854;
+		else if( fabs(eta) >= 2.2   && fabs(eta) < 2.3 )   EffArea = 0.1051;
+		else if( fabs(eta) >= 2.3   && fabs(eta) < 2.4 )   EffArea = 0.1204;
+		else if( fabs(eta) >= 2.4   && fabs(eta) < 2.5 )   EffArea = 0.1524;
+	     }	   
 
             float correction = ftree->ev_rho*EffArea*(miniIsoR/0.3)*(miniIsoR/0.3);
 
+//            float pfIsoChargedRecalc = ElecPfIsoCharged(elec,pfcands,miniIsoR);
+//            float pfIsoNeutralRecalc = ElecPfIsoNeutral(elec,pfcands,miniIsoR);
+//            float pfIsoPUSubtractedRecalc = std::max(float(0.0),float(pfIsoNeutralRecalc-correction));
+
+//            float pfIsoCharged = ElecPfIsoCharged(elec,pfcands,miniIsoR);
+  //          float pfIsoNeutral = ElecPfIsoNeutral(elec,pfcands,miniIsoR);
+
             float pfIsoCharged = ElecPfIsoCharged(elec,pfcands,miniIsoR);
             float pfIsoNeutral = ElecPfIsoNeutral(elec,pfcands,miniIsoR);
-            float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
-
+	   
+//	    float pfIsoCharged      = elec.miniPFIsolation().chargedHadronIso();
+//	    float pfIsoNeutral      = elec.miniPFIsolation().neutralHadronIso();
+	    float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
+	   
             miniIsoTTH        = (pfIsoCharged + pfIsoPUSubtracted)/elec.pt();
             miniIsoTTHCharged = pfIsoCharged / elec.pt();
 	    miniIsoTTHNeutral = pfIsoPUSubtracted / elec.pt();
-
-	    if(elec.pt() <= 0) {PFRelIso04 = -9999;}
-	    else {PFRelIso04 = (elec.chargedHadronIso() + std::max(0.0, double(elec.neutralHadronIso()+elec.photonIso()-ftree->ev_rho*EffArea*(0.4/0.3)*(0.4/0.3))))/elec.pt();} //Ad-hoc fix : use dr=0.4 instead of 0.3 (used for effArea)
-            // ---------------------------------
-        }
+	   
+	   if(elec.pt() <= 0) PFRelIso04 = -9999;
+	   else PFRelIso04 = (elec.chargedHadronIso() + std::max(0.0, double(elec.neutralHadronIso()+elec.photonIso()-ftree->ev_rho*EffAreaPF*(0.4/0.3)*(0.4/0.3))))/elec.pt();
+	}
 
         //std::cout << elec.pt() << "   " << miniIsoTTH << "   " << miniIsoTTHCharged << "  " << miniIsoTTHNeutral << std::endl;
 
@@ -2702,30 +2732,49 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //
             // Below: Variables used for ttH analysis
 	    //See example of implementation in ttH code : https://github.com/peruzzim/cmg-cmssw/blob/heppy_94X_dev_ttH/PhysicsTools/Heppy/python/analyzers/objects/LeptonAnalyzer.py#L579
-            float miniIsoR = 10.0/std::min(std::max(float(muon.pt()),float(50.)),float(200.));
+	   float miniIsoR = 10.0/std::min(std::max(float(muon.pt()),float(50.)),float(200.));
             float EffArea = 0.;
             float eta = muon.eta();
 
-	    //94X values -- see : https://github.com/cms-data/PhysicsTools-NanoAOD/blob/master/effAreaMuons_cone03_pfNeuHadronsAndPhotons_94X.txt
-            if(      fabs(eta) > 0    && fabs(eta) < 0.8 ) EffArea = 0.0566;
-            else if( fabs(eta) >= 0.8 && fabs(eta) < 1.3 ) EffArea = 0.0562;
-            else if( fabs(eta) >= 1.3 && fabs(eta) < 2.0 ) EffArea = 0.0363;
-            else if( fabs(eta) >= 2.0 && fabs(eta) < 2.2 ) EffArea = 0.0119;
-            else if( fabs(eta) >= 2.2 && fabs(eta) < 2.5 ) EffArea = 0.0064;
+	   if( datasetsYear_ == "2016" )
+	     {		
+		if(      fabs(eta) > 0    && fabs(eta) < 0.8 ) EffArea = 0.0735;
+		else if( fabs(eta) >= 0.8 && fabs(eta) < 1.3 ) EffArea = 0.0619;
+		else if( fabs(eta) >= 1.3 && fabs(eta) < 2.0 ) EffArea = 0.0465;
+		else if( fabs(eta) >= 2.0 && fabs(eta) < 2.2 ) EffArea = 0.0433;
+		else if( fabs(eta) >= 2.2 && fabs(eta) < 2.5 ) EffArea = 0.0577;
+	     }
+	   else if( datasetsYear_ == "2017" || datasetsYear_ == "2018" )
+	     {
+		if(      fabs(eta) > 0    && fabs(eta) < 0.8 ) EffArea = 0.0566;
+		else if( fabs(eta) >= 0.8 && fabs(eta) < 1.3 ) EffArea = 0.0562;
+		else if( fabs(eta) >= 1.3 && fabs(eta) < 2.0 ) EffArea = 0.0363;
+		else if( fabs(eta) >= 2.0 && fabs(eta) < 2.2 ) EffArea = 0.0119;
+		else if( fabs(eta) >= 2.2 && fabs(eta) < 2.5 ) EffArea = 0.0064;
+	     }	   
 
             float correction = ftree->ev_rho*EffArea*(miniIsoR/0.3)*(miniIsoR/0.3);
+//	   float correction = ftree->ev_rho*EffArea*(0.4/0.3)*(0.4/0.3);
 
             //miniIso = getPFIsolation(pfcands,dynamic_cast<const reco::Candidate*>(&muon),0.05,0.2,10.,false,false);
 
             float pfIsoCharged      = MuonPfIsoCharged(muon,pfcands,miniIsoR);
-            float pfIsoNeutral      = MuonPfIsoNeutral(muon,pfcands,miniIsoR);
-            float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
+//            float pfIsoNeutralRecalc      = MuonPfIsoNeutral(muon,pfcands,miniIsoR);
+//            float pfIsoPUSubtractedRecalc = std::max(float(0.0),float(pfIsoNeutralRecalc-correction));
 
+//	    float pfIsoCharged      = muon.miniPFIsolation().chargedHadronIso();
+	   float pfIsoNeutral      = MuonPfIsoNeutral(muon,pfcands,miniIsoR);
+//	    float pfIsoNeutral      = muon.miniPFIsolation().neutralHadronIso();
+	    float pfIsoPUSubtracted = std::max(float(0.0),float(pfIsoNeutral-correction));
+	   
             miniIsoTTH        = (pfIsoCharged + pfIsoPUSubtracted) / muon.pt();
             miniIsoTTHCharged = pfIsoCharged / muon.pt();
             miniIsoTTHNeutral = pfIsoPUSubtracted / muon.pt();
 
-	    //NEW
+//	   if( ftree->ev_id == 46579 )
+//	     std::cout << "miniIsoTTHNeutralRecalc=" << miniIsoTTHNeutral << " miniIsoTTHChargedRecalc=" << miniIsoTTHCharged << 
+//	     " miniIsoTTHNeutral=" << std::max(float(0.0),float(muon.miniPFIsolation().neutralHadronIso()-correction))/muon.pt() << " miniIsoTTHCharged=" << muon.miniPFIsolation().chargedHadronIso()/muon.pt() << std::endl;
+	   
 	    if(muon.pt() <= 0) {PFRelIso04 = -9999;}
 	    else {PFRelIso04 = (pfR04.sumChargedHadronPt + std::max(0.0, double(pfR04.sumNeutralHadronEt+pfR04.sumPhotonEt-pfR04.sumPUPt/2.)))/muon.pt();}
         }
@@ -3183,38 +3232,80 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         else
             ftree->jet_pileupJetId.push_back(-666.);
 
-        // Jet ID
+       // Jet ID
 
-	// https://twiki.cern.ch/twiki/bin/view/CMS/JetID13TeVRun2017
+       float NHF = jet.neutralHadronEnergyFraction();
+       float NEMF = jet.neutralEmEnergyFraction();
+       float CHF = jet.chargedHadronEnergyFraction();
+       float MUF = jet.muonEnergyFraction();
+       float CEMF = jet.chargedEmEnergyFraction();
+       float NEM = jet.neutralMultiplicity();
+       float CHM = jet.chargedMultiplicity();
+       float NumConst = NEM + CHM;
+       float eta = jet.eta();
 
-        float NHF = jet.neutralHadronEnergyFraction();
-        float NEMF = jet.neutralEmEnergyFraction();
-        float CHF = jet.chargedHadronEnergyFraction();
-        float MUF = jet.muonEnergyFraction();
-        float CEMF = jet.chargedEmEnergyFraction();
-        float NEM = jet.neutralMultiplicity();
-        float CHM = jet.chargedMultiplicity();
-        float NumConst = NEM + CHM;
-        float eta = jet.eta();
-//        bool looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1 && MUF<0.8) && ((fabs(eta)<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(eta)>2.4);
+       bool looseJetID = 1;
+       bool tightJetID = 1;
+       bool tightLepVetoJetID = 1;
 
-        bool tightJetID = 1;
-        bool tightLepVetoJetID = 1;
+       if( datasetsYear_ == "2016" )
+	 {	           
+	    if( fabs(eta) < 2.7 )
+	      {
+		 tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8);
+		 tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1);
+		 looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1);
+		 
+		 if( fabs(eta) <= 2.4 )
+		   {
+		      if(CHF<=0 || CHM<=0 || CEMF>0.90) {tightLepVetoJetID = false;}
+		      if(CHF<=0 || CHM<=0 || CEMF>0.99) {tightJetID = false;}
+		      if(CHF<=0 || CHM<=0 || CEMF>0.99) {looseJetID = false;}
+		   }
+	      }
+	    else if( fabs(eta) >= 2.7 && fabs(eta) < 3.0 )
+	      {
+		 tightJetID = (NEMF>0.01 && NHF<0.98 && NEM>2);
+		 looseJetID = (NEMF>0.01 && NHF<0.98 && NEM>2);
+	      }	    
+	    else if( fabs(eta) >= 3.0 ) 
+	      {
+		 tightJetID = (NEMF<0.90 && NEM>10);
+		 looseJetID = (NEMF<0.90 && NEM>10);
+	      }	    
+	 }
+       else if( datasetsYear_ == "2017" )
+	 {
+	    if( fabs(eta) < 2.7 )
+	      {
+		 tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8);
+		 tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1);
+		 
+		 if( fabs(eta) <= 2.4 )
+		   {
+		      if(CHF<=0 || CHM<=0 || CEMF>0.80) {tightLepVetoJetID = false;}
+		      if(CHF<=0 || CHM<=0) {tightJetID = false;}
+		   }
+	      }
+	    else if( fabs(eta) >= 2.7 && fabs(eta) < 3.0 ) tightJetID = (NEMF>0.02 && NEMF<0.99 && NEM>2);
+	    else if( fabs(eta) >= 3.0 ) tightJetID = (NEMF<0.90 && NHF>0.02 && NEM>10);
+	 }       
+       else if( datasetsYear_ == "2018" )
+	 {
+	    if( fabs(eta) < 2.7 )
+	      {
+		 tightLepVetoJetID = (NHF<0.90 && NEMF<0.99 && MUF<0.8 && CHM>0 && CEMF<0.80);
+		 tightJetID = (NHF<0.90 && NEMF<0.99 && CHM>0);
 
-        //CHANGED -- boolean logic was not properly implemented for jets with eta<2.4
-        if( fabs(eta) < 2.7 )
-	{
-	  tightLepVetoJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1 && MUF<0.8);
-	  tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1);
-
-	  if( fabs(eta) <= 2.4)
-	  {
-	    if(CHF<=0 || CHM<=0 || CEMF>0.80) {tightLepVetoJetID = false;}
-	    if(CHF<=0 || CHM<=0) {tightJetID = false;}
-	  }
-	}
-        else if( fabs(eta) >= 2.7 && fabs(eta) < 3.0 ) tightJetID = (NEMF>0.02 && NEMF<0.99 && NEM>2);
-        else if( fabs(eta) >= 3.0 ) tightJetID = (NEMF<0.90 && NHF>0.02 && NEM>10);
+		 if( fabs(eta) <= 2.6 )
+		   {
+		      if(NEMF>=0.90 && NumConst<=1 && CHF<=0) {tightLepVetoJetID = false;}
+		      if(NEMF>=0.90 && NumConst<=1 && CHF<=0) {tightJetID = false;}
+		   }
+	      }
+	    else if( fabs(eta) >= 2.7 && fabs(eta) < 3.0 ) tightJetID = (NEMF>0.02 && NEMF<0.99 && NEM>2);
+	    else if( fabs(eta) >= 3.0 ) tightJetID = (NEMF<0.90 && NHF>0.2 && NEM>10);
+	 }       
 
         ftree->jet_neutralHadronEnergyFraction.push_back(jet.neutralHadronEnergyFraction());
         ftree->jet_neutralEmEnergyFraction.push_back(jet.neutralEmEnergyFraction());
@@ -3222,7 +3313,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->jet_muonEnergyFraction.push_back(jet.muonEnergyFraction());
         ftree->jet_chargedEmEnergyFraction.push_back(jet.chargedEmEnergyFraction());
 
-//        ftree->jet_looseJetID.push_back(looseJetID);
+        ftree->jet_looseJetID.push_back(looseJetID);
         ftree->jet_tightJetID.push_back(tightJetID);
         ftree->jet_tightLepVetoJetID.push_back(tightLepVetoJetID);
 
