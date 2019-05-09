@@ -413,11 +413,11 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
 //CHANGED to comply with nanoAOD standards : dR < 0.3 and dPt/Pt < 0.5
 //Also changed func from bool to int : 0 <-> no match // 1 <-> match found // 2 <-> charge also matches // 3 <-> electron matches to photon
 int MCTruth::doMatch(const edm::Event& iEvent,
-		      const edm::EventSetup& iSetup,
-		      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		      reco::GenParticle &genp,
-		      float &drMin,
-		      float pt, float eta, float phi, int pdgId, bool isTau)
+		     const edm::EventSetup& iSetup,
+		     const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+		     reco::GenParticle &genp,
+		     float &drMin,
+		     float pt, float eta, float phi, int pdgId, bool isTau)
 { 
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
@@ -462,13 +462,16 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	//if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && (abs(idGen) != 22 || abs(pdgId) != 11) ) {continue;} //also keep photons for conv matching
 	//if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
 	
-	//Ask prompt leptons -- CHANGED
-	if(!isPromptFinalState && !isDirectPromptTauDecayProductFinalState && (abs(idGen) != 22 || abs(pdgId) != 11)) {continue;} //Keep photons for conv matching
+	//Ask prompt leptons
+	if( !isTau && !isPromptFinalState && !isDirectPromptTauDecayProductFinalState && (abs(idGen) != 22 || abs(pdgId) != 11)) {continue;} //Keep photons for conv matching
+	
+	if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
 	
 	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( (fabs(pt - ptGen) / ptGen) > 0.5) {continue;} //New requirement : dPt/pt(gen) must be < 0.5
+	if( !isTau && (fabs(pt - ptGen) / ptGen) > 0.5) continue;
+	if( isTau && (fabs(pt - ptGen) / ptGen) > 1.0) continue;
 
 	if( dr < drmin )
 	  {
@@ -476,7 +479,7 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	     foundMatch = 1;
 	     genp = *mcp; 
 
-	     if(pdgId == idGen && !isTau) {hasChargeMatch = true;}
+	     if(pdgId == idGen) {hasChargeMatch = true;}
 	     else {hasChargeMatch = false;}
 	     
 	     if(abs(pdgId) == 11 && abs(idGen) == 22) {ele_hasPhotonMatch = true;}
