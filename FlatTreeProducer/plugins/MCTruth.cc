@@ -470,7 +470,8 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( !isTau && (fabs(pt - ptGen) / ptGen) > 0.5) continue;
+	if( (!isTau && (fabs(pt - ptGen) / ptGen) > 0.5) ||
+	    ((isTau && (fabs(pt - ptGen) / ptGen) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13)) ) continue;
 	if( isTau && (fabs(pt - ptGen) / ptGen) > 1.0) continue;
 
 	if( dr < drmin )
@@ -488,6 +489,11 @@ int MCTruth::doMatch(const edm::Event& iEvent,
      }
    
    drMin = drmin;
+
+//   if( iEvent.id().event() == 1154923 && isTau )
+//     {
+//	std::cout << pt << " " << foundMatch << std::endl;
+//     }   
    
    if(ele_hasPhotonMatch) {return 3;}
    else if(hasChargeMatch) {return 2;}
