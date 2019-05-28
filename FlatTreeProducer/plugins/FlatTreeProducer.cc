@@ -2336,9 +2336,14 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_jetPtRatio = std::min(ptRatioElec(elec,elecjet, PFRelIso04),1.5);
        lepMVA_jetPtRelv2 = (jcl >= 0) ? ptRelElec(elec,jets->at(jcl)) : 0.0;
        float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
+       csv = (isnan(csv)) ? -999. : csv;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
-       lepMVA_jetBTagDeepCSV = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -1;
-       lepMVA_jetBTagDeepFlavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb"): 0;
+       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
+       deepcsv = (isnan(deepcsv)) ? -999. : deepcsv;
+       lepMVA_jetBTagDeepCSV = std::max(double(deepcsv),0.);
+       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -666;
+       deepflavour = (isnan(deepflavour)) ? -999. : deepflavour;
+       lepMVA_jetBTagDeepFlavour = std::max(double(deepflavour),0.);
        lepMVA_sip3d = abs(ftree->el_ip3d.back()/ftree->el_ip3dErr.back());
        lepMVA_dxy = log(abs(ftree->el_gsfTrack_PV_dxy.back()));
        lepMVA_dz = log(abs(ftree->el_gsfTrack_PV_dz.back()));
@@ -2872,24 +2877,28 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	      }
 	 }
 
-        lepMVA_pt                                   = mu_pt;
-        lepMVA_eta                                  = mu_eta;
-        lepMVA_miniRelIsoNeutral                    = miniIsoTTHNeutral;
-        lepMVA_miniRelIsoCharged                    = miniIsoTTHCharged;
-        lepMVA_jetPtRatio                           = std::min(ptRatioMuon(muon,muonjet,PFRelIso04),1.5);
-        lepMVA_jetPtRelv2                           = (jcl >= 0) ? ptRelMuon(muon,jets->at(jcl)) : 0.0;
-        float csv                                   = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
-        lepMVA_jetBTagCSV                           = std::max(double(csv),0.);
-        lepMVA_jetBTagDeepCSV                       = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
-        lepMVA_jetBTagDeepFlavour 		    = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb"): 0;
-	lepMVA_sip3d                                = abs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
-        lepMVA_dxy                                  = log(abs(ftree->mu_innerTrack_PV_dxy.back()));
-        lepMVA_dz                                   = log(abs(ftree->mu_innerTrack_PV_dz.back()));
-        lepMVA_mvaId                                = ftree->mu_segmentCompatibility.back();
-        lepMVA_jetNDauChargedMVASel                 = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&muon),*primVtx) : 0.0; //?? correct default value
+       lepMVA_pt                                   = mu_pt;
+       lepMVA_eta                                  = mu_eta;
+       lepMVA_miniRelIsoNeutral                    = miniIsoTTHNeutral;
+       lepMVA_miniRelIsoCharged                    = miniIsoTTHCharged;
+       lepMVA_jetPtRatio                           = std::min(ptRatioMuon(muon,muonjet,PFRelIso04),1.5);
+       lepMVA_jetPtRelv2                           = (jcl >= 0) ? ptRelMuon(muon,jets->at(jcl)) : 0.0;
+       float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
+       csv = (isnan(csv)) ? -999. : csv;
+       lepMVA_jetBTagCSV = std::max(double(csv),0.);
+       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
+       deepcsv = (isnan(deepcsv)) ? -999. : deepcsv;
+       lepMVA_jetBTagDeepCSV = std::max(double(deepcsv),0.);
+       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -666;
+       deepflavour = (isnan(deepflavour)) ? -999. : deepflavour;
+       lepMVA_jetBTagDeepFlavour = std::max(double(deepflavour),0.);
+       lepMVA_sip3d                                = abs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
+       lepMVA_dxy                                  = log(abs(ftree->mu_innerTrack_PV_dxy.back()));
+       lepMVA_dz                                   = log(abs(ftree->mu_innerTrack_PV_dz.back()));
+       lepMVA_mvaId                                = ftree->mu_segmentCompatibility.back();
+       lepMVA_jetNDauChargedMVASel                 = (jcl >= 0) ? jetNDauChargedMVASel(jets->at(jcl),dynamic_cast<const reco::Candidate*>(&muon),*primVtx) : 0.0; //?? correct default value
 
-        mu_lepMVA = mu_reader->EvaluateMVA("BDTG method");
-	//cout<<"mu_lepMVA = "<<mu_lepMVA<<endl;
+       mu_lepMVA = mu_reader->EvaluateMVA("BDTG method");
 
         ftree->mu_lepMVA.push_back(mu_lepMVA);
         ftree->mu_lepMVA_pt.push_back(lepMVA_pt);
