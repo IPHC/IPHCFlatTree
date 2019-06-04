@@ -227,6 +227,8 @@ if is2017:
 else:
     runMetCorAndUncFromMiniAOD(process,
                                isData = options.isData,
+                               fixEE2017 = False,
+                               fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
                                postfix = "ModifiedMET"
     )
 
