@@ -1584,7 +1584,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             {
                 if( !isFired ) pass_eeBadScFilter = 0;
             }
-            else if( strcmp(triggerName.c_str(),"Flag_globalTightHalo2016Filter") == 0 )
+            else if( strcmp(triggerName.c_str(),"Flag_globalSuperTightHalo2016Filter") == 0 )
             {
                 if( !isFired ) pass_globalTightHalo2016Filter = 0;
             }
@@ -1596,9 +1596,12 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             {
                 if( !isFired ) pass_BadChargedCandidateFilter = 0;
             }
-            else if( strcmp(triggerName.c_str(),"Flag_ecalBadCalibFilter") == 0 )
+            else if( strcmp(triggerName.c_str(),"Flag_ecalBadCalibReducedMINIAODFilter") == 0 )
             {
-                if( !isFired ) pass_ecalBadCalibFilter = 0;
+	       if( datasetsYear_ != "2016" )
+		 {		    
+		    if( !isFired ) pass_ecalBadCalibFilter = 0;
+		 }	       
             }
         }
     }
