@@ -3252,8 +3252,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     for(int ij=0;ij<nJet;ij++)
     {
         const pat::Jet& jet = jets->at(ij);
-       
-        ftree->jet_id.push_back(ij);
 
         ftree->jet_pt.push_back(jet.pt());
         ftree->jet_eta.push_back(jet.eta());

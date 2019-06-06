@@ -833,7 +833,6 @@
     <var name="jet_muonEnergyFraction" save="1"></var>
     <var name="jet_chargedEmEnergyFraction" save="1"></var>
     <var name="jet_pileupJetId" save="1"></var>
-    <var name="jet_id" save="1"></var>
     <var name="jet_looseJetID" save="1"></var>
     <var name="jet_tightJetID" save="1"></var>
     <var name="jet_tightLepVetoJetID" save="1"></var>

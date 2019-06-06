@@ -1006,8 +1006,6 @@ class FlatTree
    
    std::vector<float> jet_pileupJetId;
    
-   std::vector<int> jet_id;
-   
    std::vector<bool> jet_looseJetID;
    std::vector<bool> jet_tightJetID;
    std::vector<bool> jet_tightLepVetoJetID;
