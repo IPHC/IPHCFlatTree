@@ -468,6 +468,8 @@ class FlatTree
    std::vector<float> el_energySigmaRhoUp;
    std::vector<float> el_energySigmaRhoDown;
    
+   std::vector<int> el_matchedJetId;
+   
    std::vector<float> el_mvaIso;
    std::vector<float> el_mvaNoIso;
    
@@ -817,6 +819,8 @@ class FlatTree
    
    std::vector<int> mu_type;
    
+   std::vector<int> mu_matchedJetId;
+   
    std::vector<float> mu_lepMVA;
 
    std::vector<float> mu_lepMVA_pt; 
@@ -921,6 +925,8 @@ class FlatTree
    std::vector<float> tau_pfEssential_dxy;
    std::vector<float> tau_pfEssential_dxy_error;
    std::vector<float> tau_pfEssential_dxy_Sig;
+   
+   std::vector<int> tau_matchedJetId;
 
    std::vector<int> tau_hasMCMatch;
    std::vector<int> tau_hasChargeMCMatch;
@@ -999,6 +1005,8 @@ class FlatTree
    std::vector<float> jet_Unc;
    
    std::vector<float> jet_pileupJetId;
+   
+   std::vector<int> jet_id;
    
    std::vector<bool> jet_looseJetID;
    std::vector<bool> jet_tightJetID;

@@ -428,6 +428,8 @@ void FlatTree::Init()
    el_energySigmaRhoUp.clear();
    el_energySigmaRhoDown.clear();
    
+   el_matchedJetId.clear();
+   
    el_mvaIso.clear();
    el_mvaNoIso.clear();
    
@@ -773,6 +775,8 @@ void FlatTree::Init()
    
    mu_type.clear();
 
+   mu_matchedJetId.clear();
+   
    mu_lepMVA.clear();
 
    mu_lepMVA_pt.clear(); 
@@ -876,6 +880,8 @@ void FlatTree::Init()
    tau_pfEssential_dxy.clear();
    tau_pfEssential_dxy_error.clear();
    tau_pfEssential_dxy_Sig.clear();
+   
+   tau_matchedJetId.clear();
 
    tau_hasMCMatch.clear();
    tau_hasChargeMCMatch.clear();
@@ -984,6 +990,8 @@ void FlatTree::Init()
    jet_genParton_E.clear();
    jet_genParton_status.clear();
    jet_genParton_id.clear();
+   
+   jet_id.clear();
    
    jetPuppi_n = 0;
    jetPuppi_pt.clear();
@@ -1658,6 +1666,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_energySigmaRhoUp") ) tree->Branch("el_energySigmaRhoUp", "std::vector<float>", &el_energySigmaRhoUp, buffersize);
    if( doWrite("el_energySigmaRhoDown") ) tree->Branch("el_energySigmaRhoDown", "std::vector<float>", &el_energySigmaRhoDown, buffersize);
    
+   if( doWrite("el_matchedJetId") ) tree->Branch("el_matchedJetId", "std::vector<int>", &el_matchedJetId, buffersize);
+   
    if( doWrite("el_mvaIso") ) tree->Branch("el_mvaIso", "std::vector<float>", &el_mvaIso, buffersize);
    if( doWrite("el_mvaNoIso") ) tree->Branch("el_mvaNoIso", "std::vector<float>", &el_mvaNoIso, buffersize);
    
@@ -2002,6 +2012,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_innerTrack_validFraction") ) tree->Branch("mu_innerTrack_validFraction", "std::vector<float>", &mu_innerTrack_validFraction, buffersize);
    
    if( doWrite("mu_type") ) tree->Branch("mu_type", "std::vector<int>", &mu_type, buffersize);
+
+   if( doWrite("mu_matchedJetId") ) tree->Branch("mu_matchedJetId", "std::vector<int>", &mu_matchedJetId, buffersize);
    
    if( doWrite("mu_lepMVA") ) tree->Branch("mu_lepMVA", "std::vector<float>", &mu_lepMVA, buffersize);
 
@@ -2107,6 +2119,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_pfEssential_dxy_error") ) tree->Branch("tau_pfEssential_dxy_error", "std::vector<float>", &tau_pfEssential_dxy_error, buffersize);
    if( doWrite("tau_pfEssential_dxy_Sig") ) tree->Branch("tau_pfEssential_dxy_Sig", "std::vector<float>", &tau_pfEssential_dxy_Sig, buffersize);
 
+   if( doWrite("tau_matchedJetId") ) tree->Branch("tau_matchedJetId", "std::vector<int>", &tau_matchedJetId, buffersize);
+   
    if( doWrite("tau_hasMCMatch") ) tree->Branch("tau_hasMCMatch", "std::vector<int>", &tau_hasMCMatch, buffersize);
    if( doWrite("tau_hasChargeMCMatch") ) tree->Branch("tau_hasChargeMCMatch", "std::vector<int>", &tau_hasChargeMCMatch, buffersize);
    if( doWrite("tau_gen_pt") ) tree->Branch("tau_gen_pt", "std::vector<float>", &tau_gen_pt, buffersize);
@@ -2190,6 +2204,8 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("jet_Unc") ) tree->Branch("jet_Unc", "std::vector<float>", &jet_Unc, buffersize);
    
    if( doWrite("jet_pileupJetId") ) tree->Branch("jet_pileupJetId", "std::vector<float>", &jet_pileupJetId, buffersize);
+   
+   if( doWrite("jet_id") ) tree->Branch("jet_id", "std::vector<int>", &jet_id, buffersize);
    
    if( doWrite("jet_looseJetID") ) tree->Branch("jet_looseJetID", "std::vector<bool>", &jet_looseJetID, buffersize);
    if( doWrite("jet_tightJetID") ) tree->Branch("jet_tightJetID", "std::vector<bool>", &jet_tightJetID, buffersize);

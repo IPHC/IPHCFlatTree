@@ -2210,6 +2210,48 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_dr04HcalDepth1TowerSumEt.push_back(elec.dr04HcalDepth1TowerSumEt());
         ftree->el_dr04HcalDepth2TowerSumEt.push_back(elec.dr04HcalDepth2TowerSumEt());
         ftree->el_dr04TkSumPt.push_back(elec.dr04TkSumPt());
+
+       int matched_jet_index = -777;       
+       int number_cand = elec.numberOfSourceCandidatePtrs();
+       for( int i_cand=0;i_cand<number_cand;i_cand++ )
+	 {
+	    const reco::CandidatePtr &c1s = elec.sourceCandidatePtr(i_cand);
+	    int i_jet = -1;
+	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
+	      {
+		 i_jet++;
+		 int number_jet = j->numberOfSourceCandidatePtrs();
+		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
+		   {
+		      const reco::CandidatePtr &c2s = j->sourceCandidatePtr(i_cand_jet);
+		      if( c2s == c1s )
+			{
+			   matched_jet_index = i_jet;
+			   break;
+			}
+		   }
+	      }
+	 }
+       ftree->el_matchedJetId.push_back(matched_jet_index);
+       	    	  
+/*       pat::Jet *muonjet = NULL;
+       int jcl = -1;
+       for(unsigned int ij=0;ij<jets->size();ij++)
+	 {
+	    for(unsigned int i1=0;i1<jets->at(ij).numberOfSourceCandidatePtrs();i1++)
+	      {
+		 auto c1s = jets->at(ij).sourceCandidatePtr(i1);
+		 for(unsigned int i2=0;i2<muon.numberOfSourceCandidatePtrs();i2++)
+		   {
+		      if(muon.sourceCandidatePtr(i2) == c1s)
+			{
+			   jcl = ij;
+			   muonjet = const_cast<pat::Jet*>(&(jets->at(ij)));
+			   break;
+			}
+		   }
+	      }
+	 }*/
        
         // mini-iso
         float miniIso           = -666;
@@ -2722,6 +2764,29 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_vy.push_back(muon.vy());
         ftree->mu_vz.push_back(muon.vz());
 
+       int matched_jet_index = -777;
+       int number_cand = muon.numberOfSourceCandidatePtrs();
+       for( int i_cand=0;i_cand<number_cand;i_cand++ )
+	 {
+	    const reco::CandidatePtr &c1s = muon.sourceCandidatePtr(i_cand);
+	    int i_jet = -1;
+	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
+	      {
+		 i_jet++;
+		 int number_jet = j->numberOfSourceCandidatePtrs();
+		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
+		   {
+		      const reco::CandidatePtr &c2s = j->sourceCandidatePtr(i_cand_jet);
+		      if( c2s == c1s )
+			{
+			   matched_jet_index = i_jet;
+			   break;
+			}
+		   }
+	      }
+	 }
+       ftree->mu_matchedJetId.push_back(matched_jet_index);
+       
         // mini-iso
         float miniIso           = -666;
         float miniIsoTTH        = -666;
@@ -3097,6 +3162,29 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->tau_pfEssential_dxy_error.push_back(tau.pfEssential().dxy_error_);
         ftree->tau_pfEssential_dxy_Sig.push_back(tau.pfEssential().dxy_Sig_);
 
+       int matched_jet_index = -777;
+       int number_cand = tau.numberOfSourceCandidatePtrs();
+       for( int i_cand=0;i_cand<number_cand;i_cand++ )
+	 {
+	    const reco::CandidatePtr &c1s = tau.sourceCandidatePtr(i_cand);
+	    int i_jet = -1;
+	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
+	      {
+		 i_jet++;
+		 int number_jet = j->numberOfSourceCandidatePtrs();
+		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
+		   {
+		      const reco::CandidatePtr &c2s = j->sourceCandidatePtr(i_cand_jet);
+		      if( c2s == c1s )
+			{
+			   matched_jet_index = i_jet;
+			   break;
+			}
+		   }
+	      }
+	 }
+       ftree->tau_matchedJetId.push_back(matched_jet_index);
+       
         /*	ftree->tau_pfEssential_flightLengthSig.push_back(tau.pfEssential().flightLengthSig);
             ftree->tau_pfEssential_dxy.push_back(tau.pfEssential().dxy);
             ftree->tau_pfEssential_dxy_error.push_back(tau.pfEssential().dxy_error);
@@ -3161,6 +3249,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     for(int ij=0;ij<nJet;ij++)
     {
         const pat::Jet& jet = jets->at(ij);
+       
+        ftree->jet_id.push_back(ij);
 
         ftree->jet_pt.push_back(jet.pt());
         ftree->jet_eta.push_back(jet.eta());

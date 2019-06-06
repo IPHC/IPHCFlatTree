@@ -368,6 +368,7 @@
     <var name="el_energySigmaPhiDown" save="1"></var>
     <var name="el_energySigmaRhoUp" save="1"></var>
     <var name="el_energySigmaRhoDown" save="1"></var>
+    <var name="el_matchedJetId" save="1"></var>
     <var name="el_mvaIso" save="1"></var>
     <var name="el_mvaNoIso" save="1"></var>
     <var name="el_vetoCBId" save="1"></var>
@@ -681,6 +682,7 @@
     <var name="mu_innerTrack_numberOfOuterHits" save="0"></var>
     <var name="mu_innerTrack_validFraction" save="1"></var>
     <var name="mu_type" save="1"></var>
+    <var name="mu_matchedJetId" save="1"></var>
     <var name="mu_lepMVA" save="1"></var>      
     <var name="mu_lepMVA_pt" save="1"></var>
     <var name="mu_lepMVA_eta" save="1"></var>
@@ -772,6 +774,7 @@
     <var name="tau_pfEssential_dxy" save="1"></var>
     <var name="tau_pfEssential_dxy_error" save="1"></var>
     <var name="tau_pfEssential_dxy_Sig" save="1"></var>
+    <var name="tau_matchedJetId" save="1"></var>
     <var name="tau_hasMCMatch" save="1" mc="1"></var>
     <var name="tau_hasChargeMCMatch" save="1" mc="1"></var>
     <var name="tau_gen_pt" save="1" mc="1"></var>
@@ -830,6 +833,7 @@
     <var name="jet_muonEnergyFraction" save="1"></var>
     <var name="jet_chargedEmEnergyFraction" save="1"></var>
     <var name="jet_pileupJetId" save="1"></var>
+    <var name="jet_id" save="1"></var>
     <var name="jet_looseJetID" save="1"></var>
     <var name="jet_tightJetID" save="1"></var>
     <var name="jet_tightLepVetoJetID" save="1"></var>
