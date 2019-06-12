@@ -470,9 +470,9 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( (!isTau && (fabs(pt - ptGen) / ptGen) > 0.5) ||
-	    ((isTau && (fabs(pt - ptGen) / ptGen) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13)) ) continue;
-	if( isTau && (fabs(pt - ptGen) / ptGen) > 1.0) continue;
+	if( (!isTau && (fabs(pt - ptGen) / pt) > 0.5) ||
+	    ((isTau && (fabs(pt - ptGen) / pt) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13)) ) continue;
+	if( isTau && (fabs(pt - ptGen) / pt) > 1.0) continue;
 
 	if( dr < drmin )
 	  {
