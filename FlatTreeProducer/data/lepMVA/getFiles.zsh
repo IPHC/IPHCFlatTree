@@ -1,6 +1,6 @@
 #!/bin/env zsh
 
-wpath="https://raw.githubusercontent.com/peruzzim/cmgtools-lite/tree/94X_dev_M18_EGM17/TTHAnalysis/data/leptonMVA/tth"
-
-wget "${wpath}/el_BDTG.weights.xml"
-wget "${wpath}/mu_BDTG.weights.xml"
+wget http://www.hep.uniovi.es/sscruz/LepMVA/el_BDTG_2016.weights.xml
+wget http://www.hep.uniovi.es/sscruz/LepMVA/el_BDTG_2017.weights.xml
+wget http://www.hep.uniovi.es/sscruz/LepMVA/mu_BDTG_2016.weights.xml
+wget http://www.hep.uniovi.es/sscruz/LepMVA/mu_BDTG_2017.weights.xml
