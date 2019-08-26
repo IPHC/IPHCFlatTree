@@ -390,6 +390,7 @@
     <var name="el_lepMVA_miniRelIsoNeutral" save="1"></var>
     <var name="el_lepMVA_jetPtRatio" save="1"></var>
     <var name="el_lepMVA_jetPtRelv2" save="1"></var>
+    <var name="el_jetRelIso" save="1"></var>
     <var name="el_lepMVA_jetBTagCSV" save="1"></var>
     <var name="el_lepMVA_jetBTagDeepCSV" save="1"></var>
     <var name="el_lepMVA_jetBTagDeepFlavour" save="1"></var>
@@ -690,6 +691,7 @@
     <var name="mu_lepMVA_miniRelIsoNeutral" save="1"></var>
     <var name="mu_lepMVA_jetPtRatio" save="1"></var>
     <var name="mu_lepMVA_jetPtRelv2" save="1"></var>
+    <var name="mu_jetRelIso" save="1"></var>
     <var name="mu_lepMVA_jetBTagCSV" save="1"></var>
     <var name="mu_lepMVA_jetBTagDeepCSV" save="1"></var>
     <var name="mu_lepMVA_jetBTagDeepFlavour" save="1"></var>

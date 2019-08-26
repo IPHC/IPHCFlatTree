@@ -457,6 +457,7 @@ void FlatTree::Init()
    el_lepMVA_miniRelIsoNeutral.clear();
    el_lepMVA_jetPtRatio.clear();
    el_lepMVA_jetPtRelv2.clear();
+   el_jetRelIso.clear();
    el_lepMVA_jetBTagCSV.clear();
    el_lepMVA_jetBTagDeepCSV.clear();
    el_lepMVA_jetBTagDeepFlavour.clear();
@@ -785,6 +786,7 @@ void FlatTree::Init()
    mu_lepMVA_miniRelIsoNeutral.clear();
    mu_lepMVA_jetPtRatio.clear();
    mu_lepMVA_jetPtRelv2.clear();
+   mu_jetRelIso.clear();
    mu_lepMVA_jetBTagCSV.clear();
    mu_lepMVA_jetBTagDeepCSV.clear();
    mu_lepMVA_jetBTagDeepFlavour.clear();
@@ -1693,6 +1695,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_lepMVA_miniRelIsoNeutral") ) tree->Branch("el_lepMVA_miniRelIsoNeutral", "std::vector<float>", &el_lepMVA_miniRelIsoNeutral, buffersize);
    if( doWrite("el_lepMVA_jetPtRatio") ) tree->Branch("el_lepMVA_jetPtRatio", "std::vector<float>", &el_lepMVA_jetPtRatio, buffersize);
    if( doWrite("el_lepMVA_jetPtRelv2") ) tree->Branch("el_lepMVA_jetPtRelv2", "std::vector<float>", &el_lepMVA_jetPtRelv2, buffersize);
+   if( doWrite("el_jetRelIso") ) tree->Branch("el_jetRelIso", "std::vector<float>", &el_jetRelIso, buffersize);
    if( doWrite("el_lepMVA_jetBTagCSV") ) tree->Branch("el_lepMVA_jetBTagCSV", "std::vector<float>", &el_lepMVA_jetBTagCSV, buffersize);
    if( doWrite("el_lepMVA_jetBTagDeepCSV") ) tree->Branch("el_lepMVA_jetBTagDeepCSV", "std::vector<float>", &el_lepMVA_jetBTagDeepCSV, buffersize);
    if( doWrite("el_lepMVA_jetBTagDeepFlavour") ) tree->Branch("el_lepMVA_jetBTagDeepFlavour", "std::vector<float>", &el_lepMVA_jetBTagDeepFlavour, buffersize);
@@ -2021,6 +2024,7 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_lepMVA_miniRelIsoNeutral") ) tree->Branch("mu_lepMVA_miniRelIsoNeutral", "std::vector<float>", &mu_lepMVA_miniRelIsoNeutral, buffersize);
    if( doWrite("mu_lepMVA_jetPtRatio") ) tree->Branch("mu_lepMVA_jetPtRatio", "std::vector<float>", &mu_lepMVA_jetPtRatio, buffersize);
    if( doWrite("mu_lepMVA_jetPtRelv2") ) tree->Branch("mu_lepMVA_jetPtRelv2", "std::vector<float>", &mu_lepMVA_jetPtRelv2, buffersize);
+   if( doWrite("mu_jetRelIso") ) tree->Branch("mu_jetRelIso", "std::vector<float>", &mu_jetRelIso, buffersize);
    if( doWrite("mu_lepMVA_jetBTagCSV") ) tree->Branch("mu_lepMVA_jetBTagCSV", "std::vector<float>", &mu_lepMVA_jetBTagCSV, buffersize);
    if( doWrite("mu_lepMVA_jetBTagDeepCSV") ) tree->Branch("mu_lepMVA_jetBTagDeepCSV", "std::vector<float>", &mu_lepMVA_jetBTagDeepCSV, buffersize);
    if( doWrite("mu_lepMVA_jetBTagDeepFlavour") ) tree->Branch("mu_lepMVA_jetBTagDeepFlavour", "std::vector<float>", &mu_lepMVA_jetBTagDeepFlavour, buffersize);

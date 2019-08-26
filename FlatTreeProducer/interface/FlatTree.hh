@@ -497,6 +497,7 @@ class FlatTree
    std::vector<float> el_lepMVA_miniRelIsoNeutral;
    std::vector<float> el_lepMVA_jetPtRatio;
    std::vector<float> el_lepMVA_jetPtRelv2;
+   std::vector<float> el_jetRelIso;
    std::vector<float> el_lepMVA_jetBTagCSV;
    std::vector<float> el_lepMVA_jetBTagDeepCSV;
    std::vector<float> el_lepMVA_jetBTagDeepFlavour;
@@ -829,6 +830,7 @@ class FlatTree
    std::vector<float> mu_lepMVA_miniRelIsoNeutral;
    std::vector<float> mu_lepMVA_jetPtRatio;
    std::vector<float> mu_lepMVA_jetPtRelv2;
+   std::vector<float> mu_jetRelIso;
    std::vector<float> mu_lepMVA_jetBTagCSV;
    std::vector<float> mu_lepMVA_jetBTagDeepCSV;
    std::vector<float> mu_lepMVA_jetBTagDeepFlavour;

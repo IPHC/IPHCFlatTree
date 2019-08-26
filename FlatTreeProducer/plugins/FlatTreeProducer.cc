@@ -1984,7 +1984,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     for(int ie=0;ie<nElec;ie++)
     {
         const pat::Electron& elec = electronsPAT->at(ie);
-
+       
         // Skimming electrons with pT < 5 GeV.
         //if (elec.pt() < 5) continue;
 
@@ -2380,6 +2380,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_miniRelIsoCharged = miniIsoTTHCharged;
        lepMVA_jetPtRatio = std::min(ptRatioElec(elec,elecjet, PFRelIso04),1.5);
        lepMVA_jetPtRelv2 = (jcl >= 0) ? ptRelElec(elec,jets->at(jcl)) : 0.0;
+       float jetRelIso = (jcl >= 0) ? (1./lepMVA_jetPtRatio)-1. : PFRelIso04;
        float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
        csv = (isnan(csv)) ? -999. : csv;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
@@ -2480,6 +2481,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_lepMVA_miniRelIsoNeutral.push_back(lepMVA_miniRelIsoNeutral);
         ftree->el_lepMVA_jetPtRatio.push_back(lepMVA_jetPtRatio);
         ftree->el_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
+        ftree->el_jetRelIso.push_back(jetRelIso);
         ftree->el_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
         ftree->el_lepMVA_jetBTagDeepCSV.push_back(lepMVA_jetBTagDeepCSV);
         ftree->el_lepMVA_jetBTagDeepFlavour.push_back(lepMVA_jetBTagDeepFlavour);
@@ -2951,6 +2953,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_miniRelIsoCharged                    = miniIsoTTHCharged;
        lepMVA_jetPtRatio                           = std::min(ptRatioMuon(muon,muonjet,PFRelIso04),1.5);
        lepMVA_jetPtRelv2                           = (jcl >= 0) ? ptRelMuon(muon,jets->at(jcl)) : 0.0;
+       float jetRelIso = (jcl >= 0) ? (1./lepMVA_jetPtRatio)-1. : PFRelIso04;
        float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
        csv = (isnan(csv)) ? -999. : csv;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
@@ -2975,6 +2978,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_lepMVA_miniRelIsoNeutral.push_back(lepMVA_miniRelIsoNeutral);
         ftree->mu_lepMVA_jetPtRatio.push_back(lepMVA_jetPtRatio);
         ftree->mu_lepMVA_jetPtRelv2.push_back(lepMVA_jetPtRelv2);
+        ftree->mu_jetRelIso.push_back(jetRelIso);
         ftree->mu_lepMVA_jetBTagCSV.push_back(lepMVA_jetBTagCSV);
         ftree->mu_lepMVA_jetBTagDeepCSV.push_back(lepMVA_jetBTagDeepCSV);
         ftree->mu_lepMVA_jetBTagDeepFlavour.push_back(lepMVA_jetBTagDeepFlavour);
