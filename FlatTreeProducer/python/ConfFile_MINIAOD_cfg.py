@@ -187,7 +187,7 @@ import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, 
                 debug = False,
                 updatedTauName = "NewTauIDsEmbedded",
-                toKeep = ["dR0p32017v2"]
+                toKeep = ["dR0p32017v2","deepTau2017v2"]
 )
 tauIdEmbedder.runTauID()
 

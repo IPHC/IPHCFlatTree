@@ -25,7 +25,7 @@ mkdir MyAnalysis
 cd MyAnalysis
 
 # CMSSW Release
-RELEASE=10_2_13
+RELEASE=10_2_16
 
 # Setup release
 cmsrel CMSSW_$RELEASE
@@ -44,6 +44,9 @@ git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev
 
 # Tools needed for AK10 jet collection
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
+
+# Include DeepTauv2
+git cms-merge-topic -u cms-tau-pog:CMSSW_10_2_X_tau-pog_DeepTau2017v2
 
 # Clone this repo
 git clone https://github.com/IPHC/IPHCFlatTree.git
