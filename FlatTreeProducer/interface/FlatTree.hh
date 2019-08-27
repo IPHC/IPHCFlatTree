@@ -881,32 +881,68 @@ class FlatTree
    std::vector<float> tau_leadingTrackDxy;
    
    std::vector<int> tau_decayMode;
-   std::vector<float> tau_decayModeFinding;
+   std::vector<bool> tau_decayModeFinding;
 //   std::vector<float> tau_decayModeFindingOldDMs;
-   std::vector<float> tau_decayModeFindingNewDMs;
+   std::vector<bool> tau_decayModeFindingNewDMs;
    
    std::vector<float> tau_puCorrPtSum;
    std::vector<float> tau_neutralIsoPtSum;
    std::vector<float> tau_chargedIsoPtSum;
-   std::vector<float> tau_byCombinedIsolationDeltaBetaCorrRaw3Hits;
+   std::vector<bool> tau_byCombinedIsolationDeltaBetaCorrRaw3Hits;
    
-   std::vector<float> tau_byLooseCombinedIsolationDeltaBetaCorr3Hits;
-   std::vector<float> tau_byMediumCombinedIsolationDeltaBetaCorr3Hits;
-   std::vector<float> tau_byTightCombinedIsolationDeltaBetaCorr3Hits;
+   std::vector<bool> tau_byLooseCombinedIsolationDeltaBetaCorr3Hits;
+   std::vector<bool> tau_byMediumCombinedIsolationDeltaBetaCorr3Hits;
+   std::vector<bool> tau_byTightCombinedIsolationDeltaBetaCorr3Hits;
 
-   std::vector<float> tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT;
-   std::vector<float> tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT;
-   std::vector<float> tau_byTightIsolationMVArun2v1DBdR03oldDMwLT;
-   std::vector<float> tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT;
-   std::vector<float> tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT;
+   std::vector<bool> tau_byLooseIsolationMVArun2v1DBdR03oldDMwLT;
+   std::vector<bool> tau_byMediumIsolationMVArun2v1DBdR03oldDMwLT;
+   std::vector<bool> tau_byTightIsolationMVArun2v1DBdR03oldDMwLT;
+   std::vector<bool> tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT;
+   std::vector<bool> tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT;
+
+   std::vector<bool> tau_byDeepTau2017v1VSjetraw;
+   std::vector<bool> tau_byDeepTau2017v1VSeraw;
+   std::vector<bool> tau_byDeepTau2017v1VSmuraw;
+   std::vector<bool> tau_byDpfTau2016v0VSallraw;
+   std::vector<bool> tau_byDpfTau2016v1VSallraw;
    
-   std::vector<float> tau_againstMuonLoose3;
-   std::vector<float> tau_againstMuonTight3;
+   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSjet;
+   std::vector<bool> tau_byVVLooseDeepTau2017v1VSjet;
+   std::vector<bool> tau_byVLooseDeepTau2017v1VSjet;
+   std::vector<bool> tau_byLooseDeepTau2017v1VSjet;
+   std::vector<bool> tau_byMediumDeepTau2017v1VSjet;
+   std::vector<bool> tau_byTightDeepTau2017v1VSjet;
+   std::vector<bool> tau_byVTightDeepTau2017v1VSjet;
+   std::vector<bool> tau_byVVTightDeepTau2017v1VSjet;
+       
+   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSe;
+   std::vector<bool> tau_byVVLooseDeepTau2017v1VSe;
+   std::vector<bool> tau_byVLooseDeepTau2017v1VSe;
+   std::vector<bool> tau_byLooseDeepTau2017v1VSe;
+   std::vector<bool> tau_byMediumDeepTau2017v1VSe;
+   std::vector<bool> tau_byTightDeepTau2017v1VSe;
+   std::vector<bool> tau_byVTightDeepTau2017v1VSe;
+   std::vector<bool> tau_byVVTightDeepTau2017v1VSe;
+   
+   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSmu;
+   std::vector<bool> tau_byVVLooseDeepTau2017v1VSmu;
+   std::vector<bool> tau_byVLooseDeepTau2017v1VSmu;
+   std::vector<bool> tau_byLooseDeepTau2017v1VSmu;
+   std::vector<bool> tau_byMediumDeepTau2017v1VSmu;
+   std::vector<bool> tau_byTightDeepTau2017v1VSmu;
+   std::vector<bool> tau_byVTightDeepTau2017v1VSmu;
+   std::vector<bool> tau_byVVTightDeepTau2017v1VSmu;
+   
+   std::vector<bool> tau_byTightDpfTau2016v0VSall;
+   std::vector<bool> tau_byTightDpfTau2016v1VSall;
+   
+   std::vector<bool> tau_againstMuonLoose3;
+   std::vector<bool> tau_againstMuonTight3;
 
-   std::vector<float> tau_againstElectronVLooseMVA6;
-   std::vector<float> tau_againstElectronLooseMVA6;
-   std::vector<float> tau_againstElectronMediumMVA6;
-   std::vector<float> tau_againstElectronTightMVA6;
+   std::vector<bool> tau_againstElectronVLooseMVA6;
+   std::vector<bool> tau_againstElectronLooseMVA6;
+   std::vector<bool> tau_againstElectronMediumMVA6;
+   std::vector<bool> tau_againstElectronTightMVA6;
    
    std::vector<float> tau_pfEssential_jet_pt;
    std::vector<float> tau_pfEssential_jet_eta;
