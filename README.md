@@ -33,6 +33,9 @@ cd CMSSW_X_Y_Z/src
 cmsenv
 git cms-init
 
+# Include DeepTauv2
+git cms-merge-topic -u cms-tau-pog:CMSSW_10_2_X_tau-pog_DeepTau2017v2
+
 # Egamma
 git cms-merge-topic cms-egamma:EgammaPostRecoTools
 # Egamma energy corrections
@@ -44,9 +47,6 @@ git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev
 
 # Tools needed for AK10 jet collection
 git clone git@github.com:cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_102X_v1
-
-# Include DeepTauv2
-git cms-merge-topic -u cms-tau-pog:CMSSW_10_2_X_tau-pog_DeepTau2017v2
 
 # Clone this repo
 git clone https://github.com/IPHC/IPHCFlatTree.git
