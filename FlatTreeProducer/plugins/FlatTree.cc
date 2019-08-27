@@ -855,41 +855,32 @@ void FlatTree::Init()
    tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
    tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT.clear();
 
-   tau_byDeepTau2017v1VSjetraw.clear();
-   tau_byDeepTau2017v1VSeraw.clear();
-   tau_byDeepTau2017v1VSmuraw.clear();
-   tau_byDpfTau2016v0VSallraw.clear();
-   tau_byDpfTau2016v1VSallraw.clear();
+   tau_byDeepTau2017v2VSjetraw.clear();
+   tau_byDeepTau2017v2VSeraw.clear();
+   tau_byDeepTau2017v2VSmuraw.clear();
    
-   tau_byVVVLooseDeepTau2017v1VSjet.clear();
-   tau_byVVLooseDeepTau2017v1VSjet.clear();
-   tau_byVLooseDeepTau2017v1VSjet.clear();
-   tau_byLooseDeepTau2017v1VSjet.clear();
-   tau_byMediumDeepTau2017v1VSjet.clear();
-   tau_byTightDeepTau2017v1VSjet.clear();
-   tau_byVTightDeepTau2017v1VSjet.clear();
-   tau_byVVTightDeepTau2017v1VSjet.clear();
+   tau_byVVVLooseDeepTau2017v2VSjet.clear();
+   tau_byVVLooseDeepTau2017v2VSjet.clear();
+   tau_byVLooseDeepTau2017v2VSjet.clear();
+   tau_byLooseDeepTau2017v2VSjet.clear();
+   tau_byMediumDeepTau2017v2VSjet.clear();
+   tau_byTightDeepTau2017v2VSjet.clear();
+   tau_byVTightDeepTau2017v2VSjet.clear();
+   tau_byVVTightDeepTau2017v2VSjet.clear();
        
-   tau_byVVVLooseDeepTau2017v1VSe.clear();
-   tau_byVVLooseDeepTau2017v1VSe.clear();
-   tau_byVLooseDeepTau2017v1VSe.clear();
-   tau_byLooseDeepTau2017v1VSe.clear();
-   tau_byMediumDeepTau2017v1VSe.clear();
-   tau_byTightDeepTau2017v1VSe.clear();
-   tau_byVTightDeepTau2017v1VSe.clear();
-   tau_byVVTightDeepTau2017v1VSe.clear();
+   tau_byVVVLooseDeepTau2017v2VSe.clear();
+   tau_byVVLooseDeepTau2017v2VSe.clear();
+   tau_byVLooseDeepTau2017v2VSe.clear();
+   tau_byLooseDeepTau2017v2VSe.clear();
+   tau_byMediumDeepTau2017v2VSe.clear();
+   tau_byTightDeepTau2017v2VSe.clear();
+   tau_byVTightDeepTau2017v2VSe.clear();
+   tau_byVVTightDeepTau2017v2VSe.clear();
    
-   tau_byVVVLooseDeepTau2017v1VSmu.clear();
-   tau_byVVLooseDeepTau2017v1VSmu.clear();
-   tau_byVLooseDeepTau2017v1VSmu.clear();
-   tau_byLooseDeepTau2017v1VSmu.clear();
-   tau_byMediumDeepTau2017v1VSmu.clear();
-   tau_byTightDeepTau2017v1VSmu.clear();
-   tau_byVTightDeepTau2017v1VSmu.clear();
-   tau_byVVTightDeepTau2017v1VSmu.clear();
-   
-   tau_byTightDpfTau2016v0VSall.clear();
-   tau_byTightDpfTau2016v1VSall.clear();
+   tau_byVLooseDeepTau2017v2VSmu.clear();
+   tau_byLooseDeepTau2017v2VSmu.clear();
+   tau_byMediumDeepTau2017v2VSmu.clear();
+   tau_byTightDeepTau2017v2VSmu.clear();
    
    tau_againstMuonLoose3.clear();
    tau_againstMuonTight3.clear();
@@ -2129,41 +2120,32 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT") ) tree->Branch("tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT", "std::vector<bool>", &tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT, buffersize);
    if( doWrite("tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT") ) tree->Branch("tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT", "std::vector<bool>", &tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT, buffersize);
    
-   if( doWrite("tau_byDeepTau2017v1VSjetraw") ) tree->Branch("tau_byDeepTau2017v1VSjetraw", "std::vector<bool>", &tau_byDeepTau2017v1VSjetraw, buffersize);
-   if( doWrite("tau_byDeepTau2017v1VSeraw") ) tree->Branch("tau_byDeepTau2017v1VSeraw", "std::vector<bool>", &tau_byDeepTau2017v1VSeraw, buffersize);
-   if( doWrite("tau_byDeepTau2017v1VSmuraw") ) tree->Branch("tau_byDeepTau2017v1VSmuraw", "std::vector<bool>", &tau_byDeepTau2017v1VSmuraw, buffersize);
-   if( doWrite("tau_byDpfTau2016v0VSallraw") ) tree->Branch("tau_byDpfTau2016v0VSallraw", "std::vector<bool>", &tau_byDpfTau2016v0VSallraw, buffersize);
-   if( doWrite("tau_byDpfTau2016v1VSallraw") ) tree->Branch("tau_byDpfTau2016v1VSallraw", "std::vector<bool>", &tau_byDpfTau2016v1VSallraw, buffersize);
+   if( doWrite("tau_byDeepTau2017v2VSjetraw") ) tree->Branch("tau_byDeepTau2017v2VSjetraw", "std::vector<bool>", &tau_byDeepTau2017v2VSjetraw, buffersize);
+   if( doWrite("tau_byDeepTau2017v2VSeraw") ) tree->Branch("tau_byDeepTau2017v2VSeraw", "std::vector<bool>", &tau_byDeepTau2017v2VSeraw, buffersize);
+   if( doWrite("tau_byDeepTau2017v2VSmuraw") ) tree->Branch("tau_byDeepTau2017v2VSmuraw", "std::vector<bool>", &tau_byDeepTau2017v2VSmuraw, buffersize);
 
-   if( doWrite("tau_byVVVLooseDeepTau2017v1VSjet") ) tree->Branch("tau_byVVVLooseDeepTau2017v1VSjet", "std::vector<bool>", &tau_byVVVLooseDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byVVLooseDeepTau2017v1VSjet") ) tree->Branch("tau_byVVLooseDeepTau2017v1VSjet", "std::vector<bool>", &tau_byVVLooseDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byVLooseDeepTau2017v1VSjet") ) tree->Branch("tau_byVLooseDeepTau2017v1VSjet", "std::vector<bool>", &tau_byVLooseDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byLooseDeepTau2017v1VSjet") ) tree->Branch("tau_byLooseDeepTau2017v1VSjet", "std::vector<bool>", &tau_byLooseDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byMediumDeepTau2017v1VSjet") ) tree->Branch("tau_byMediumDeepTau2017v1VSjet", "std::vector<bool>", &tau_byMediumDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byTightDeepTau2017v1VSjet") ) tree->Branch("tau_byTightDeepTau2017v1VSjet", "std::vector<bool>", &tau_byTightDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byVTightDeepTau2017v1VSjet") ) tree->Branch("tau_byVTightDeepTau2017v1VSjet", "std::vector<bool>", &tau_byVTightDeepTau2017v1VSjet, buffersize);
-   if( doWrite("tau_byVVTightDeepTau2017v1VSjet") ) tree->Branch("tau_byVVTightDeepTau2017v1VSjet", "std::vector<bool>", &tau_byVVTightDeepTau2017v1VSjet, buffersize);
+   if( doWrite("tau_byVVVLooseDeepTau2017v2VSjet") ) tree->Branch("tau_byVVVLooseDeepTau2017v2VSjet", "std::vector<bool>", &tau_byVVVLooseDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byVVLooseDeepTau2017v2VSjet") ) tree->Branch("tau_byVVLooseDeepTau2017v2VSjet", "std::vector<bool>", &tau_byVVLooseDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byVLooseDeepTau2017v2VSjet") ) tree->Branch("tau_byVLooseDeepTau2017v2VSjet", "std::vector<bool>", &tau_byVLooseDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byLooseDeepTau2017v2VSjet") ) tree->Branch("tau_byLooseDeepTau2017v2VSjet", "std::vector<bool>", &tau_byLooseDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byMediumDeepTau2017v2VSjet") ) tree->Branch("tau_byMediumDeepTau2017v2VSjet", "std::vector<bool>", &tau_byMediumDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byTightDeepTau2017v2VSjet") ) tree->Branch("tau_byTightDeepTau2017v2VSjet", "std::vector<bool>", &tau_byTightDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byVTightDeepTau2017v2VSjet") ) tree->Branch("tau_byVTightDeepTau2017v2VSjet", "std::vector<bool>", &tau_byVTightDeepTau2017v2VSjet, buffersize);
+   if( doWrite("tau_byVVTightDeepTau2017v2VSjet") ) tree->Branch("tau_byVVTightDeepTau2017v2VSjet", "std::vector<bool>", &tau_byVVTightDeepTau2017v2VSjet, buffersize);
    
-   if( doWrite("tau_byVVVLooseDeepTau2017v1VSe") ) tree->Branch("tau_byVVVLooseDeepTau2017v1VSe", "std::vector<bool>", &tau_byVVVLooseDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byVVLooseDeepTau2017v1VSe") ) tree->Branch("tau_byVVLooseDeepTau2017v1VSe", "std::vector<bool>", &tau_byVVLooseDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byVLooseDeepTau2017v1VSe") ) tree->Branch("tau_byVLooseDeepTau2017v1VSe", "std::vector<bool>", &tau_byVLooseDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byLooseDeepTau2017v1VSe") ) tree->Branch("tau_byLooseDeepTau2017v1VSe", "std::vector<bool>", &tau_byLooseDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byMediumDeepTau2017v1VSe") ) tree->Branch("tau_byMediumDeepTau2017v1VSe", "std::vector<bool>", &tau_byMediumDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byTightDeepTau2017v1VSe") ) tree->Branch("tau_byTightDeepTau2017v1VSe", "std::vector<bool>", &tau_byTightDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byVTightDeepTau2017v1VSe") ) tree->Branch("tau_byVTightDeepTau2017v1VSe", "std::vector<bool>", &tau_byVTightDeepTau2017v1VSe, buffersize);
-   if( doWrite("tau_byVVTightDeepTau2017v1VSe") ) tree->Branch("tau_byVVTightDeepTau2017v1VSe", "std::vector<bool>", &tau_byVVTightDeepTau2017v1VSe, buffersize);
+   if( doWrite("tau_byVVVLooseDeepTau2017v2VSe") ) tree->Branch("tau_byVVVLooseDeepTau2017v2VSe", "std::vector<bool>", &tau_byVVVLooseDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byVVLooseDeepTau2017v2VSe") ) tree->Branch("tau_byVVLooseDeepTau2017v2VSe", "std::vector<bool>", &tau_byVVLooseDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byVLooseDeepTau2017v2VSe") ) tree->Branch("tau_byVLooseDeepTau2017v2VSe", "std::vector<bool>", &tau_byVLooseDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byLooseDeepTau2017v2VSe") ) tree->Branch("tau_byLooseDeepTau2017v2VSe", "std::vector<bool>", &tau_byLooseDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byMediumDeepTau2017v2VSe") ) tree->Branch("tau_byMediumDeepTau2017v2VSe", "std::vector<bool>", &tau_byMediumDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byTightDeepTau2017v2VSe") ) tree->Branch("tau_byTightDeepTau2017v2VSe", "std::vector<bool>", &tau_byTightDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byVTightDeepTau2017v2VSe") ) tree->Branch("tau_byVTightDeepTau2017v2VSe", "std::vector<bool>", &tau_byVTightDeepTau2017v2VSe, buffersize);
+   if( doWrite("tau_byVVTightDeepTau2017v2VSe") ) tree->Branch("tau_byVVTightDeepTau2017v2VSe", "std::vector<bool>", &tau_byVVTightDeepTau2017v2VSe, buffersize);
    
-   if( doWrite("tau_byVVVLooseDeepTau2017v1VSmu") ) tree->Branch("tau_byVVVLooseDeepTau2017v1VSmu", "std::vector<bool>", &tau_byVVVLooseDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byVVLooseDeepTau2017v1VSmu") ) tree->Branch("tau_byVVLooseDeepTau2017v1VSmu", "std::vector<bool>", &tau_byVVLooseDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byVLooseDeepTau2017v1VSmu") ) tree->Branch("tau_byVLooseDeepTau2017v1VSmu", "std::vector<bool>", &tau_byVLooseDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byLooseDeepTau2017v1VSmu") ) tree->Branch("tau_byLooseDeepTau2017v1VSmu", "std::vector<bool>", &tau_byLooseDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byMediumDeepTau2017v1VSmu") ) tree->Branch("tau_byMediumDeepTau2017v1VSmu", "std::vector<bool>", &tau_byMediumDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byTightDeepTau2017v1VSmu") ) tree->Branch("tau_byTightDeepTau2017v1VSmu", "std::vector<bool>", &tau_byTightDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byVTightDeepTau2017v1VSmu") ) tree->Branch("tau_byVTightDeepTau2017v1VSmu", "std::vector<bool>", &tau_byVTightDeepTau2017v1VSmu, buffersize);
-   if( doWrite("tau_byVVTightDeepTau2017v1VSmu") ) tree->Branch("tau_byVVTightDeepTau2017v1VSmu", "std::vector<bool>", &tau_byVVTightDeepTau2017v1VSmu, buffersize);
-
-   if( doWrite("tau_byTightDpfTau2016v0VSall") ) tree->Branch("tau_byTightDpfTau2016v0VSall", "std::vector<bool>", &tau_byTightDpfTau2016v0VSall, buffersize);
-   if( doWrite("tau_byTightDpfTau2016v1VSall") ) tree->Branch("tau_byTightDpfTau2016v1VSall", "std::vector<bool>", &tau_byTightDpfTau2016v1VSall, buffersize);
+   if( doWrite("tau_byVLooseDeepTau2017v2VSmu") ) tree->Branch("tau_byVLooseDeepTau2017v2VSmu", "std::vector<bool>", &tau_byVLooseDeepTau2017v2VSmu, buffersize);
+   if( doWrite("tau_byLooseDeepTau2017v2VSmu") ) tree->Branch("tau_byLooseDeepTau2017v2VSmu", "std::vector<bool>", &tau_byLooseDeepTau2017v2VSmu, buffersize);
+   if( doWrite("tau_byMediumDeepTau2017v2VSmu") ) tree->Branch("tau_byMediumDeepTau2017v2VSmu", "std::vector<bool>", &tau_byMediumDeepTau2017v2VSmu, buffersize);
+   if( doWrite("tau_byTightDeepTau2017v2VSmu") ) tree->Branch("tau_byTightDeepTau2017v2VSmu", "std::vector<bool>", &tau_byTightDeepTau2017v2VSmu, buffersize);
    
    if( doWrite("tau_againstMuonLoose3") ) tree->Branch("tau_againstMuonLoose3", "std::vector<bool>", &tau_againstMuonLoose3, buffersize);
    if( doWrite("tau_againstMuonTight3") ) tree->Branch("tau_againstMuonTight3", "std::vector<bool>", &tau_againstMuonTight3, buffersize);

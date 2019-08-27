@@ -754,37 +754,29 @@
     <var name="tau_byTightIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
     <var name="tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
     <var name="tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT" save="1"></var>
-    <var name="tau_byDeepTau2017v1VSjetraw" save="1"></var>
-    <var name="tau_byDeepTau2017v1VSeraw" save="1"></var>
-    <var name="tau_byDeepTau2017v1VSmuraw" save="1"></var>
-    <var name="tau_byDpfTau2016v0VSallraw" save="1"></var>
-    <var name="tau_byDpfTau2016v1VSallraw" save="1"></var>
-    <var name="tau_byVVVLooseDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byVVLooseDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byVLooseDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byLooseDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byMediumDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byTightDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byVTightDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byVVTightDeepTau2017v1VSjet" save="1"></var>
-    <var name="tau_byVVVLooseDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byVVLooseDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byVLooseDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byLooseDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byMediumDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byTightDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byVTightDeepTau2017v1VSe" save="1"></var>
-    <var name="tau_byVVTightDeepTau2017v1VSe" save="1"></var>    
-    <var name="tau_byVVVLooseDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byVVLooseDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byVLooseDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byLooseDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byMediumDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byTightDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byVTightDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byVVTightDeepTau2017v1VSmu" save="1"></var>
-    <var name="tau_byTightDpfTau2016v0VSall" save="1"></var>
-    <var name="tau_byTightDpfTau2016v1VSall" save="1"></var>
+    <var name="tau_byDeepTau2017v2VSjetraw" save="1"></var>
+    <var name="tau_byDeepTau2017v2VSeraw" save="1"></var>
+    <var name="tau_byDeepTau2017v2VSmuraw" save="1"></var>
+    <var name="tau_byVVVLooseDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byVVLooseDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byVLooseDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byLooseDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byMediumDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byTightDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byVTightDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byVVTightDeepTau2017v2VSjet" save="1"></var>
+    <var name="tau_byVVVLooseDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byVVLooseDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byVLooseDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byLooseDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byMediumDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byTightDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byVTightDeepTau2017v2VSe" save="1"></var>
+    <var name="tau_byVVTightDeepTau2017v2VSe" save="1"></var>    
+    <var name="tau_byVLooseDeepTau2017v2VSmu" save="1"></var>
+    <var name="tau_byLooseDeepTau2017v2VSmu" save="1"></var>
+    <var name="tau_byMediumDeepTau2017v2VSmu" save="1"></var>
+    <var name="tau_byTightDeepTau2017v2VSmu" save="1"></var>
     <var name="tau_againstMuonLoose3" save="1"></var>
     <var name="tau_againstMuonTight3" save="1"></var>
     <var name="tau_againstElectronVLooseMVA6" save="1"></var>

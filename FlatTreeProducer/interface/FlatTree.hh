@@ -900,41 +900,32 @@ class FlatTree
    std::vector<bool> tau_byVTightIsolationMVArun2v1DBdR03oldDMwLT;
    std::vector<bool> tau_byVLooseIsolationMVArun2v1DBdR03oldDMwLT;
 
-   std::vector<bool> tau_byDeepTau2017v1VSjetraw;
-   std::vector<bool> tau_byDeepTau2017v1VSeraw;
-   std::vector<bool> tau_byDeepTau2017v1VSmuraw;
-   std::vector<bool> tau_byDpfTau2016v0VSallraw;
-   std::vector<bool> tau_byDpfTau2016v1VSallraw;
+   std::vector<bool> tau_byDeepTau2017v2VSjetraw;
+   std::vector<bool> tau_byDeepTau2017v2VSeraw;
+   std::vector<bool> tau_byDeepTau2017v2VSmuraw;
    
-   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSjet;
-   std::vector<bool> tau_byVVLooseDeepTau2017v1VSjet;
-   std::vector<bool> tau_byVLooseDeepTau2017v1VSjet;
-   std::vector<bool> tau_byLooseDeepTau2017v1VSjet;
-   std::vector<bool> tau_byMediumDeepTau2017v1VSjet;
-   std::vector<bool> tau_byTightDeepTau2017v1VSjet;
-   std::vector<bool> tau_byVTightDeepTau2017v1VSjet;
-   std::vector<bool> tau_byVVTightDeepTau2017v1VSjet;
+   std::vector<bool> tau_byVVVLooseDeepTau2017v2VSjet;
+   std::vector<bool> tau_byVVLooseDeepTau2017v2VSjet;
+   std::vector<bool> tau_byVLooseDeepTau2017v2VSjet;
+   std::vector<bool> tau_byLooseDeepTau2017v2VSjet;
+   std::vector<bool> tau_byMediumDeepTau2017v2VSjet;
+   std::vector<bool> tau_byTightDeepTau2017v2VSjet;
+   std::vector<bool> tau_byVTightDeepTau2017v2VSjet;
+   std::vector<bool> tau_byVVTightDeepTau2017v2VSjet;
        
-   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSe;
-   std::vector<bool> tau_byVVLooseDeepTau2017v1VSe;
-   std::vector<bool> tau_byVLooseDeepTau2017v1VSe;
-   std::vector<bool> tau_byLooseDeepTau2017v1VSe;
-   std::vector<bool> tau_byMediumDeepTau2017v1VSe;
-   std::vector<bool> tau_byTightDeepTau2017v1VSe;
-   std::vector<bool> tau_byVTightDeepTau2017v1VSe;
-   std::vector<bool> tau_byVVTightDeepTau2017v1VSe;
+   std::vector<bool> tau_byVVVLooseDeepTau2017v2VSe;
+   std::vector<bool> tau_byVVLooseDeepTau2017v2VSe;
+   std::vector<bool> tau_byVLooseDeepTau2017v2VSe;
+   std::vector<bool> tau_byLooseDeepTau2017v2VSe;
+   std::vector<bool> tau_byMediumDeepTau2017v2VSe;
+   std::vector<bool> tau_byTightDeepTau2017v2VSe;
+   std::vector<bool> tau_byVTightDeepTau2017v2VSe;
+   std::vector<bool> tau_byVVTightDeepTau2017v2VSe;
    
-   std::vector<bool> tau_byVVVLooseDeepTau2017v1VSmu;
-   std::vector<bool> tau_byVVLooseDeepTau2017v1VSmu;
-   std::vector<bool> tau_byVLooseDeepTau2017v1VSmu;
-   std::vector<bool> tau_byLooseDeepTau2017v1VSmu;
-   std::vector<bool> tau_byMediumDeepTau2017v1VSmu;
-   std::vector<bool> tau_byTightDeepTau2017v1VSmu;
-   std::vector<bool> tau_byVTightDeepTau2017v1VSmu;
-   std::vector<bool> tau_byVVTightDeepTau2017v1VSmu;
-   
-   std::vector<bool> tau_byTightDpfTau2016v0VSall;
-   std::vector<bool> tau_byTightDpfTau2016v1VSall;
+   std::vector<bool> tau_byVLooseDeepTau2017v2VSmu;
+   std::vector<bool> tau_byLooseDeepTau2017v2VSmu;
+   std::vector<bool> tau_byMediumDeepTau2017v2VSmu;
+   std::vector<bool> tau_byTightDeepTau2017v2VSmu;
    
    std::vector<bool> tau_againstMuonLoose3;
    std::vector<bool> tau_againstMuonTight3;

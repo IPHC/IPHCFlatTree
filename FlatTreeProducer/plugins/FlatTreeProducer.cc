@@ -3137,41 +3137,32 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        ftree->tau_againstElectronMediumMVA6.push_back(tau.tauID("againstElectronMediumMVA6"));
        ftree->tau_againstElectronTightMVA6.push_back(tau.tauID("againstElectronTightMVA6"));
        
-       ftree->tau_byDeepTau2017v1VSjetraw.push_back(tau.tauID("byDeepTau2017v1VSjetraw"));
-       ftree->tau_byDeepTau2017v1VSeraw.push_back(tau.tauID("byDeepTau2017v1VSeraw"));
-       ftree->tau_byDeepTau2017v1VSmuraw.push_back(tau.tauID("byDeepTau2017v1VSmuraw"));
-       ftree->tau_byDpfTau2016v0VSallraw.push_back(tau.tauID("byDpfTau2016v0VSallraw"));
-       ftree->tau_byDpfTau2016v1VSallraw.push_back(tau.tauID("byDpfTau2016v1VSallraw"));
+       ftree->tau_byDeepTau2017v2VSjetraw.push_back(tau.tauID("byDeepTau2017v2VSjetraw"));
+       ftree->tau_byDeepTau2017v2VSeraw.push_back(tau.tauID("byDeepTau2017v2VSeraw"));
+       ftree->tau_byDeepTau2017v2VSmuraw.push_back(tau.tauID("byDeepTau2017v2VSmuraw"));
        
-       ftree->tau_byVVVLooseDeepTau2017v1VSjet.push_back(tau.tauID("byVVVLooseDeepTau2017v1VSjet"));
-       ftree->tau_byVVLooseDeepTau2017v1VSjet.push_back(tau.tauID("byVVLooseDeepTau2017v1VSjet"));
-       ftree->tau_byVLooseDeepTau2017v1VSjet.push_back(tau.tauID("byVLooseDeepTau2017v1VSjet"));
-       ftree->tau_byLooseDeepTau2017v1VSjet.push_back(tau.tauID("byLooseDeepTau2017v1VSjet"));
-       ftree->tau_byMediumDeepTau2017v1VSjet.push_back(tau.tauID("byMediumDeepTau2017v1VSjet"));
-       ftree->tau_byTightDeepTau2017v1VSjet.push_back(tau.tauID("byTightDeepTau2017v1VSjet"));
-       ftree->tau_byVTightDeepTau2017v1VSjet.push_back(tau.tauID("byVTightDeepTau2017v1VSjet"));
-       ftree->tau_byVVTightDeepTau2017v1VSjet.push_back(tau.tauID("byVVTightDeepTau2017v1VSjet"));
+       ftree->tau_byVVVLooseDeepTau2017v2VSjet.push_back(tau.tauID("byVVVLooseDeepTau2017v2VSjet"));
+       ftree->tau_byVVLooseDeepTau2017v2VSjet.push_back(tau.tauID("byVVLooseDeepTau2017v2VSjet"));
+       ftree->tau_byVLooseDeepTau2017v2VSjet.push_back(tau.tauID("byVLooseDeepTau2017v2VSjet"));
+       ftree->tau_byLooseDeepTau2017v2VSjet.push_back(tau.tauID("byLooseDeepTau2017v2VSjet"));
+       ftree->tau_byMediumDeepTau2017v2VSjet.push_back(tau.tauID("byMediumDeepTau2017v2VSjet"));
+       ftree->tau_byTightDeepTau2017v2VSjet.push_back(tau.tauID("byTightDeepTau2017v2VSjet"));
+       ftree->tau_byVTightDeepTau2017v2VSjet.push_back(tau.tauID("byVTightDeepTau2017v2VSjet"));
+       ftree->tau_byVVTightDeepTau2017v2VSjet.push_back(tau.tauID("byVVTightDeepTau2017v2VSjet"));
 
-       ftree->tau_byVVVLooseDeepTau2017v1VSe.push_back(tau.tauID("byVVVLooseDeepTau2017v1VSe"));
-       ftree->tau_byVVLooseDeepTau2017v1VSe.push_back(tau.tauID("byVVLooseDeepTau2017v1VSe"));
-       ftree->tau_byVLooseDeepTau2017v1VSe.push_back(tau.tauID("byVLooseDeepTau2017v1VSe"));
-       ftree->tau_byLooseDeepTau2017v1VSe.push_back(tau.tauID("byLooseDeepTau2017v1VSe"));
-       ftree->tau_byMediumDeepTau2017v1VSe.push_back(tau.tauID("byMediumDeepTau2017v1VSe"));
-       ftree->tau_byTightDeepTau2017v1VSe.push_back(tau.tauID("byTightDeepTau2017v1VSe"));
-       ftree->tau_byVTightDeepTau2017v1VSe.push_back(tau.tauID("byVTightDeepTau2017v1VSe"));
-       ftree->tau_byVVTightDeepTau2017v1VSe.push_back(tau.tauID("byVVTightDeepTau2017v1VSe"));
+       ftree->tau_byVVVLooseDeepTau2017v2VSe.push_back(tau.tauID("byVVVLooseDeepTau2017v2VSe"));
+       ftree->tau_byVVLooseDeepTau2017v2VSe.push_back(tau.tauID("byVVLooseDeepTau2017v2VSe"));
+       ftree->tau_byVLooseDeepTau2017v2VSe.push_back(tau.tauID("byVLooseDeepTau2017v2VSe"));
+       ftree->tau_byLooseDeepTau2017v2VSe.push_back(tau.tauID("byLooseDeepTau2017v2VSe"));
+       ftree->tau_byMediumDeepTau2017v2VSe.push_back(tau.tauID("byMediumDeepTau2017v2VSe"));
+       ftree->tau_byTightDeepTau2017v2VSe.push_back(tau.tauID("byTightDeepTau2017v2VSe"));
+       ftree->tau_byVTightDeepTau2017v2VSe.push_back(tau.tauID("byVTightDeepTau2017v2VSe"));
+       ftree->tau_byVVTightDeepTau2017v2VSe.push_back(tau.tauID("byVVTightDeepTau2017v2VSe"));
 
-       ftree->tau_byVVVLooseDeepTau2017v1VSmu.push_back(tau.tauID("byVVVLooseDeepTau2017v1VSmu"));
-       ftree->tau_byVVLooseDeepTau2017v1VSmu.push_back(tau.tauID("byVVLooseDeepTau2017v1VSmu"));
-       ftree->tau_byVLooseDeepTau2017v1VSmu.push_back(tau.tauID("byVLooseDeepTau2017v1VSmu"));
-       ftree->tau_byLooseDeepTau2017v1VSmu.push_back(tau.tauID("byLooseDeepTau2017v1VSmu"));
-       ftree->tau_byMediumDeepTau2017v1VSmu.push_back(tau.tauID("byMediumDeepTau2017v1VSmu"));
-       ftree->tau_byTightDeepTau2017v1VSmu.push_back(tau.tauID("byTightDeepTau2017v1VSmu"));
-       ftree->tau_byVTightDeepTau2017v1VSmu.push_back(tau.tauID("byVTightDeepTau2017v1VSmu"));
-       ftree->tau_byVVTightDeepTau2017v1VSmu.push_back(tau.tauID("byVVTightDeepTau2017v1VSmu"));
-       
-       ftree->tau_byTightDpfTau2016v0VSall.push_back(tau.tauID("byTightDpfTau2016v0VSall"));
-       ftree->tau_byTightDpfTau2016v1VSall.push_back(tau.tauID("byTightDpfTau2016v1VSall"));
+       ftree->tau_byVLooseDeepTau2017v2VSmu.push_back(tau.tauID("byVLooseDeepTau2017v2VSmu"));
+       ftree->tau_byLooseDeepTau2017v2VSmu.push_back(tau.tauID("byLooseDeepTau2017v2VSmu"));
+       ftree->tau_byMediumDeepTau2017v2VSmu.push_back(tau.tauID("byMediumDeepTau2017v2VSmu"));
+       ftree->tau_byTightDeepTau2017v2VSmu.push_back(tau.tauID("byTightDeepTau2017v2VSmu"));
        
        ftree->tau_pfEssential_jet_pt.push_back(tau.pfEssential().p4Jet_.pt());
        ftree->tau_pfEssential_jet_eta.push_back(tau.pfEssential().p4Jet_.eta());
