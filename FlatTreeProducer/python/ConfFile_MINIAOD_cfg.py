@@ -19,6 +19,7 @@ options.register('printLHEcontent',False,VarParsing.multiplicity.singleton,VarPa
 options.register('samplename','',VarParsing.multiplicity.singleton,VarParsing.varType.string,'User-defined samplename')
 
 options.register('runQG',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run QGTagger')
+options.register('runDNN',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Run DNN taggers')
 
 options.register('fillMCScaleWeight',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PDF weights')
 options.register('fillPUInfo',True,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Fill PU info')
@@ -183,11 +184,15 @@ jetsNameAK10="selectedPatJetsAK10PFCHS"
 #  Additional modules  #
 ########################
 
+tauTag = ["dR0p32017v2","deepTau2017v2"]
+if not options.runDNN:
+    tauTag = ["dR0p32017v2"]
+
 import RecoTauTag.RecoTau.tools.runTauIdMVA as tauIdConfig
 tauIdEmbedder = tauIdConfig.TauIDEmbedder(process, cms, 
                 debug = False,
                 updatedTauName = "NewTauIDsEmbedded",
-                toKeep = ["dR0p32017v2","deepTau2017v2"]
+                toKeep = tauTag
 )
 tauIdEmbedder.runTauID()
 
@@ -390,6 +395,7 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 
                   bufferSize        = cms.int32(options.bufferSize),
                   confFile          = cms.string(options.confFile),
+                  runDNN            = cms.bool(options.runDNN),
 
                   isData            = cms.bool(options.isData),
                   applyMETFilters   = cms.bool(options.applyMETFilters),
