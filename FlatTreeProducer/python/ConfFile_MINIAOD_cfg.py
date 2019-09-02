@@ -371,7 +371,7 @@ process.source = cms.Source("PoolSource",
 #  Output  #
 ############
 
-process.TFileService = cms.Service("TFileService", fileName = options.outFile)
+process.TFileService = cms.Service("TFileService", fileName = cms.string(options.outFile))
 
 process.options   = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False),
