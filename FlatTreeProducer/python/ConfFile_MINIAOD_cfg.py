@@ -13,6 +13,7 @@ options.register('applyMETFilters',False,VarParsing.multiplicity.singleton,VarPa
 options.register('applyJEC',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Apply JEC corrections')
 options.register('runAK10',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Add AK10 jets')
 options.register('datasetsYear','2016',VarParsing.multiplicity.singleton,VarParsing.varType.string,'Run on 2016, 2017 or 2018 samples')
+options.register('outFile','output.root',VarParsing.multiplicity.singleton,VarParsing.varType.string,'Output file name')
 
 options.register('makeLHEmapping',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Create mapping of LHE id <-> scale/LHAPDF id')
 options.register('printLHEcontent',False,VarParsing.multiplicity.singleton,VarParsing.varType.bool,'Printout of LHE infos')
@@ -370,7 +371,7 @@ process.source = cms.Source("PoolSource",
 #  Output  #
 ############
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string("output.root"))
+process.TFileService = cms.Service("TFileService", fileName = options.outFile)
 
 process.options   = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False),
