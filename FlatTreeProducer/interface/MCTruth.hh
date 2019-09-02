@@ -40,12 +40,26 @@ class MCTruth
 			       FlatTree& tree,
 			       const edm::Handle<std::vector<reco::GenParticle> >& GenParticles);
 
-   int doMatch(const edm::Event& iEvent,
+   bool doMatch(const edm::Event& iEvent,
 		const edm::EventSetup& iSetup,
 		const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
 		reco::GenParticle &genp,
 		float &drMin,
-		float pt, float eta, float phi, int pdgId, bool isTau);
+		float pt, float eta, float phi, int pdgId);
+
+   bool doMatchTau(const edm::Event& iEvent,
+		   const edm::EventSetup& iSetup,
+		   const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+		   reco::GenParticle &genp,
+		   float &drMin,
+		   float pt, float eta, float phi, int pdgId);
+
+   bool doMatchConv(const edm::Event& iEvent,
+		    const edm::EventSetup& iSetup,
+		    const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+		    reco::GenParticle &genp,
+		    float &drMin,
+		    float pt, float eta, float phi, int pdgId);
    
    reco::GenParticle* getUnique(const reco::GenParticle* p,
 				bool verbose);

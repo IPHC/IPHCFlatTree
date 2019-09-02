@@ -410,23 +410,19 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
    tree.gen_PVz = gen_PVz;
 }
 
-//CHANGED to comply with nanoAOD standards : dR < 0.3 and dPt/Pt < 0.5
-//Also changed func from bool to int : 0 <-> no match // 1 <-> match found // 2 <-> charge also matches // 3 <-> electron matches to photon
-int MCTruth::doMatch(const edm::Event& iEvent,
-		     const edm::EventSetup& iSetup,
-		     const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		     reco::GenParticle &genp,
-		     float &drMin,
-		     float pt, float eta, float phi, int pdgId, bool isTau)
+bool MCTruth::doMatch(const edm::Event& iEvent,
+		      const edm::EventSetup& iSetup,
+		      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+		      reco::GenParticle &genp,
+		      float &drMin,
+		      float pt, float eta, float phi, int pdgId)
 { 
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
 
    bool foundMatch = 0;
-   bool hasChargeMatch = 0;
-   bool ele_hasPhotonMatch = 0;
    
-   float drmin = 0.3; //changed from 0.2 to 0.3
+   float drmin = 0.3;
    
    for(genParticleSrc = genParticlesCollection.begin();
        genParticleSrc != genParticlesCollection.end(); 
@@ -442,67 +438,141 @@ int MCTruth::doMatch(const edm::Event& iEvent,
 	int isPromptFinalState = mcp->isPromptFinalState(); //final state (status 1) particle satisfying isPrompt() = not from hadron, muon or tau decay
 	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState(); //final state (status 1) particle satisfying isDirectPromptTauDecayProduct() = direct decay product from a tau decay (ie no intermediate hadron), where the tau did not come from a hadron decay
 	
-	//if( !isTau && statusGen != 1 && statusGen != 3 ) continue;
-	if( !isTau && statusGen != 1) continue; //For ele and muons, ask particle to be stable (status=1)
-	
-	if( (abs(idGen) != 15 && abs(idGen) != 11 && abs(idGen) != 13) && isTau ) continue; //Leptonic taus
+	if( statusGen != 1 ) continue; //For ele and muons, ask particle to be stable (status=1)
 
-	if(!isTau && (abs(pdgId) != abs(idGen)) && (abs(pdgId) != 11 || abs(idGen) != 22) ) continue; //ID matching (ele and muons) //For ele, also try to match to photons (for conv bkg)
-	
+	if( abs(pdgId) != abs(idGen) ) continue;
+
 	const reco::GenParticle* mom = getMother(*mcp);
-	int momPID = mom->pdgId();
+	int momPID = mom->pdgId();	
+	if( abs(momPID) == 15 )
+	  {
+	     const reco::GenParticle* momTau = getMother(*mom);
+	     momPID = momTau->pdgId();
+	  }
 	
+	//Ask prompt leptons
+	if( !isPromptFinalState && !isDirectPromptTauDecayProductFinalState ) continue;
+	
+	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
+       
+	if( (fabs(pt - ptGen) / ptGen) > 0.5 ) continue;
+	
+	if( dr < drmin )
+	  {
+	     drmin = dr;
+	     foundMatch = 1;
+	     genp = *mcp;
+	  }	
+     }
+   
+   drMin = drmin;
+   
+   return foundMatch;
+}
+
+bool MCTruth::doMatchTau(const edm::Event& iEvent,
+			 const edm::EventSetup& iSetup,
+			 const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+			 reco::GenParticle &genp,
+			 float &drMin,
+			 float pt, float eta, float phi, int pdgId)
+{ 
+   reco::GenParticleCollection genParticlesCollection = *GenParticles;
+   reco::GenParticleCollection::const_iterator genParticleSrc;
+
+   bool foundMatch = 0;
+   
+   float drmin = 0.3;
+   
+   for(genParticleSrc = genParticlesCollection.begin();
+       genParticleSrc != genParticlesCollection.end(); 
+       genParticleSrc++)
+     {
+	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
+
+	float ptGen = mcp->pt();
+	float etaGen = mcp->eta();
+	float phiGen = mcp->phi();
+	int idGen = mcp->pdgId();
+	int isPromptFinalState = mcp->isPromptFinalState(); 
+	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
+	
+	if( abs(idGen) != 15 ) continue;
+
+	const reco::GenParticle* mom = getMother(*mcp);
+	int momPID = mom->pdgId();	
 	if( abs(momPID) == 15 )
 	  {
 	     const reco::GenParticle* momTau = getMother(*mom);
 	     momPID = momTau->pdgId();
 	  }
 
-	//Make sure lepton is prompt
-	//if( !isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && (abs(idGen) != 22 || abs(pdgId) != 11) ) {continue;} //also keep photons for conv matching
-	//if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
+	if( abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 ) continue;
 	
-	//Ask prompt leptons
-	if( !isTau && !isPromptFinalState && !isDirectPromptTauDecayProductFinalState && (abs(idGen) != 22 || abs(pdgId) != 11)) {continue;} //Keep photons for conv matching
-	
-	if( isTau && abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 && abs(momPID) != 15 ) {continue;}
-	
-	//dR-matching
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( (!isTau && (fabs(pt - ptGen) / ptGen) > 0.5) ||
-	    ((isTau && (fabs(pt - ptGen) / ptGen) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13)) ) continue;
-	if( isTau && (fabs(pt - ptGen) / ptGen) > 1.0) continue;
-
+	if( ((fabs(pt - ptGen) / ptGen) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13) ) continue;
+	if( (fabs(pt - ptGen) / ptGen) > 1.0 ) continue;
+	
 	if( dr < drmin )
 	  {
 	     drmin = dr;
 	     foundMatch = 1;
-	     genp = *mcp; 
-
-	     if(pdgId == idGen) {hasChargeMatch = true;}
-	     else {hasChargeMatch = false;}
-	     
-	     if(abs(pdgId) == 11 && abs(idGen) == 22) {ele_hasPhotonMatch = true;}
-	     else {ele_hasPhotonMatch = false;}
+	     genp = *mcp;
 	  }	
      }
    
    drMin = drmin;
-
-//   if( iEvent.id().event() == 1154923 && isTau )
-//     {
-//	std::cout << pt << " " << foundMatch << std::endl;
-//     }   
    
-   if(ele_hasPhotonMatch) {return 3;}
-   else if(hasChargeMatch) {return 2;}
-   else if(foundMatch) {return 1;}
-   
-   return 0; //no match found
+   return foundMatch;
 }
 
+bool MCTruth::doMatchConv(const edm::Event& iEvent,
+			  const edm::EventSetup& iSetup,
+			  const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+			  reco::GenParticle &genp,
+			  float &drMin,
+			  float pt, float eta, float phi, int pdgId)
+{ 
+   reco::GenParticleCollection genParticlesCollection = *GenParticles;
+   reco::GenParticleCollection::const_iterator genParticleSrc;
 
+   bool foundMatch = 0;
+   
+   float drmin = 0.3;
+   
+   for(genParticleSrc = genParticlesCollection.begin();
+       genParticleSrc != genParticlesCollection.end(); 
+       genParticleSrc++)
+     {
+	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
+
+	float ptGen = mcp->pt();
+	float etaGen = mcp->eta();
+	float phiGen = mcp->phi();
+	int idGen = mcp->pdgId();
+	int statusGen = mcp->status();
+	
+	if( statusGen != 1 ) continue;
+
+	if( abs(pdgId) != 11 || abs(idGen) != 22 ) continue;
+	
+	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
+       
+	if( (fabs(pt - ptGen) / ptGen) > 0.5 ) continue;
+	
+	if( dr < drmin )
+	  {
+	     drmin = dr;
+	     foundMatch = 1;
+	     genp = *mcp;
+	  }	
+     }
+   
+   drMin = drmin;
+   
+   return foundMatch;
+}
 
 void MCTruth::Init(FlatTree &tree)
 {

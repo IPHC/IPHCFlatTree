@@ -509,9 +509,7 @@ class FlatTree
 
    std::vector<float> el_conept;
 
-   std::vector<int> el_hasMCMatch;
-   std::vector<int> el_hasChargeMCMatch;
-   std::vector<int> el_hasPhotonMCMatch;
+   std::vector<bool> el_hasMCMatch;
    std::vector<float> el_gen_pt;
    std::vector<float> el_gen_eta;
    std::vector<float> el_gen_phi;
@@ -519,9 +517,18 @@ class FlatTree
    std::vector<float> el_gen_E;
    std::vector<int> el_gen_status;
    std::vector<int> el_gen_id;
-   std::vector<int> el_gen_charge;
    std::vector<float> el_gen_dr;
 
+   std::vector<bool> el_hasPhotonMCMatch;
+   std::vector<float> el_genConv_pt;
+   std::vector<float> el_genConv_eta;
+   std::vector<float> el_genConv_phi;
+   std::vector<float> el_genConv_m;
+   std::vector<float> el_genConv_E;
+   std::vector<int> el_genConv_status;
+   std::vector<int> el_genConv_id;
+   std::vector<float> el_genConv_dr;
+   
    std::vector<int> el_hasMCMatchPAT;
    std::vector<float> el_genPAT_pt;
    std::vector<float> el_genPAT_eta;
@@ -842,8 +849,7 @@ class FlatTree
 
    std::vector<float> mu_conept;
 
-   std::vector<int> mu_hasMCMatch;
-   std::vector<int> mu_hasChargeMCMatch;
+   std::vector<bool> mu_hasMCMatch;
    std::vector<float> mu_gen_pt;
    std::vector<float> mu_gen_eta;
    std::vector<float> mu_gen_phi;
@@ -851,7 +857,6 @@ class FlatTree
    std::vector<float> mu_gen_E;
    std::vector<int> mu_gen_status;
    std::vector<int> mu_gen_id;
-   std::vector<int> mu_gen_charge;
    std::vector<float> mu_gen_dr;
 
    std::vector<int> mu_hasMCMatchPAT;
@@ -957,8 +962,7 @@ class FlatTree
    
    std::vector<int> tau_matchedJetId;
 
-   std::vector<int> tau_hasMCMatch;
-   std::vector<int> tau_hasChargeMCMatch;
+   std::vector<bool> tau_hasMCMatch;
    std::vector<float> tau_gen_pt;
    std::vector<float> tau_gen_eta;
    std::vector<float> tau_gen_phi;
@@ -966,8 +970,17 @@ class FlatTree
    std::vector<float> tau_gen_E;
    std::vector<int> tau_gen_status;
    std::vector<int> tau_gen_id;
-   std::vector<int> tau_gen_charge;
    std::vector<float> tau_gen_dr;
+
+   std::vector<bool> tau_hasMCMatchTau;
+   std::vector<float> tau_genTau_pt;
+   std::vector<float> tau_genTau_eta;
+   std::vector<float> tau_genTau_phi;
+   std::vector<float> tau_genTau_m;
+   std::vector<float> tau_genTau_E;
+   std::vector<int> tau_genTau_status;
+   std::vector<int> tau_genTau_id;
+   std::vector<float> tau_genTau_dr;
    
    // Jets
 
