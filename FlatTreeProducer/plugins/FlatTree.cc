@@ -477,6 +477,7 @@ void FlatTree::Init()
    el_gen_E.clear();
    el_gen_status.clear();
    el_gen_id.clear();
+   el_gen_barcode.clear();
    el_gen_dr.clear();
    
    el_hasPhotonMCMatch.clear();
@@ -487,6 +488,7 @@ void FlatTree::Init()
    el_genConv_E.clear();
    el_genConv_status.clear();
    el_genConv_id.clear();
+   el_genConv_barcode.clear();
    el_genConv_dr.clear();
 
    el_hasMCMatchPAT.clear();
@@ -813,6 +815,7 @@ void FlatTree::Init()
    mu_gen_E.clear();
    mu_gen_status.clear();
    mu_gen_id.clear();
+   mu_gen_barcode.clear();
    mu_gen_dr.clear();
 
    mu_hasMCMatchPAT.clear();
@@ -917,15 +920,27 @@ void FlatTree::Init()
    
    tau_matchedJetId.clear();
 
-   tau_hasMCMatch.clear();
-   tau_gen_pt.clear();
-   tau_gen_eta.clear();
-   tau_gen_phi.clear();
-   tau_gen_m.clear();
-   tau_gen_E.clear();
-   tau_gen_status.clear();
-   tau_gen_id.clear();
-   tau_gen_dr.clear();
+   tau_hasMCMatchElec.clear();
+   tau_genElec_pt.clear();
+   tau_genElec_eta.clear();
+   tau_genElec_phi.clear();
+   tau_genElec_m.clear();
+   tau_genElec_E.clear();
+   tau_genElec_status.clear();
+   tau_genElec_id.clear();
+   tau_genElec_barcode.clear();
+   tau_genElec_dr.clear();
+
+   tau_hasMCMatchMuon.clear();
+   tau_genMuon_pt.clear();
+   tau_genMuon_eta.clear();
+   tau_genMuon_phi.clear();
+   tau_genMuon_m.clear();
+   tau_genMuon_E.clear();
+   tau_genMuon_status.clear();
+   tau_genMuon_id.clear();
+   tau_genMuon_barcode.clear();
+   tau_genMuon_dr.clear();
 
    tau_hasMCMatchTau.clear();
    tau_genTau_pt.clear();
@@ -935,6 +950,7 @@ void FlatTree::Init()
    tau_genTau_E.clear();
    tau_genTau_status.clear();
    tau_genTau_id.clear();
+   tau_genTau_barcode.clear();
    tau_genTau_dr.clear();
    
    jet_n = 0;
@@ -1748,24 +1764,26 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_conept") ) tree->Branch("el_conept", "std::vector<float>", &el_conept, buffersize);
 
    if( doWrite("el_hasMCMatch") ) tree->Branch("el_hasMCMatch", "std::vector<bool>", &el_hasMCMatch, buffersize);
-   if( doWrite("el_gen_pt") ) tree->Branch("el_gen_pt", "std::vector<float>", &el_gen_pt, buffersize);
-   if( doWrite("el_gen_eta") ) tree->Branch("el_gen_eta", "std::vector<float>", &el_gen_eta, buffersize);
-   if( doWrite("el_gen_phi") ) tree->Branch("el_gen_phi", "std::vector<float>", &el_gen_phi, buffersize);
-   if( doWrite("el_gen_m") ) tree->Branch("el_gen_m", "std::vector<float>", &el_gen_m, buffersize);
-   if( doWrite("el_gen_E") ) tree->Branch("el_gen_E", "std::vector<float>", &el_gen_E, buffersize);
-   if( doWrite("el_gen_status") ) tree->Branch("el_gen_status", "std::vector<int>", &el_gen_status, buffersize);
-   if( doWrite("el_gen_id") ) tree->Branch("el_gen_id", "std::vector<int>", &el_gen_id, buffersize);
-   if( doWrite("el_gen_dr") ) tree->Branch("el_gen_dr", "std::vector<float>", &el_gen_dr, buffersize);
+   if( doWrite("el_gen_pt") ) tree->Branch("el_gen_pt", "std::vector<std::vector<float> >", &el_gen_pt, buffersize);
+   if( doWrite("el_gen_eta") ) tree->Branch("el_gen_eta", "std::vector<std::vector<float> >", &el_gen_eta, buffersize);
+   if( doWrite("el_gen_phi") ) tree->Branch("el_gen_phi", "std::vector<std::vector<float> >", &el_gen_phi, buffersize);
+   if( doWrite("el_gen_m") ) tree->Branch("el_gen_m", "std::vector<std::vector<float> >", &el_gen_m, buffersize);
+   if( doWrite("el_gen_E") ) tree->Branch("el_gen_E", "std::vector<std::vector<float> >", &el_gen_E, buffersize);
+   if( doWrite("el_gen_status") ) tree->Branch("el_gen_status", "std::vector<std::vector<int> >", &el_gen_status, buffersize);
+   if( doWrite("el_gen_id") ) tree->Branch("el_gen_id", "std::vector<std::vector<int> >", &el_gen_id, buffersize);
+   if( doWrite("el_gen_barcode") ) tree->Branch("el_gen_barcode", "std::vector<std::vector<int> >", &el_gen_barcode, buffersize);
+   if( doWrite("el_gen_dr") ) tree->Branch("el_gen_dr", "std::vector<std::vector<float> >", &el_gen_dr, buffersize);
    
    if( doWrite("el_hasPhotonMCMatch") ) tree->Branch("el_hasPhotonMCMatch", "std::vector<bool>", &el_hasPhotonMCMatch, buffersize);
-   if( doWrite("el_genConv_pt") ) tree->Branch("el_genConv_pt", "std::vector<float>", &el_genConv_pt, buffersize);
-   if( doWrite("el_genConv_eta") ) tree->Branch("el_genConv_eta", "std::vector<float>", &el_genConv_eta, buffersize);
-   if( doWrite("el_genConv_phi") ) tree->Branch("el_genConv_phi", "std::vector<float>", &el_genConv_phi, buffersize);
-   if( doWrite("el_genConv_m") ) tree->Branch("el_genConv_m", "std::vector<float>", &el_genConv_m, buffersize);
-   if( doWrite("el_genConv_E") ) tree->Branch("el_genConv_E", "std::vector<float>", &el_genConv_E, buffersize);
-   if( doWrite("el_genConv_status") ) tree->Branch("el_genConv_status", "std::vector<int>", &el_genConv_status, buffersize);
-   if( doWrite("el_genConv_id") ) tree->Branch("el_genConv_id", "std::vector<int>", &el_genConv_id, buffersize);
-   if( doWrite("el_genConv_dr") ) tree->Branch("el_genConv_dr", "std::vector<float>", &el_genConv_dr, buffersize);
+   if( doWrite("el_genConv_pt") ) tree->Branch("el_genConv_pt", "std::vector<std::vector<float> >", &el_genConv_pt, buffersize);
+   if( doWrite("el_genConv_eta") ) tree->Branch("el_genConv_eta", "std::vector<std::vector<float> >", &el_genConv_eta, buffersize);
+   if( doWrite("el_genConv_phi") ) tree->Branch("el_genConv_phi", "std::vector<std::vector<float> >", &el_genConv_phi, buffersize);
+   if( doWrite("el_genConv_m") ) tree->Branch("el_genConv_m", "std::vector<std::vector<float> >", &el_genConv_m, buffersize);
+   if( doWrite("el_genConv_E") ) tree->Branch("el_genConv_E", "std::vector<std::vector<float> >", &el_genConv_E, buffersize);
+   if( doWrite("el_genConv_status") ) tree->Branch("el_genConv_status", "std::vector<std::vector<int> >", &el_genConv_status, buffersize);
+   if( doWrite("el_genConv_id") ) tree->Branch("el_genConv_id", "std::vector<std::vector<int> >", &el_genConv_id, buffersize);
+   if( doWrite("el_genConv_barcode") ) tree->Branch("el_genConv_barcode", "std::vector<std::vector<int> >", &el_genConv_barcode, buffersize);
+   if( doWrite("el_genConv_dr") ) tree->Branch("el_genConv_dr", "std::vector<std::vector<float> >", &el_genConv_dr, buffersize);
 
    if( doWrite("el_hasMCMatchPAT") ) tree->Branch("el_hasMCMatchPAT", "std::vector<int>", &el_hasMCMatchPAT, buffersize);
    if( doWrite("el_genPAT_pt") ) tree->Branch("el_genPAT_pt", "std::vector<float>", &el_genPAT_pt, buffersize);
@@ -2084,14 +2102,15 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_conept") ) tree->Branch("mu_conept", "std::vector<float>", &mu_conept, buffersize);
 
    if( doWrite("mu_hasMCMatch") ) tree->Branch("mu_hasMCMatch", "std::vector<bool>", &mu_hasMCMatch, buffersize);
-   if( doWrite("mu_gen_pt") ) tree->Branch("mu_gen_pt", "std::vector<float>", &mu_gen_pt, buffersize);
-   if( doWrite("mu_gen_eta") ) tree->Branch("mu_gen_eta", "std::vector<float>", &mu_gen_eta, buffersize);
-   if( doWrite("mu_gen_phi") ) tree->Branch("mu_gen_phi", "std::vector<float>", &mu_gen_phi, buffersize);
-   if( doWrite("mu_gen_m") ) tree->Branch("mu_gen_m", "std::vector<float>", &mu_gen_m, buffersize);
-   if( doWrite("mu_gen_E") ) tree->Branch("mu_gen_E", "std::vector<float>", &mu_gen_E, buffersize);
-   if( doWrite("mu_gen_status") ) tree->Branch("mu_gen_status", "std::vector<int>", &mu_gen_status, buffersize);
-   if( doWrite("mu_gen_id") ) tree->Branch("mu_gen_id", "std::vector<int>", &mu_gen_id, buffersize);
-   if( doWrite("mu_gen_dr") ) tree->Branch("mu_gen_dr", "std::vector<float>", &mu_gen_dr, buffersize);
+   if( doWrite("mu_gen_pt") ) tree->Branch("mu_gen_pt", "std::vector<std::vector<float> >", &mu_gen_pt, buffersize);
+   if( doWrite("mu_gen_eta") ) tree->Branch("mu_gen_eta", "std::vector<std::vector<float> >", &mu_gen_eta, buffersize);
+   if( doWrite("mu_gen_phi") ) tree->Branch("mu_gen_phi", "std::vector<std::vector<float> >", &mu_gen_phi, buffersize);
+   if( doWrite("mu_gen_m") ) tree->Branch("mu_gen_m", "std::vector<std::vector<float> >", &mu_gen_m, buffersize);
+   if( doWrite("mu_gen_E") ) tree->Branch("mu_gen_E", "std::vector<std::vector<float> >", &mu_gen_E, buffersize);
+   if( doWrite("mu_gen_status") ) tree->Branch("mu_gen_status", "std::vector<std::vector<int> >", &mu_gen_status, buffersize);
+   if( doWrite("mu_gen_id") ) tree->Branch("mu_gen_id", "std::vector<std::vector<int> >", &mu_gen_id, buffersize);
+   if( doWrite("mu_gen_barcode") ) tree->Branch("mu_gen_barcode", "std::vector<std::vector<int> >", &mu_gen_barcode, buffersize);
+   if( doWrite("mu_gen_dr") ) tree->Branch("mu_gen_dr", "std::vector<std::vector<float> >", &mu_gen_dr, buffersize);
 
    if( doWrite("mu_hasMCMatchPAT") ) tree->Branch("mu_hasMCMatchPAT", "std::vector<int>", &mu_hasMCMatchPAT, buffersize);
    if( doWrite("mu_genPAT_pt") ) tree->Branch("mu_genPAT_pt", "std::vector<float>", &mu_genPAT_pt, buffersize);
@@ -2195,25 +2214,38 @@ void FlatTree::CreateBranches(int buffersize = 32000)
 
    if( doWrite("tau_matchedJetId") ) tree->Branch("tau_matchedJetId", "std::vector<int>", &tau_matchedJetId, buffersize);
    
-   if( doWrite("tau_hasMCMatch") ) tree->Branch("tau_hasMCMatch", "std::vector<bool>", &tau_hasMCMatch, buffersize);
-   if( doWrite("tau_gen_pt") ) tree->Branch("tau_gen_pt", "std::vector<float>", &tau_gen_pt, buffersize);
-   if( doWrite("tau_gen_eta") ) tree->Branch("tau_gen_eta", "std::vector<float>", &tau_gen_eta, buffersize);
-   if( doWrite("tau_gen_phi") ) tree->Branch("tau_gen_phi", "std::vector<float>", &tau_gen_phi, buffersize);
-   if( doWrite("tau_gen_m") ) tree->Branch("tau_gen_m", "std::vector<float>", &tau_gen_m, buffersize);
-   if( doWrite("tau_gen_E") ) tree->Branch("tau_gen_E", "std::vector<float>", &tau_gen_E, buffersize);
-   if( doWrite("tau_gen_status") ) tree->Branch("tau_gen_status", "std::vector<int>", &tau_gen_status, buffersize);
-   if( doWrite("tau_gen_id") ) tree->Branch("tau_gen_id", "std::vector<int>", &tau_gen_id, buffersize);
-   if( doWrite("tau_gen_dr") ) tree->Branch("tau_gen_dr", "std::vector<float>", &tau_gen_dr, buffersize);
+   if( doWrite("tau_hasMCMatchElec") ) tree->Branch("tau_hasMCMatchElec", "std::vector<bool>", &tau_hasMCMatchElec, buffersize);
+   if( doWrite("tau_genElec_pt") ) tree->Branch("tau_genElec_pt", "std::vector<std::vector<float> >", &tau_genElec_pt, buffersize);
+   if( doWrite("tau_genElec_eta") ) tree->Branch("tau_genElec_eta", "std::vector<std::vector<float> >", &tau_genElec_eta, buffersize);
+   if( doWrite("tau_genElec_phi") ) tree->Branch("tau_genElec_phi", "std::vector<std::vector<float> >", &tau_genElec_phi, buffersize);
+   if( doWrite("tau_genElec_m") ) tree->Branch("tau_genElec_m", "std::vector<std::vector<float> >", &tau_genElec_m, buffersize);
+   if( doWrite("tau_genElec_E") ) tree->Branch("tau_genElec_E", "std::vector<std::vector<float> >", &tau_genElec_E, buffersize);
+   if( doWrite("tau_genElec_status") ) tree->Branch("tau_genElec_status", "std::vector<std::vector<int> >", &tau_genElec_status, buffersize);
+   if( doWrite("tau_genElec_id") ) tree->Branch("tau_genElec_id", "std::vector<std::vector<int> >", &tau_genElec_id, buffersize);
+   if( doWrite("tau_genElec_barcode") ) tree->Branch("tau_genElec_barcode", "std::vector<std::vector<int> >", &tau_genElec_barcode, buffersize);
+   if( doWrite("tau_genElec_dr") ) tree->Branch("tau_genElec_dr", "std::vector<std::vector<float> >", &tau_genElec_dr, buffersize);
+
+   if( doWrite("tau_hasMCMatchMuon") ) tree->Branch("tau_hasMCMatchMuon", "std::vector<bool>", &tau_hasMCMatchMuon, buffersize);
+   if( doWrite("tau_genMuon_pt") ) tree->Branch("tau_genMuon_pt", "std::vector<std::vector<float> >", &tau_genMuon_pt, buffersize);
+   if( doWrite("tau_genMuon_eta") ) tree->Branch("tau_genMuon_eta", "std::vector<std::vector<float> >", &tau_genMuon_eta, buffersize);
+   if( doWrite("tau_genMuon_phi") ) tree->Branch("tau_genMuon_phi", "std::vector<std::vector<float> >", &tau_genMuon_phi, buffersize);
+   if( doWrite("tau_genMuon_m") ) tree->Branch("tau_genMuon_m", "std::vector<std::vector<float> >", &tau_genMuon_m, buffersize);
+   if( doWrite("tau_genMuon_E") ) tree->Branch("tau_genMuon_E", "std::vector<std::vector<float> >", &tau_genMuon_E, buffersize);
+   if( doWrite("tau_genMuon_status") ) tree->Branch("tau_genMuon_status", "std::vector<std::vector<int> >", &tau_genMuon_status, buffersize);
+   if( doWrite("tau_genMuon_id") ) tree->Branch("tau_genMuon_id", "std::vector<std::vector<int> >", &tau_genMuon_id, buffersize);
+   if( doWrite("tau_genMuon_barcode") ) tree->Branch("tau_genMuon_barcode", "std::vector<std::vector<int> >", &tau_genMuon_barcode, buffersize);
+   if( doWrite("tau_genMuon_dr") ) tree->Branch("tau_genMuon_dr", "std::vector<std::vector<float> >", &tau_genMuon_dr, buffersize);
 
    if( doWrite("tau_hasMCMatchTau") ) tree->Branch("tau_hasMCMatchTau", "std::vector<bool>", &tau_hasMCMatchTau, buffersize);
-   if( doWrite("tau_genTau_pt") ) tree->Branch("tau_genTau_pt", "std::vector<float>", &tau_genTau_pt, buffersize);
-   if( doWrite("tau_genTau_eta") ) tree->Branch("tau_genTau_eta", "std::vector<float>", &tau_genTau_eta, buffersize);
-   if( doWrite("tau_genTau_phi") ) tree->Branch("tau_genTau_phi", "std::vector<float>", &tau_genTau_phi, buffersize);
-   if( doWrite("tau_genTau_m") ) tree->Branch("tau_genTau_m", "std::vector<float>", &tau_genTau_m, buffersize);
-   if( doWrite("tau_genTau_E") ) tree->Branch("tau_genTau_E", "std::vector<float>", &tau_genTau_E, buffersize);
-   if( doWrite("tau_genTau_status") ) tree->Branch("tau_genTau_status", "std::vector<int>", &tau_genTau_status, buffersize);
-   if( doWrite("tau_genTau_id") ) tree->Branch("tau_genTau_id", "std::vector<int>", &tau_genTau_id, buffersize);
-   if( doWrite("tau_genTau_dr") ) tree->Branch("tau_genTau_dr", "std::vector<float>", &tau_genTau_dr, buffersize);
+   if( doWrite("tau_genTau_pt") ) tree->Branch("tau_genTau_pt", "std::vector<std::vector<float> >", &tau_genTau_pt, buffersize);
+   if( doWrite("tau_genTau_eta") ) tree->Branch("tau_genTau_eta", "std::vector<std::vector<float> >", &tau_genTau_eta, buffersize);
+   if( doWrite("tau_genTau_phi") ) tree->Branch("tau_genTau_phi", "std::vector<std::vector<float> >", &tau_genTau_phi, buffersize);
+   if( doWrite("tau_genTau_m") ) tree->Branch("tau_genTau_m", "std::vector<std::vector<float> >", &tau_genTau_m, buffersize);
+   if( doWrite("tau_genTau_E") ) tree->Branch("tau_genTau_E", "std::vector<std::vector<float> >", &tau_genTau_E, buffersize);
+   if( doWrite("tau_genTau_status") ) tree->Branch("tau_genTau_status", "std::vector<std::vector<int> >", &tau_genTau_status, buffersize);
+   if( doWrite("tau_genTau_id") ) tree->Branch("tau_genTau_id", "std::vector<std::vector<int> >", &tau_genTau_id, buffersize);
+   if( doWrite("tau_genTau_barcode") ) tree->Branch("tau_genTau_barcode", "std::vector<std::vector<int> >", &tau_genTau_barcode, buffersize);
+   if( doWrite("tau_genTau_dr") ) tree->Branch("tau_genTau_dr", "std::vector<std::vector<float> >", &tau_genTau_dr, buffersize);
    
    if( doWrite("jet_n") ) tree->Branch("jet_n", &jet_n, "jet_n/I", buffersize);
    if( doWrite("jet_pt") ) tree->Branch("jet_pt", "std::vector<float>", &jet_pt, buffersize);

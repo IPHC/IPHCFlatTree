@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -40,26 +41,26 @@ class MCTruth
 			       FlatTree& tree,
 			       const edm::Handle<std::vector<reco::GenParticle> >& GenParticles);
 
-   bool doMatch(const edm::Event& iEvent,
-		const edm::EventSetup& iSetup,
-		const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		reco::GenParticle &genp,
-		float &drMin,
-		float pt, float eta, float phi, int pdgId);
+   static bool sortByDR(const std::pair<reco::GenParticle*,std::pair<float,int> > &p1,
+			const std::pair<reco::GenParticle*,std::pair<float,int> > &p2) 
+     {    
+	return (p1.second.first < p2.second.first);
+     };
+   
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > doMatch(const edm::Event& iEvent,
+									     const edm::EventSetup& iSetup,
+									     const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+									     float pt, float eta, float phi, int pdgId);
 
-   bool doMatchTau(const edm::Event& iEvent,
-		   const edm::EventSetup& iSetup,
-		   const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		   reco::GenParticle &genp,
-		   float &drMin,
-		   float pt, float eta, float phi, int pdgId);
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > doMatchTau(const edm::Event& iEvent,
+										const edm::EventSetup& iSetup,
+										const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+										float pt, float eta, float phi, int pdgId);
 
-   bool doMatchConv(const edm::Event& iEvent,
-		    const edm::EventSetup& iSetup,
-		    const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		    reco::GenParticle &genp,
-		    float &drMin,
-		    float pt, float eta, float phi, int pdgId);
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > doMatchConv(const edm::Event& iEvent,
+										 const edm::EventSetup& iSetup,
+										 const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+										 float pt, float eta, float phi, int pdgId);
    
    reco::GenParticle* getUnique(const reco::GenParticle* p,
 				bool verbose);

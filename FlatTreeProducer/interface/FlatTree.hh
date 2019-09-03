@@ -510,24 +510,26 @@ class FlatTree
    std::vector<float> el_conept;
 
    std::vector<bool> el_hasMCMatch;
-   std::vector<float> el_gen_pt;
-   std::vector<float> el_gen_eta;
-   std::vector<float> el_gen_phi;
-   std::vector<float> el_gen_m;
-   std::vector<float> el_gen_E;
-   std::vector<int> el_gen_status;
-   std::vector<int> el_gen_id;
-   std::vector<float> el_gen_dr;
+   std::vector<std::vector<float> > el_gen_pt;
+   std::vector<std::vector<float> > el_gen_eta;
+   std::vector<std::vector<float> > el_gen_phi;
+   std::vector<std::vector<float> > el_gen_m;
+   std::vector<std::vector<float> > el_gen_E;
+   std::vector<std::vector<int> > el_gen_status;
+   std::vector<std::vector<int> > el_gen_id;
+   std::vector<std::vector<int> > el_gen_barcode;
+   std::vector<std::vector<float> > el_gen_dr;
 
    std::vector<bool> el_hasPhotonMCMatch;
-   std::vector<float> el_genConv_pt;
-   std::vector<float> el_genConv_eta;
-   std::vector<float> el_genConv_phi;
-   std::vector<float> el_genConv_m;
-   std::vector<float> el_genConv_E;
-   std::vector<int> el_genConv_status;
-   std::vector<int> el_genConv_id;
-   std::vector<float> el_genConv_dr;
+   std::vector<std::vector<float> > el_genConv_pt;
+   std::vector<std::vector<float> > el_genConv_eta;
+   std::vector<std::vector<float> > el_genConv_phi;
+   std::vector<std::vector<float> > el_genConv_m;
+   std::vector<std::vector<float> > el_genConv_E;
+   std::vector<std::vector<int> > el_genConv_status;
+   std::vector<std::vector<int> > el_genConv_id;
+   std::vector<std::vector<int> > el_genConv_barcode;
+   std::vector<std::vector<float> > el_genConv_dr;
    
    std::vector<int> el_hasMCMatchPAT;
    std::vector<float> el_genPAT_pt;
@@ -850,14 +852,15 @@ class FlatTree
    std::vector<float> mu_conept;
 
    std::vector<bool> mu_hasMCMatch;
-   std::vector<float> mu_gen_pt;
-   std::vector<float> mu_gen_eta;
-   std::vector<float> mu_gen_phi;
-   std::vector<float> mu_gen_m;
-   std::vector<float> mu_gen_E;
-   std::vector<int> mu_gen_status;
-   std::vector<int> mu_gen_id;
-   std::vector<float> mu_gen_dr;
+   std::vector<std::vector<float> > mu_gen_pt;
+   std::vector<std::vector<float> > mu_gen_eta;
+   std::vector<std::vector<float> > mu_gen_phi;
+   std::vector<std::vector<float> > mu_gen_m;
+   std::vector<std::vector<float> > mu_gen_E;
+   std::vector<std::vector<int> > mu_gen_status;
+   std::vector<std::vector<int> > mu_gen_id;
+   std::vector<std::vector<int> > mu_gen_barcode;
+   std::vector<std::vector<float> > mu_gen_dr;
 
    std::vector<int> mu_hasMCMatchPAT;
    std::vector<float> mu_genPAT_pt;
@@ -962,25 +965,38 @@ class FlatTree
    
    std::vector<int> tau_matchedJetId;
 
-   std::vector<bool> tau_hasMCMatch;
-   std::vector<float> tau_gen_pt;
-   std::vector<float> tau_gen_eta;
-   std::vector<float> tau_gen_phi;
-   std::vector<float> tau_gen_m;
-   std::vector<float> tau_gen_E;
-   std::vector<int> tau_gen_status;
-   std::vector<int> tau_gen_id;
-   std::vector<float> tau_gen_dr;
+   std::vector<bool> tau_hasMCMatchElec;
+   std::vector<std::vector<float> > tau_genElec_pt;
+   std::vector<std::vector<float> > tau_genElec_eta;
+   std::vector<std::vector<float> > tau_genElec_phi;
+   std::vector<std::vector<float> > tau_genElec_m;
+   std::vector<std::vector<float> > tau_genElec_E;
+   std::vector<std::vector<int> > tau_genElec_status;
+   std::vector<std::vector<int> > tau_genElec_id;
+   std::vector<std::vector<int> > tau_genElec_barcode;
+   std::vector<std::vector<float> > tau_genElec_dr;
+
+   std::vector<bool> tau_hasMCMatchMuon;
+   std::vector<std::vector<float> > tau_genMuon_pt;
+   std::vector<std::vector<float> > tau_genMuon_eta;
+   std::vector<std::vector<float> > tau_genMuon_phi;
+   std::vector<std::vector<float> > tau_genMuon_m;
+   std::vector<std::vector<float> > tau_genMuon_E;
+   std::vector<std::vector<int> > tau_genMuon_status;
+   std::vector<std::vector<int> > tau_genMuon_id;
+   std::vector<std::vector<int> > tau_genMuon_barcode;
+   std::vector<std::vector<float> > tau_genMuon_dr;
 
    std::vector<bool> tau_hasMCMatchTau;
-   std::vector<float> tau_genTau_pt;
-   std::vector<float> tau_genTau_eta;
-   std::vector<float> tau_genTau_phi;
-   std::vector<float> tau_genTau_m;
-   std::vector<float> tau_genTau_E;
-   std::vector<int> tau_genTau_status;
-   std::vector<int> tau_genTau_id;
-   std::vector<float> tau_genTau_dr;
+   std::vector<std::vector<float> > tau_genTau_pt;
+   std::vector<std::vector<float> > tau_genTau_eta;
+   std::vector<std::vector<float> > tau_genTau_phi;
+   std::vector<std::vector<float> > tau_genTau_m;
+   std::vector<std::vector<float> > tau_genTau_E;
+   std::vector<std::vector<int> > tau_genTau_status;
+   std::vector<std::vector<int> > tau_genTau_id;
+   std::vector<std::vector<int> > tau_genTau_barcode;
+   std::vector<std::vector<float> > tau_genTau_dr;
    
    // Jets
 

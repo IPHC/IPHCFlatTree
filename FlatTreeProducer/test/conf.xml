@@ -403,8 +403,6 @@
     <var name="el_hasMatchedConversion" save="1"></var>
     <var name="el_expectedMissingInnerHits" save="1"></var>
     <var name="el_hasMCMatch" save="1" mc="1"></var>
-    <var name="el_hasChargeMCMatch" save="1" mc="1"></var>
-    <var name="el_hasPhotonMCMatch" save="1" mc="1"></var>
     <var name="el_gen_pt" save="1" mc="1"></var>
     <var name="el_gen_eta" save="1" mc="1"></var>
     <var name="el_gen_phi" save="1" mc="1"></var>
@@ -412,8 +410,18 @@
     <var name="el_gen_E" save="1" mc="1"></var>
     <var name="el_gen_status" save="1" mc="1"></var>
     <var name="el_gen_id" save="1" mc="1"></var>
-    <var name="el_gen_charge" save="1" mc="1"></var>
+    <var name="el_gen_barcode" save="1" mc="1"></var>
     <var name="el_gen_dr" save="1" mc="1"></var>
+    <var name="el_hasPhotonMCMatch" save="1" mc="1"></var>
+    <var name="el_genConv_pt" save="1" mc="1"></var>
+    <var name="el_genConv_eta" save="1" mc="1"></var>
+    <var name="el_genConv_phi" save="1" mc="1"></var>
+    <var name="el_genConv_m" save="1" mc="1"></var>
+    <var name="el_genConv_E" save="1" mc="1"></var>
+    <var name="el_genConv_status" save="1" mc="1"></var>
+    <var name="el_genConv_id" save="1" mc="1"></var>
+    <var name="el_genConv_barcode" save="1" mc="1"></var>
+    <var name="el_genConv_dr" save="1" mc="1"></var>
     <var name="el_hasMCMatchPAT" save="1" mc="1"></var>
     <var name="el_genPAT_pt" save="1" mc="1"></var>
     <var name="el_genPAT_eta" save="1" mc="1"></var>
@@ -702,7 +710,6 @@
     <var name="mu_lepMVA_jetNDauChargedMVASel" save="1"></var>
     <var name="mu_conept" save="1"></var>
     <var name="mu_hasMCMatch" save="1" mc="1"></var>
-    <var name="mu_hasChargeMCMatch" save="1" mc="1"></var>
     <var name="mu_gen_pt" save="1" mc="1"></var>
     <var name="mu_gen_eta" save="1" mc="1"></var>
     <var name="mu_gen_phi" save="1" mc="1"></var>
@@ -710,7 +717,7 @@
     <var name="mu_gen_E" save="1" mc="1"></var>
     <var name="mu_gen_status" save="1" mc="1"></var>
     <var name="mu_gen_id" save="1" mc="1"></var>
-    <var name="mu_gen_charge" save="1" mc="1"></var>
+    <var name="mu_gen_barcode" save="1" mc="1"></var>
     <var name="mu_gen_dr" save="1" mc="1"></var>
     <var name="mu_hasMCMatchPAT" save="1" mc="1"></var>
     <var name="mu_genPAT_pt" save="1" mc="1"></var>
@@ -800,17 +807,36 @@
     <var name="tau_pfEssential_dxy_error" save="1"></var>
     <var name="tau_pfEssential_dxy_Sig" save="1"></var>
     <var name="tau_matchedJetId" save="1"></var>
-    <var name="tau_hasMCMatch" save="1" mc="1"></var>
-    <var name="tau_hasChargeMCMatch" save="1" mc="1"></var>
-    <var name="tau_gen_pt" save="1" mc="1"></var>
-    <var name="tau_gen_eta" save="1" mc="1"></var>
-    <var name="tau_gen_phi" save="1" mc="1"></var>
-    <var name="tau_gen_m" save="1" mc="1"></var>
-    <var name="tau_gen_E" save="1" mc="1"></var>
-    <var name="tau_gen_status" save="1" mc="1"></var>
-    <var name="tau_gen_id" save="1" mc="1"></var>
-    <var name="tau_gen_charge" save="1" mc="1"></var>
-    <var name="tau_gen_dr" save="1" mc="1"></var>
+    <var name="tau_hasMCMatchElec" save="1" mc="1"></var>
+    <var name="tau_genElec_pt" save="1" mc="1"></var>
+    <var name="tau_genElec_eta" save="1" mc="1"></var>
+    <var name="tau_genElec_phi" save="1" mc="1"></var>
+    <var name="tau_genElec_m" save="1" mc="1"></var>
+    <var name="tau_genElec_E" save="1" mc="1"></var>
+    <var name="tau_genElec_status" save="1" mc="1"></var>
+    <var name="tau_genElec_id" save="1" mc="1"></var>
+    <var name="tau_genElec_barcode" save="1" mc="1"></var>
+    <var name="tau_genElec_dr" save="1" mc="1"></var>
+    <var name="tau_hasMCMatchMuon" save="1" mc="1"></var>
+    <var name="tau_genMuon_pt" save="1" mc="1"></var>
+    <var name="tau_genMuon_eta" save="1" mc="1"></var>
+    <var name="tau_genMuon_phi" save="1" mc="1"></var>
+    <var name="tau_genMuon_m" save="1" mc="1"></var>
+    <var name="tau_genMuon_E" save="1" mc="1"></var>
+    <var name="tau_genMuon_status" save="1" mc="1"></var>
+    <var name="tau_genMuon_id" save="1" mc="1"></var>
+    <var name="tau_genMuon_barcode" save="1" mc="1"></var>
+    <var name="tau_genMuon_dr" save="1" mc="1"></var>
+    <var name="tau_hasMCMatchTau" save="1" mc="1"></var>
+    <var name="tau_genTau_pt" save="1" mc="1"></var>
+    <var name="tau_genTau_eta" save="1" mc="1"></var>
+    <var name="tau_genTau_phi" save="1" mc="1"></var>
+    <var name="tau_genTau_m" save="1" mc="1"></var>
+    <var name="tau_genTau_E" save="1" mc="1"></var>
+    <var name="tau_genTau_status" save="1" mc="1"></var>
+    <var name="tau_genTau_id" save="1" mc="1"></var>
+    <var name="tau_genTau_barcode" save="1" mc="1"></var>
+    <var name="tau_genTau_dr" save="1" mc="1"></var>
     <var name="jet_ntrk" save="1"></var>    
     <var name="jet_JBP" save="1"></var>
     <var name="jet_JP" save="1"></var>
@@ -1054,23 +1080,23 @@
     <var name="ak10jet_genParton_status" save="0" mc="1"></var>
     <var name="ak10jet_genParton_id" save="0" mc="1"></var>
     <var name="pfcand_do" save="0"></var>
-    <var name="sel_pfcand" save="1"></var>
-    <var name="pfcand_n" save="1"></var>
-    <var name="pfcand_pt" save="1"></var>
-    <var name="pfcand_eta" save="1"></var>
-    <var name="pfcand_phi" save="1"></var>
-    <var name="pfcand_E" save="1"></var>
-    <var name="pfcand_charge" save="1"></var>
-    <var name="pfcand_id" save="1"></var>
-    <var name="pfcand_dz" save="1"></var>
-    <var name="pfcand_trackIso" save="1"></var>
-    <var name="pfch_loose_n" save="1"></var>
-    <var name="pfch_loose_sumpt" save="1"></var>
-    <var name="pfch_tight_n" save="1"></var>
-    <var name="pfch_tight_sumpt" save="1"></var>
+    <var name="sel_pfcand" save="0"></var>
+    <var name="pfcand_n" save="0"></var>
+    <var name="pfcand_pt" save="0"></var>
+    <var name="pfcand_eta" save="0"></var>
+    <var name="pfcand_phi" save="0"></var>
+    <var name="pfcand_E" save="0"></var>
+    <var name="pfcand_charge" save="0"></var>
+    <var name="pfcand_id" save="0"></var>
+    <var name="pfcand_dz" save="0"></var>
+    <var name="pfcand_trackIso" save="0"></var>
+    <var name="pfch_loose_n" save="0"></var>
+    <var name="pfch_loose_sumpt" save="0"></var>
+    <var name="pfch_tight_n" save="0"></var>
+    <var name="pfch_tight_sumpt" save="0"></var>
     <var name="gen_PVz" save="0" mc="1"></var>
-    <var name="gen_all" save="1" mc="1"></var>
+    <var name="gen_all" save="0" mc="1"></var>
     <var name="gen_stop" save="0" mc="1"></var>
-    <var name="gen_stop_mass" save="1" mc="1"></var>
+    <var name="gen_stop_mass" save="0" mc="1"></var>
     <var name="genTTX_id" save="1" mc="1"></var>
 </variables>

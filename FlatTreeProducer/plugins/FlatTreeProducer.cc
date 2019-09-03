@@ -2413,69 +2413,80 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
         {
-	   // Internal matching
-	   reco::GenParticle *genp = new reco::GenParticle();
-	   reco::GenParticle *genpConv = new reco::GenParticle();
-
-	   float drmin;
-	   float drminConv;
-
-	   bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
-					       elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
-	   bool hasMCMatchConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,*genpConv,drminConv,
-						       elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
-
+	   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+												      elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+	   
+	   bool hasMCMatch = (genp.size() > 0);
 	   ftree->el_hasMCMatch.push_back(hasMCMatch);
+	   
+	   std::vector<float> el_gen_pt;
+	   std::vector<float> el_gen_eta;
+	   std::vector<float> el_gen_phi;
+	   std::vector<float> el_gen_m;
+	   std::vector<float> el_gen_E;
+	   std::vector<int> el_gen_status;
+	   std::vector<int> el_gen_id;
+	   std::vector<int> el_gen_barcode;
+	   std::vector<float> el_gen_dr;
+	   for( unsigned int ip=0;ip<genp.size();ip++ )
+	     {
+		el_gen_pt.push_back(genp[ip].first->pt());
+		el_gen_eta.push_back(genp[ip].first->eta());
+		el_gen_phi.push_back(genp[ip].first->phi());
+		el_gen_m.push_back(genp[ip].first->mass());
+		el_gen_E.push_back(genp[ip].first->energy());
+		el_gen_status.push_back(genp[ip].first->status());
+		el_gen_id.push_back(genp[ip].first->pdgId());
+		el_gen_barcode.push_back(genp[ip].second.second);
+		el_gen_dr.push_back(genp[ip].second.first);
+	     }
+	   ftree->el_gen_pt.push_back(el_gen_pt);
+	   ftree->el_gen_eta.push_back(el_gen_eta);
+	   ftree->el_gen_phi.push_back(el_gen_phi);
+	   ftree->el_gen_m.push_back(el_gen_m);
+	   ftree->el_gen_E.push_back(el_gen_E);
+	   ftree->el_gen_status.push_back(el_gen_status);
+	   ftree->el_gen_id.push_back(el_gen_id);
+	   ftree->el_gen_barcode.push_back(el_gen_barcode);
+	   ftree->el_gen_dr.push_back(el_gen_dr);
+
+	   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
+													      elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+	   
+	   bool hasMCMatchConv = (genp.size() > 0);
 	   ftree->el_hasPhotonMCMatch.push_back(hasMCMatchConv);
 	   
-	   if( hasMCMatch )
+	   std::vector<float> el_genConv_pt;
+	   std::vector<float> el_genConv_eta;
+	   std::vector<float> el_genConv_phi;
+	   std::vector<float> el_genConv_m;
+	   std::vector<float> el_genConv_E;
+	   std::vector<int> el_genConv_status;
+	   std::vector<int> el_genConv_id;
+	   std::vector<int> el_genConv_barcode;
+	   std::vector<float> el_genConv_dr;
+	   for( unsigned int ip=0;ip<genpConv.size();ip++ )
 	     {
-                ftree->el_gen_pt.push_back(genp->pt());
-                ftree->el_gen_eta.push_back(genp->eta());
-                ftree->el_gen_phi.push_back(genp->phi());
-                ftree->el_gen_m.push_back(genp->mass());
-	        ftree->el_gen_E.push_back(genp->energy());
-                ftree->el_gen_status.push_back(genp->status());
-                ftree->el_gen_id.push_back(genp->pdgId());
-                ftree->el_gen_dr.push_back(drmin);
+		el_genConv_pt.push_back(genpConv[ip].first->pt());
+		el_genConv_eta.push_back(genpConv[ip].first->eta());
+		el_genConv_phi.push_back(genpConv[ip].first->phi());
+		el_genConv_m.push_back(genpConv[ip].first->mass());
+		el_genConv_E.push_back(genpConv[ip].first->energy());
+		el_genConv_status.push_back(genpConv[ip].first->status());
+		el_genConv_id.push_back(genpConv[ip].first->pdgId());
+		el_genConv_barcode.push_back(genpConv[ip].second.second);
+		el_genConv_dr.push_back(genpConv[ip].second.first);
 	     }
-	   else
-	     {
-                ftree->el_gen_pt.push_back(-777);
-                ftree->el_gen_eta.push_back(-777);
-                ftree->el_gen_phi.push_back(-777);
-                ftree->el_gen_m.push_back(-777);
-	        ftree->el_gen_E.push_back(-777);
-                ftree->el_gen_status.push_back(-777);
-                ftree->el_gen_id.push_back(-777);
-                ftree->el_gen_dr.push_back(-777);
-	     }
-	   delete genp;
+	   ftree->el_genConv_pt.push_back(el_genConv_pt);
+	   ftree->el_genConv_eta.push_back(el_genConv_eta);
+	   ftree->el_genConv_phi.push_back(el_genConv_phi);
+	   ftree->el_genConv_m.push_back(el_genConv_m);
+	   ftree->el_genConv_E.push_back(el_genConv_E);
+	   ftree->el_genConv_status.push_back(el_genConv_status);
+	   ftree->el_genConv_id.push_back(el_genConv_id);
+	   ftree->el_genConv_barcode.push_back(el_genConv_barcode);
+	   ftree->el_genConv_dr.push_back(el_genConv_dr);
 
-	   if( hasMCMatchConv )
-	     {
-                ftree->el_genConv_pt.push_back(genpConv->pt());
-                ftree->el_genConv_eta.push_back(genpConv->eta());
-                ftree->el_genConv_phi.push_back(genpConv->phi());
-                ftree->el_genConv_m.push_back(genpConv->mass());
-	        ftree->el_genConv_E.push_back(genpConv->energy());
-                ftree->el_genConv_status.push_back(genpConv->status());
-                ftree->el_genConv_id.push_back(genpConv->pdgId());
-                ftree->el_genConv_dr.push_back(drminConv);
-	     }
-	   else
-	     {
-                ftree->el_genConv_pt.push_back(-777);
-                ftree->el_genConv_eta.push_back(-777);
-                ftree->el_genConv_phi.push_back(-777);
-                ftree->el_genConv_m.push_back(-777);
-	        ftree->el_genConv_E.push_back(-777);
-                ftree->el_genConv_status.push_back(-777);
-                ftree->el_genConv_id.push_back(-777);
-                ftree->el_genConv_dr.push_back(-777);
-	     }
-	   delete genpConv;
-	   
             // PAT matching
             const reco::GenParticle *genpPAT = elec.genParticle();
             bool hasMCMatchPAT = (genpPAT != 0);
@@ -3023,39 +3034,43 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
 	 {
-            // Internal matching
-            reco::GenParticle *genp = new reco::GenParticle();
-
-            float drmin;
-            bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
-						muon.pt(),muon.eta(),muon.phi(),muon.pdgId());
-
-            ftree->mu_hasMCMatch.push_back(hasMCMatch);
-
-            if( hasMCMatch )
-	      {
-		 ftree->mu_gen_pt.push_back(genp->pt());
-		 ftree->mu_gen_eta.push_back(genp->eta());
-		 ftree->mu_gen_phi.push_back(genp->phi());
-		 ftree->mu_gen_m.push_back(genp->mass());
-		 ftree->mu_gen_E.push_back(genp->energy());
-		 ftree->mu_gen_status.push_back(genp->status());
-		 ftree->mu_gen_id.push_back(genp->pdgId());
-		 ftree->mu_gen_dr.push_back(drmin);
-	      }
-            else
-	      {
-		 ftree->mu_gen_pt.push_back(-777);
-		 ftree->mu_gen_eta.push_back(-777);
-		 ftree->mu_gen_phi.push_back(-777);
-		 ftree->mu_gen_m.push_back(-777);
-		 ftree->mu_gen_E.push_back(-777);
-		 ftree->mu_gen_status.push_back(-777);
-		 ftree->mu_gen_id.push_back(-777);
-		 ftree->mu_gen_dr.push_back(-777);
-	      }
-            delete genp;
-
+	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+												       muon.pt(),muon.eta(),muon.phi(),muon.pdgId());
+	   
+	   bool hasMCMatch = (genp.size() > 0);
+	   ftree->mu_hasMCMatch.push_back(hasMCMatch);
+	   
+	   std::vector<float> mu_gen_pt;
+	   std::vector<float> mu_gen_eta;
+	   std::vector<float> mu_gen_phi;
+	   std::vector<float> mu_gen_m;
+	   std::vector<float> mu_gen_E;
+	   std::vector<int> mu_gen_status;
+	   std::vector<int> mu_gen_id;
+	   std::vector<int> mu_gen_barcode;
+	   std::vector<float> mu_gen_dr;
+	   for( unsigned int ip=0;ip<genp.size();ip++ )
+	     {
+		mu_gen_pt.push_back(genp[ip].first->pt());
+		mu_gen_eta.push_back(genp[ip].first->eta());
+		mu_gen_phi.push_back(genp[ip].first->phi());
+		mu_gen_m.push_back(genp[ip].first->mass());
+		mu_gen_E.push_back(genp[ip].first->energy());
+		mu_gen_status.push_back(genp[ip].first->status());
+		mu_gen_id.push_back(genp[ip].first->pdgId());
+		mu_gen_barcode.push_back(genp[ip].second.second);
+		mu_gen_dr.push_back(genp[ip].second.first);
+	     }
+	   ftree->mu_gen_pt.push_back(mu_gen_pt);
+	   ftree->mu_gen_eta.push_back(mu_gen_eta);
+	   ftree->mu_gen_phi.push_back(mu_gen_phi);
+	   ftree->mu_gen_m.push_back(mu_gen_m);
+	   ftree->mu_gen_E.push_back(mu_gen_E);
+	   ftree->mu_gen_status.push_back(mu_gen_status);
+	   ftree->mu_gen_id.push_back(mu_gen_id);
+	   ftree->mu_gen_barcode.push_back(mu_gen_barcode);
+	   ftree->mu_gen_dr.push_back(mu_gen_dr);
+	    
             // PAT matching
             const reco::GenParticle *genpPAT = muon.genParticle();
             bool hasMCMatchPAT = (genpPAT != 0);
@@ -3286,67 +3301,114 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
 	 {
-            reco::GenParticle *genp = new reco::GenParticle();
-	    reco::GenParticle *gent = new reco::GenParticle();
+	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpElec = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+													   tau.pt(),tau.eta(),tau.phi(),11);
+	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpMuon = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+													   tau.pt(),tau.eta(),tau.phi(),13);
+	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpTau = mc_truth->doMatchTau(iEvent,iSetup,genParticlesHandle,
+													     tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
+	   
+	   bool hasMCMatchElec = (genpElec.size() > 0);
+	   ftree->tau_hasMCMatchElec.push_back(hasMCMatchElec);
+	   
+	   std::vector<float> tau_genElec_pt;
+	   std::vector<float> tau_genElec_eta;
+	   std::vector<float> tau_genElec_phi;
+	   std::vector<float> tau_genElec_m;
+	   std::vector<float> tau_genElec_E;
+	   std::vector<int> tau_genElec_status;
+	   std::vector<int> tau_genElec_id;
+	   std::vector<int> tau_genElec_barcode;
+	   std::vector<float> tau_genElec_dr;
+	   for( unsigned int ip=0;ip<genpElec.size();ip++ )
+	     {
+		tau_genElec_pt.push_back(genpElec[ip].first->pt());
+		tau_genElec_eta.push_back(genpElec[ip].first->eta());
+		tau_genElec_phi.push_back(genpElec[ip].first->phi());
+		tau_genElec_m.push_back(genpElec[ip].first->mass());
+		tau_genElec_E.push_back(genpElec[ip].first->energy());
+		tau_genElec_status.push_back(genpElec[ip].first->status());
+		tau_genElec_id.push_back(genpElec[ip].first->pdgId());
+		tau_genElec_barcode.push_back(genpElec[ip].second.second);
+		tau_genElec_dr.push_back(genpElec[ip].second.first);
+	     }
+	   ftree->tau_genElec_pt.push_back(tau_genElec_pt);
+	   ftree->tau_genElec_eta.push_back(tau_genElec_eta);
+	   ftree->tau_genElec_phi.push_back(tau_genElec_phi);
+	   ftree->tau_genElec_m.push_back(tau_genElec_m);
+	   ftree->tau_genElec_E.push_back(tau_genElec_E);
+	   ftree->tau_genElec_status.push_back(tau_genElec_status);
+	   ftree->tau_genElec_id.push_back(tau_genElec_id);
+	   ftree->tau_genElec_barcode.push_back(tau_genElec_barcode);
+	   ftree->tau_genElec_dr.push_back(tau_genElec_dr);
 
-            float drmin;
-	    float drminTau;
-	    
-            bool hasMCMatch = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,*genp,drmin,
-						tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
-            bool hasMCMatchTau = mc_truth->doMatchTau(iEvent,iSetup,genParticlesHandle,*gent,drminTau,
-						      tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
-	    
-            ftree->tau_hasMCMatch.push_back(hasMCMatch);
-	    ftree->tau_hasMCMatchTau.push_back(hasMCMatchTau);
+	   bool hasMCMatchMuon = (genpMuon.size() > 0);
+	   ftree->tau_hasMCMatchMuon.push_back(hasMCMatchMuon);
+	   
+	   std::vector<float> tau_genMuon_pt;
+	   std::vector<float> tau_genMuon_eta;
+	   std::vector<float> tau_genMuon_phi;
+	   std::vector<float> tau_genMuon_m;
+	   std::vector<float> tau_genMuon_E;
+	   std::vector<int> tau_genMuon_status;
+	   std::vector<int> tau_genMuon_id;
+	   std::vector<int> tau_genMuon_barcode;
+	   std::vector<float> tau_genMuon_dr;
+	   for( unsigned int ip=0;ip<genpMuon.size();ip++ )
+	     {
+		tau_genMuon_pt.push_back(genpMuon[ip].first->pt());
+		tau_genMuon_eta.push_back(genpMuon[ip].first->eta());
+		tau_genMuon_phi.push_back(genpMuon[ip].first->phi());
+		tau_genMuon_m.push_back(genpMuon[ip].first->mass());
+		tau_genMuon_E.push_back(genpMuon[ip].first->energy());
+		tau_genMuon_status.push_back(genpMuon[ip].first->status());
+		tau_genMuon_id.push_back(genpMuon[ip].first->pdgId());
+		tau_genMuon_barcode.push_back(genpMuon[ip].second.second);
+		tau_genMuon_dr.push_back(genpMuon[ip].second.first);
+	     }
+	   ftree->tau_genMuon_pt.push_back(tau_genMuon_pt);
+	   ftree->tau_genMuon_eta.push_back(tau_genMuon_eta);
+	   ftree->tau_genMuon_phi.push_back(tau_genMuon_phi);
+	   ftree->tau_genMuon_m.push_back(tau_genMuon_m);
+	   ftree->tau_genMuon_E.push_back(tau_genMuon_E);
+	   ftree->tau_genMuon_status.push_back(tau_genMuon_status);
+	   ftree->tau_genMuon_id.push_back(tau_genMuon_id);
+	   ftree->tau_genMuon_barcode.push_back(tau_genMuon_barcode);
+	   ftree->tau_genMuon_dr.push_back(tau_genMuon_dr);
 
-            if( hasMCMatch )
-	      {
-		 ftree->tau_gen_pt.push_back(genp->pt());
-		 ftree->tau_gen_eta.push_back(genp->eta());
-		 ftree->tau_gen_phi.push_back(genp->phi());
-		 ftree->tau_gen_m.push_back(genp->mass());
-		 ftree->tau_gen_E.push_back(genp->energy());
-		 ftree->tau_gen_status.push_back(genp->status());
-		 ftree->tau_gen_id.push_back(genp->pdgId());
-		 ftree->tau_gen_dr.push_back(drmin);
-	      }
-            else
-	      {
-		 ftree->tau_gen_pt.push_back(-777);
-		 ftree->tau_gen_eta.push_back(-777);
-		 ftree->tau_gen_phi.push_back(-777);
-		 ftree->tau_gen_m.push_back(-777);
-		 ftree->tau_gen_E.push_back(-777);
-		 ftree->tau_gen_status.push_back(-777);
-		 ftree->tau_gen_id.push_back(-777);
-		 ftree->tau_gen_dr.push_back(-777);
-	      }
-            delete genp;
-	    
-            if( hasMCMatchTau )
-	      {
-		 ftree->tau_genTau_pt.push_back(gent->pt());
-		 ftree->tau_genTau_eta.push_back(gent->eta());
-		 ftree->tau_genTau_phi.push_back(gent->phi());
-		 ftree->tau_genTau_m.push_back(gent->mass());
-		 ftree->tau_genTau_E.push_back(gent->energy());
-		 ftree->tau_genTau_status.push_back(gent->status());
-		 ftree->tau_genTau_id.push_back(gent->pdgId());
-		 ftree->tau_genTau_dr.push_back(drminTau);
-	      }
-            else
-	      {
-		 ftree->tau_genTau_pt.push_back(-777);
-		 ftree->tau_genTau_eta.push_back(-777);
-		 ftree->tau_genTau_phi.push_back(-777);
-		 ftree->tau_genTau_m.push_back(-777);
-		 ftree->tau_genTau_E.push_back(-777);
-		 ftree->tau_genTau_status.push_back(-777);
-		 ftree->tau_genTau_id.push_back(-777);
-		 ftree->tau_genTau_dr.push_back(-777);
-	      }
-            delete gent;
+	   bool hasMCMatchTau = (genpTau.size() > 0);
+	   ftree->tau_hasMCMatchTau.push_back(hasMCMatchTau);
+	   
+	   std::vector<float> tau_genTau_pt;
+	   std::vector<float> tau_genTau_eta;
+	   std::vector<float> tau_genTau_phi;
+	   std::vector<float> tau_genTau_m;
+	   std::vector<float> tau_genTau_E;
+	   std::vector<int> tau_genTau_status;
+	   std::vector<int> tau_genTau_id;
+	   std::vector<int> tau_genTau_barcode;
+	   std::vector<float> tau_genTau_dr;
+	   for( unsigned int ip=0;ip<genpTau.size();ip++ )
+	     {
+		tau_genTau_pt.push_back(genpTau[ip].first->pt());
+		tau_genTau_eta.push_back(genpTau[ip].first->eta());
+		tau_genTau_phi.push_back(genpTau[ip].first->phi());
+		tau_genTau_m.push_back(genpTau[ip].first->mass());
+		tau_genTau_E.push_back(genpTau[ip].first->energy());
+		tau_genTau_status.push_back(genpTau[ip].first->status());
+		tau_genTau_id.push_back(genpTau[ip].first->pdgId());
+		tau_genTau_barcode.push_back(genpTau[ip].second.second);
+		tau_genTau_dr.push_back(genpTau[ip].second.first);
+	     }
+	   ftree->tau_genTau_pt.push_back(tau_genTau_pt);
+	   ftree->tau_genTau_eta.push_back(tau_genTau_eta);
+	   ftree->tau_genTau_phi.push_back(tau_genTau_phi);
+	   ftree->tau_genTau_m.push_back(tau_genTau_m);
+	   ftree->tau_genTau_E.push_back(tau_genTau_E);
+	   ftree->tau_genTau_status.push_back(tau_genTau_status);
+	   ftree->tau_genTau_id.push_back(tau_genTau_id);
+	   ftree->tau_genTau_barcode.push_back(tau_genTau_barcode);
+	   ftree->tau_genTau_dr.push_back(tau_genTau_dr);
 	 }
     }
    ftree->tau_n = ftree->tau_pt.size();

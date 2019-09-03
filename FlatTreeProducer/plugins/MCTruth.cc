@@ -410,24 +410,25 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
    tree.gen_PVz = gen_PVz;
 }
 
-bool MCTruth::doMatch(const edm::Event& iEvent,
-		      const edm::EventSetup& iSetup,
-		      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-		      reco::GenParticle &genp,
-		      float &drMin,
-		      float pt, float eta, float phi, int pdgId)
-{ 
+std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatch(const edm::Event& iEvent,
+								   const edm::EventSetup& iSetup,
+								   const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+								   float pt, float eta, float phi, int pdgId)
+{
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
-
-   bool foundMatch = 0;
    
    float drmin = 0.3;
    
+   int ipart = -1;
    for(genParticleSrc = genParticlesCollection.begin();
        genParticleSrc != genParticlesCollection.end(); 
        genParticleSrc++)
      {
+	ipart++;
+	
 	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
 
 	float ptGen = mcp->pt();
@@ -460,42 +461,40 @@ bool MCTruth::doMatch(const edm::Event& iEvent,
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     foundMatch = 1;
-	     genp = *mcp;
+	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
 	  }	
      }
    
-   drMin = drmin;
-   
-   return foundMatch;
+   std::sort(genp.begin(),genp.end(),sortByDR);
+
+   return genp;
 }
 
-bool MCTruth::doMatchTau(const edm::Event& iEvent,
-			 const edm::EventSetup& iSetup,
-			 const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-			 reco::GenParticle &genp,
-			 float &drMin,
-			 float pt, float eta, float phi, int pdgId)
-{ 
+std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatchTau(const edm::Event& iEvent,
+										      const edm::EventSetup& iSetup,
+										      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+										      float pt, float eta, float phi, int pdgId)
+{
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
 
-   bool foundMatch = 0;
-   
    float drmin = 0.3;
-   
+
+   int ipart = -1;
    for(genParticleSrc = genParticlesCollection.begin();
        genParticleSrc != genParticlesCollection.end(); 
        genParticleSrc++)
      {
+	ipart++;
+	
 	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
 
 	float ptGen = mcp->pt();
 	float etaGen = mcp->eta();
 	float phiGen = mcp->phi();
 	int idGen = mcp->pdgId();
-	int isPromptFinalState = mcp->isPromptFinalState(); 
-	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState();
 	
 	if( abs(idGen) != 15 ) continue;
 
@@ -511,40 +510,39 @@ bool MCTruth::doMatchTau(const edm::Event& iEvent,
 	
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
-	if( ((fabs(pt - ptGen) / ptGen) > 0.5) && (abs(idGen) == 11 || abs(idGen) == 13) ) continue;
 	if( (fabs(pt - ptGen) / ptGen) > 1.0 ) continue;
 	
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     foundMatch = 1;
-	     genp = *mcp;
+	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
 	  }	
      }
    
-   drMin = drmin;
+   std::sort(genp.begin(),genp.end(),sortByDR);
    
-   return foundMatch;
+   return genp;
 }
 
-bool MCTruth::doMatchConv(const edm::Event& iEvent,
-			  const edm::EventSetup& iSetup,
-			  const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-			  reco::GenParticle &genp,
-			  float &drMin,
-			  float pt, float eta, float phi, int pdgId)
-{ 
+std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatchConv(const edm::Event& iEvent,
+										       const edm::EventSetup& iSetup,
+										       const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+										       float pt, float eta, float phi, int pdgId)
+{
+   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
 
-   bool foundMatch = 0;
-   
    float drmin = 0.3;
    
+   int ipart = -1;
    for(genParticleSrc = genParticlesCollection.begin();
        genParticleSrc != genParticlesCollection.end(); 
        genParticleSrc++)
      {
+	ipart++;
+	
 	reco::GenParticle *mcp = &(const_cast<reco::GenParticle&>(*genParticleSrc));
 
 	float ptGen = mcp->pt();
@@ -564,14 +562,13 @@ bool MCTruth::doMatchConv(const edm::Event& iEvent,
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     foundMatch = 1;
-	     genp = *mcp;
-	  }	
+	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
+	  }
      }
    
-   drMin = drmin;
-   
-   return foundMatch;
+   std::sort(genp.begin(),genp.end(),sortByDR);
+
+   return genp;
 }
 
 void MCTruth::Init(FlatTree &tree)
