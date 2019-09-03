@@ -2220,10 +2220,14 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        int number_cand = elec.numberOfSourceCandidatePtrs();
        for( int i_cand=0;i_cand<number_cand;i_cand++ )
 	 {
+	    if( matched_jet_index >= 0 ) break;
+	    
 	    const reco::CandidatePtr &c1s = elec.sourceCandidatePtr(i_cand);
 	    int i_jet = -1;
 	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
 	      {
+		 if( matched_jet_index >= 0 ) break;
+		 
 		 i_jet++;
 		 int number_jet = j->numberOfSourceCandidatePtrs();
 		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
@@ -2356,7 +2360,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         double el_eta = elec.eta();
         double el_lepMVA = -666.;
 
-       //NB : should add pT cut on jet associated to lepton (15 in nanoAOD?) ?
        pat::Jet *elecjet = NULL;
        int jcl = -1;
        for(unsigned int ij=0;ij<jets->size();ij++)
@@ -2797,10 +2800,14 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        int number_cand = muon.numberOfSourceCandidatePtrs();
        for( int i_cand=0;i_cand<number_cand;i_cand++ )
 	 {
+	    if( matched_jet_index >= 0 ) break;
+	    
 	    const reco::CandidatePtr &c1s = muon.sourceCandidatePtr(i_cand);
 	    int i_jet = -1;
 	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
 	      {
+		 if( matched_jet_index >= 0 ) break;
+		 
 		 i_jet++;
 		 int number_jet = j->numberOfSourceCandidatePtrs();
 		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
@@ -2951,7 +2958,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         double mu_eta = muon.eta();
         double mu_lepMVA = -666.;
 
-       //NB : should add pT cut on jet associated to lepton (15 in nanoAOD?) ?
        pat::Jet *muonjet = NULL;
        int jcl = -1;
        for(unsigned int ij=0;ij<jets->size();ij++)
@@ -3245,15 +3251,19 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->tau_pfEssential_dxy.push_back(tau.pfEssential().dxy_);
         ftree->tau_pfEssential_dxy_error.push_back(tau.pfEssential().dxy_error_);
         ftree->tau_pfEssential_dxy_Sig.push_back(tau.pfEssential().dxy_Sig_);
-
+       
        int matched_jet_index = -777;
        int number_cand = tau.numberOfSourceCandidatePtrs();
-       for( int i_cand=0;i_cand<number_cand;i_cand++ )
+       for( int i_cand=0;i_cand<number_cand;i_cand++ )	 
 	 {
+	    if( matched_jet_index >= 0 ) break;
+	    
 	    const reco::CandidatePtr &c1s = tau.sourceCandidatePtr(i_cand);
 	    int i_jet = -1;
 	    for( edm::View<pat::Jet>::const_iterator j=view_jets->begin();j!=view_jets->end();++j )
 	      {
+		 if( matched_jet_index >= 0 ) break;
+		 
 		 i_jet++;
 		 int number_jet = j->numberOfSourceCandidatePtrs();
 		 for( int i_cand_jet=0;i_cand_jet<number_jet;i_cand_jet++ )
