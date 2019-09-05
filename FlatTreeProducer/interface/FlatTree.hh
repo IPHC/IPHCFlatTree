@@ -11,7 +11,7 @@
 using boost::any_cast;
 typedef std::map<std::string, std::map<std::string, boost::any> >  t_map;
 
-#define DEFVAL -666
+#define DEFVAL -777
 
 #include "IPHCFlatTree/FlatTreeProducer/interface/Helper.hh"
 
@@ -510,26 +510,30 @@ class FlatTree
    std::vector<float> el_conept;
 
    std::vector<bool> el_hasMCMatch;
-   std::vector<std::vector<float> > el_gen_pt;
-   std::vector<std::vector<float> > el_gen_eta;
-   std::vector<std::vector<float> > el_gen_phi;
-   std::vector<std::vector<float> > el_gen_m;
-   std::vector<std::vector<float> > el_gen_E;
-   std::vector<std::vector<int> > el_gen_status;
-   std::vector<std::vector<int> > el_gen_id;
-   std::vector<std::vector<int> > el_gen_barcode;
-   std::vector<std::vector<float> > el_gen_dr;
+   std::vector<int> el_nGenPart;
+   std::vector<int> el_gen_idx;
+   std::vector<float> el_gen_pt;
+   std::vector<float> el_gen_eta;
+   std::vector<float> el_gen_phi;
+   std::vector<float> el_gen_m;
+   std::vector<float> el_gen_E;
+   std::vector<int> el_gen_status;
+   std::vector<int> el_gen_id;
+   std::vector<int> el_gen_barcode;
+   std::vector<float> el_gen_dr;
 
    std::vector<bool> el_hasPhotonMCMatch;
-   std::vector<std::vector<float> > el_genConv_pt;
-   std::vector<std::vector<float> > el_genConv_eta;
-   std::vector<std::vector<float> > el_genConv_phi;
-   std::vector<std::vector<float> > el_genConv_m;
-   std::vector<std::vector<float> > el_genConv_E;
-   std::vector<std::vector<int> > el_genConv_status;
-   std::vector<std::vector<int> > el_genConv_id;
-   std::vector<std::vector<int> > el_genConv_barcode;
-   std::vector<std::vector<float> > el_genConv_dr;
+   std::vector<int> el_nGenPartConv;
+   std::vector<int> el_genConv_idx;
+   std::vector<float> el_genConv_pt;
+   std::vector<float> el_genConv_eta;
+   std::vector<float> el_genConv_phi;
+   std::vector<float> el_genConv_m;
+   std::vector<float> el_genConv_E;
+   std::vector<int> el_genConv_status;
+   std::vector<int> el_genConv_id;
+   std::vector<int> el_genConv_barcode;
+   std::vector<float> el_genConv_dr;
    
    std::vector<int> el_hasMCMatchPAT;
    std::vector<float> el_genPAT_pt;
@@ -852,15 +856,17 @@ class FlatTree
    std::vector<float> mu_conept;
 
    std::vector<bool> mu_hasMCMatch;
-   std::vector<std::vector<float> > mu_gen_pt;
-   std::vector<std::vector<float> > mu_gen_eta;
-   std::vector<std::vector<float> > mu_gen_phi;
-   std::vector<std::vector<float> > mu_gen_m;
-   std::vector<std::vector<float> > mu_gen_E;
-   std::vector<std::vector<int> > mu_gen_status;
-   std::vector<std::vector<int> > mu_gen_id;
-   std::vector<std::vector<int> > mu_gen_barcode;
-   std::vector<std::vector<float> > mu_gen_dr;
+   std::vector<int> mu_nGenPart;
+   std::vector<int> mu_gen_idx;
+   std::vector<float> mu_gen_pt;
+   std::vector<float> mu_gen_eta;
+   std::vector<float> mu_gen_phi;
+   std::vector<float> mu_gen_m;
+   std::vector<float> mu_gen_E;
+   std::vector<int> mu_gen_status;
+   std::vector<int> mu_gen_id;
+   std::vector<int> mu_gen_barcode;
+   std::vector<float> mu_gen_dr;
 
    std::vector<int> mu_hasMCMatchPAT;
    std::vector<float> mu_genPAT_pt;
@@ -966,37 +972,43 @@ class FlatTree
    std::vector<int> tau_matchedJetId;
 
    std::vector<bool> tau_hasMCMatchElec;
-   std::vector<std::vector<float> > tau_genElec_pt;
-   std::vector<std::vector<float> > tau_genElec_eta;
-   std::vector<std::vector<float> > tau_genElec_phi;
-   std::vector<std::vector<float> > tau_genElec_m;
-   std::vector<std::vector<float> > tau_genElec_E;
-   std::vector<std::vector<int> > tau_genElec_status;
-   std::vector<std::vector<int> > tau_genElec_id;
-   std::vector<std::vector<int> > tau_genElec_barcode;
-   std::vector<std::vector<float> > tau_genElec_dr;
+   std::vector<int> tau_nGenPartElec;
+   std::vector<int> tau_genElec_idx;
+   std::vector<float> tau_genElec_pt;
+   std::vector<float> tau_genElec_eta;
+   std::vector<float> tau_genElec_phi;
+   std::vector<float> tau_genElec_m;
+   std::vector<float> tau_genElec_E;
+   std::vector<int> tau_genElec_status;
+   std::vector<int> tau_genElec_id;
+   std::vector<int> tau_genElec_barcode;
+   std::vector<float> tau_genElec_dr;
 
    std::vector<bool> tau_hasMCMatchMuon;
-   std::vector<std::vector<float> > tau_genMuon_pt;
-   std::vector<std::vector<float> > tau_genMuon_eta;
-   std::vector<std::vector<float> > tau_genMuon_phi;
-   std::vector<std::vector<float> > tau_genMuon_m;
-   std::vector<std::vector<float> > tau_genMuon_E;
-   std::vector<std::vector<int> > tau_genMuon_status;
-   std::vector<std::vector<int> > tau_genMuon_id;
-   std::vector<std::vector<int> > tau_genMuon_barcode;
-   std::vector<std::vector<float> > tau_genMuon_dr;
+   std::vector<int> tau_nGenPartMuon;
+   std::vector<int> tau_genMuon_idx;
+   std::vector<float> tau_genMuon_pt;
+   std::vector<float> tau_genMuon_eta;
+   std::vector<float> tau_genMuon_phi;
+   std::vector<float> tau_genMuon_m;
+   std::vector<float> tau_genMuon_E;
+   std::vector<int> tau_genMuon_status;
+   std::vector<int> tau_genMuon_id;
+   std::vector<int> tau_genMuon_barcode;
+   std::vector<float> tau_genMuon_dr;
 
    std::vector<bool> tau_hasMCMatchTau;
-   std::vector<std::vector<float> > tau_genTau_pt;
-   std::vector<std::vector<float> > tau_genTau_eta;
-   std::vector<std::vector<float> > tau_genTau_phi;
-   std::vector<std::vector<float> > tau_genTau_m;
-   std::vector<std::vector<float> > tau_genTau_E;
-   std::vector<std::vector<int> > tau_genTau_status;
-   std::vector<std::vector<int> > tau_genTau_id;
-   std::vector<std::vector<int> > tau_genTau_barcode;
-   std::vector<std::vector<float> > tau_genTau_dr;
+   std::vector<int> tau_nGenPartTau;
+   std::vector<int> tau_genTau_idx;
+   std::vector<float> tau_genTau_pt;
+   std::vector<float> tau_genTau_eta;
+   std::vector<float> tau_genTau_phi;
+   std::vector<float> tau_genTau_m;
+   std::vector<float> tau_genTau_E;
+   std::vector<int> tau_genTau_status;
+   std::vector<int> tau_genTau_id;
+   std::vector<int> tau_genTau_barcode;
+   std::vector<float> tau_genTau_dr;
    
    // Jets
 

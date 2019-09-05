@@ -403,6 +403,8 @@
     <var name="el_hasMatchedConversion" save="1"></var>
     <var name="el_expectedMissingInnerHits" save="1"></var>
     <var name="el_hasMCMatch" save="1" mc="1"></var>
+    <var name="el_nGenPart" save="1" mc="1"></var>
+    <var name="el_gen_idx" save="1" mc="1"></var>
     <var name="el_gen_pt" save="1" mc="1"></var>
     <var name="el_gen_eta" save="1" mc="1"></var>
     <var name="el_gen_phi" save="1" mc="1"></var>
@@ -413,6 +415,8 @@
     <var name="el_gen_barcode" save="1" mc="1"></var>
     <var name="el_gen_dr" save="1" mc="1"></var>
     <var name="el_hasPhotonMCMatch" save="1" mc="1"></var>
+    <var name="el_nGenPartConv" save="1" mc="1"></var>
+    <var name="el_genConv_idx" save="1" mc="1"></var>
     <var name="el_genConv_pt" save="1" mc="1"></var>
     <var name="el_genConv_eta" save="1" mc="1"></var>
     <var name="el_genConv_phi" save="1" mc="1"></var>
@@ -710,6 +714,8 @@
     <var name="mu_lepMVA_jetNDauChargedMVASel" save="1"></var>
     <var name="mu_conept" save="1"></var>
     <var name="mu_hasMCMatch" save="1" mc="1"></var>
+    <var name="mu_nGenPart" save="1" mc="1"></var>
+    <var name="mu_gen_idx" save="1" mc="1"></var>
     <var name="mu_gen_pt" save="1" mc="1"></var>
     <var name="mu_gen_eta" save="1" mc="1"></var>
     <var name="mu_gen_phi" save="1" mc="1"></var>
@@ -808,6 +814,8 @@
     <var name="tau_pfEssential_dxy_Sig" save="1"></var>
     <var name="tau_matchedJetId" save="1"></var>
     <var name="tau_hasMCMatchElec" save="1" mc="1"></var>
+    <var name="tau_nGenPartElec" save="1" mc="1"></var>
+    <var name="tau_genElec_idx" save="1" mc="1"></var>
     <var name="tau_genElec_pt" save="1" mc="1"></var>
     <var name="tau_genElec_eta" save="1" mc="1"></var>
     <var name="tau_genElec_phi" save="1" mc="1"></var>
@@ -818,6 +826,8 @@
     <var name="tau_genElec_barcode" save="1" mc="1"></var>
     <var name="tau_genElec_dr" save="1" mc="1"></var>
     <var name="tau_hasMCMatchMuon" save="1" mc="1"></var>
+    <var name="tau_nGenPartMuon" save="1" mc="1"></var>
+    <var name="tau_genMuon_idx" save="1" mc="1"></var>
     <var name="tau_genMuon_pt" save="1" mc="1"></var>
     <var name="tau_genMuon_eta" save="1" mc="1"></var>
     <var name="tau_genMuon_phi" save="1" mc="1"></var>
@@ -828,6 +838,8 @@
     <var name="tau_genMuon_barcode" save="1" mc="1"></var>
     <var name="tau_genMuon_dr" save="1" mc="1"></var>
     <var name="tau_hasMCMatchTau" save="1" mc="1"></var>
+    <var name="tau_nGenPartTau" save="1" mc="1"></var>
+    <var name="tau_genTau_idx" save="1" mc="1"></var>
     <var name="tau_genTau_pt" save="1" mc="1"></var>
     <var name="tau_genTau_eta" save="1" mc="1"></var>
     <var name="tau_genTau_phi" save="1" mc="1"></var>

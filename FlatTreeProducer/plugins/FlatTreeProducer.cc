@@ -1983,6 +1983,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     //
     int nElec = electrons->size();
 
+    int iElecSel = 0;
     for(int ie=0;ie<nElec;ie++)
     {
         const pat::Electron& elec = electronsPAT->at(ie);
@@ -2065,19 +2066,19 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         const reco::GsfTrackRef gsfTrack = elec.gsfTrack();
         bool hasGsfTrack = ( gsfTrack.isNonnull() );
         ftree->el_hasGsfTrack.push_back(hasGsfTrack);
-        ftree->el_gsfTrack_d0.push_back((hasGsfTrack) ? gsfTrack->d0() : -666);
-        ftree->el_gsfTrack_z0.push_back((hasGsfTrack) ? gsfTrack->dz() : -666);
-        ftree->el_gsfTrack_d0Error.push_back((hasGsfTrack) ? gsfTrack->d0Error() : -666);
-        ftree->el_gsfTrack_z0Error.push_back((hasGsfTrack) ? gsfTrack->dzError() : -666);
-        ftree->el_gsfTrack_PV_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(primVtx->position()) : -666);
-        ftree->el_gsfTrack_PV_dz.push_back((hasGsfTrack) ? gsfTrack->dz(primVtx->position()) : -666);
-        ftree->el_gsfTrack_RP_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(gsfTrack->referencePoint()) : -666);
-        ftree->el_gsfTrack_RP_dz.push_back((hasGsfTrack) ? gsfTrack->dz(gsfTrack->referencePoint()) : -666);
-        ftree->el_gsfTrack_BS_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(beamspot.position()) : -666);
-        ftree->el_gsfTrack_BS_dz.push_back((hasGsfTrack) ? gsfTrack->dz(beamspot.position()) : -666);
-        ftree->el_gsfTrack_dxyError.push_back((hasGsfTrack) ? gsfTrack->dxyError() : -666);
-        ftree->el_gsfTrack_dzError.push_back((hasGsfTrack) ? gsfTrack->dzError() : -666);
-        ftree->el_gsfTrack_normalizedChi2.push_back((hasGsfTrack) ? gsfTrack->normalizedChi2() : -666);
+        ftree->el_gsfTrack_d0.push_back((hasGsfTrack) ? gsfTrack->d0() : -777);
+        ftree->el_gsfTrack_z0.push_back((hasGsfTrack) ? gsfTrack->dz() : -777);
+        ftree->el_gsfTrack_d0Error.push_back((hasGsfTrack) ? gsfTrack->d0Error() : -777);
+        ftree->el_gsfTrack_z0Error.push_back((hasGsfTrack) ? gsfTrack->dzError() : -777);
+        ftree->el_gsfTrack_PV_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(primVtx->position()) : -777);
+        ftree->el_gsfTrack_PV_dz.push_back((hasGsfTrack) ? gsfTrack->dz(primVtx->position()) : -777);
+        ftree->el_gsfTrack_RP_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(gsfTrack->referencePoint()) : -777);
+        ftree->el_gsfTrack_RP_dz.push_back((hasGsfTrack) ? gsfTrack->dz(gsfTrack->referencePoint()) : -777);
+        ftree->el_gsfTrack_BS_dxy.push_back((hasGsfTrack) ? gsfTrack->dxy(beamspot.position()) : -777);
+        ftree->el_gsfTrack_BS_dz.push_back((hasGsfTrack) ? gsfTrack->dz(beamspot.position()) : -777);
+        ftree->el_gsfTrack_dxyError.push_back((hasGsfTrack) ? gsfTrack->dxyError() : -777);
+        ftree->el_gsfTrack_dzError.push_back((hasGsfTrack) ? gsfTrack->dzError() : -777);
+        ftree->el_gsfTrack_normalizedChi2.push_back((hasGsfTrack) ? gsfTrack->normalizedChi2() : -777);
 
         ftree->el_ip3d.push_back(elec.dB(pat::Electron::PV3D));
         ftree->el_ip3dErr.push_back(elec.edB(pat::Electron::PV3D));
@@ -2145,8 +2146,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->el_numberOfValidStripLayersWithMonoAndStereo.push_back(pattern.numberOfValidStripLayersWithMonoAndStereo());
         ftree->el_trackerLayersWithoutMeasurement.push_back(pattern.trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS));
 
-        ftree->el_numberOfValidHits.push_back((hasGsfTrack) ? gsfTrack->numberOfValidHits() : -666);
-        ftree->el_numberOfLostHitsDefault.push_back((hasGsfTrack) ? gsfTrack->numberOfLostHits() : -666);
+        ftree->el_numberOfValidHits.push_back((hasGsfTrack) ? gsfTrack->numberOfValidHits() : -777);
+        ftree->el_numberOfLostHitsDefault.push_back((hasGsfTrack) ? gsfTrack->numberOfLostHits() : -777);
 
         ftree->el_fbrem.push_back(elec.fbrem());
 
@@ -2263,11 +2264,11 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	 }*/
        
         // mini-iso
-        float miniIso           = -666;
-        float miniIsoTTH        = -666;
-	float PFRelIso04	= -666;
-        float miniIsoTTHCharged = -666;
-        float miniIsoTTHNeutral = -666;
+        float miniIso           = -777;
+        float miniIsoTTH        = -777;
+	float PFRelIso04	= -777;
+        float miniIsoTTHCharged = -777;
+        float miniIsoTTHNeutral = -777;
        
         if( dataFormat_ != "AOD" )
         {
@@ -2358,7 +2359,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         double el_pt = elec.pt();
         double el_eta = elec.eta();
-        double el_lepMVA = -666.;
+        double el_lepMVA = -777.;
 
        pat::Jet *elecjet = NULL;
        int jcl = -1;
@@ -2386,13 +2387,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_jetPtRatio = std::min(ptRatioElec(elec,elecjet, PFRelIso04),1.5);
        lepMVA_jetPtRelv2 = (jcl >= 0) ? ptRelElec(elec,jets->at(jcl)) : 0.0;
        float jetRelIso = (jcl >= 0) ? (1./lepMVA_jetPtRatio)-1. : PFRelIso04;
-       float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
+       float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -777;
        csv = (isnan(csv)) ? -999. : csv;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
-       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
+       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -777;
        deepcsv = (isnan(deepcsv)) ? -999. : deepcsv;
        lepMVA_jetBTagDeepCSV = std::max(double(deepcsv),0.);
-       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -666;
+       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -777;
        deepflavour = (isnan(deepflavour)) ? -999. : deepflavour;
        lepMVA_jetBTagDeepFlavour = std::max(double(deepflavour),0.);
        lepMVA_sip3d = abs(ftree->el_ip3d.back()/ftree->el_ip3dErr.back());
@@ -2413,80 +2414,80 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
         {
-	   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-												      elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+	   std::vector<MCTruth::GenPart*> genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+								   elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
 	   
-	   bool hasMCMatch = (genp.size() > 0);
+	   int nGenPart = genp.size();
+	   bool hasMCMatch = (nGenPart > 0);
+	   ftree->el_nGenPart.push_back(nGenPart);
 	   ftree->el_hasMCMatch.push_back(hasMCMatch);
 	   
-	   std::vector<float> el_gen_pt;
-	   std::vector<float> el_gen_eta;
-	   std::vector<float> el_gen_phi;
-	   std::vector<float> el_gen_m;
-	   std::vector<float> el_gen_E;
-	   std::vector<int> el_gen_status;
-	   std::vector<int> el_gen_id;
-	   std::vector<int> el_gen_barcode;
-	   std::vector<float> el_gen_dr;
-	   for( unsigned int ip=0;ip<genp.size();ip++ )
+	   for( int ip=0;ip<nGenPart;ip++ )
 	     {
-		el_gen_pt.push_back(genp[ip].first->pt());
-		el_gen_eta.push_back(genp[ip].first->eta());
-		el_gen_phi.push_back(genp[ip].first->phi());
-		el_gen_m.push_back(genp[ip].first->mass());
-		el_gen_E.push_back(genp[ip].first->energy());
-		el_gen_status.push_back(genp[ip].first->status());
-		el_gen_id.push_back(genp[ip].first->pdgId());
-		el_gen_barcode.push_back(genp[ip].second.second);
-		el_gen_dr.push_back(genp[ip].second.first);
+		ftree->el_gen_idx.push_back(iElecSel);
+		ftree->el_gen_pt.push_back(genp[ip]->pt);
+		ftree->el_gen_eta.push_back(genp[ip]->eta);
+		ftree->el_gen_phi.push_back(genp[ip]->phi);
+		ftree->el_gen_m.push_back(genp[ip]->m);
+		ftree->el_gen_E.push_back(genp[ip]->E);
+		ftree->el_gen_status.push_back(genp[ip]->status);
+		ftree->el_gen_id.push_back(genp[ip]->id);
+		ftree->el_gen_barcode.push_back(genp[ip]->barcode);
+		ftree->el_gen_dr.push_back(genp[ip]->dr);
+		
+		delete genp[ip];
 	     }
-	   ftree->el_gen_pt.push_back(el_gen_pt);
-	   ftree->el_gen_eta.push_back(el_gen_eta);
-	   ftree->el_gen_phi.push_back(el_gen_phi);
-	   ftree->el_gen_m.push_back(el_gen_m);
-	   ftree->el_gen_E.push_back(el_gen_E);
-	   ftree->el_gen_status.push_back(el_gen_status);
-	   ftree->el_gen_id.push_back(el_gen_id);
-	   ftree->el_gen_barcode.push_back(el_gen_barcode);
-	   ftree->el_gen_dr.push_back(el_gen_dr);
+	   if( !hasMCMatch )
+	     {
+		ftree->el_gen_idx.push_back(iElecSel);
+		ftree->el_gen_pt.push_back(-777);
+		ftree->el_gen_eta.push_back(-777);
+		ftree->el_gen_phi.push_back(-777);
+		ftree->el_gen_m.push_back(-777);
+		ftree->el_gen_E.push_back(-777);
+		ftree->el_gen_status.push_back(-777);
+		ftree->el_gen_id.push_back(-777);
+		ftree->el_gen_barcode.push_back(-777);
+		ftree->el_gen_dr.push_back(-777);
+	     }	   
 
-	   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
-													      elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
-	   
-	   bool hasMCMatchConv = (genp.size() > 0);
+	   std::vector<MCTruth::GenPart*> genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
+									   elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+
+	   int nGenPartConv = genpConv.size();
+	   bool hasMCMatchConv = (nGenPartConv > 0);
+	   ftree->el_nGenPartConv.push_back(nGenPartConv);
 	   ftree->el_hasPhotonMCMatch.push_back(hasMCMatchConv);
 	   
-	   std::vector<float> el_genConv_pt;
-	   std::vector<float> el_genConv_eta;
-	   std::vector<float> el_genConv_phi;
-	   std::vector<float> el_genConv_m;
-	   std::vector<float> el_genConv_E;
-	   std::vector<int> el_genConv_status;
-	   std::vector<int> el_genConv_id;
-	   std::vector<int> el_genConv_barcode;
-	   std::vector<float> el_genConv_dr;
-	   for( unsigned int ip=0;ip<genpConv.size();ip++ )
+	   for( int ip=0;ip<nGenPartConv;ip++ )
 	     {
-		el_genConv_pt.push_back(genpConv[ip].first->pt());
-		el_genConv_eta.push_back(genpConv[ip].first->eta());
-		el_genConv_phi.push_back(genpConv[ip].first->phi());
-		el_genConv_m.push_back(genpConv[ip].first->mass());
-		el_genConv_E.push_back(genpConv[ip].first->energy());
-		el_genConv_status.push_back(genpConv[ip].first->status());
-		el_genConv_id.push_back(genpConv[ip].first->pdgId());
-		el_genConv_barcode.push_back(genpConv[ip].second.second);
-		el_genConv_dr.push_back(genpConv[ip].second.first);
+		ftree->el_genConv_idx.push_back(iElecSel);
+		ftree->el_genConv_pt.push_back(genpConv[ip]->pt);
+		ftree->el_genConv_eta.push_back(genpConv[ip]->eta);
+		ftree->el_genConv_phi.push_back(genpConv[ip]->phi);
+		ftree->el_genConv_m.push_back(genpConv[ip]->m);
+		ftree->el_genConv_E.push_back(genpConv[ip]->E);
+		ftree->el_genConv_status.push_back(genpConv[ip]->status);
+		ftree->el_genConv_id.push_back(genpConv[ip]->id);
+		ftree->el_genConv_barcode.push_back(genpConv[ip]->barcode);
+		ftree->el_genConv_dr.push_back(genpConv[ip]->dr);
+		
+		delete genpConv[ip];
 	     }
-	   ftree->el_genConv_pt.push_back(el_genConv_pt);
-	   ftree->el_genConv_eta.push_back(el_genConv_eta);
-	   ftree->el_genConv_phi.push_back(el_genConv_phi);
-	   ftree->el_genConv_m.push_back(el_genConv_m);
-	   ftree->el_genConv_E.push_back(el_genConv_E);
-	   ftree->el_genConv_status.push_back(el_genConv_status);
-	   ftree->el_genConv_id.push_back(el_genConv_id);
-	   ftree->el_genConv_barcode.push_back(el_genConv_barcode);
-	   ftree->el_genConv_dr.push_back(el_genConv_dr);
-
+	   if( !hasMCMatchConv )
+	     {
+		ftree->el_genConv_idx.push_back(iElecSel);
+		ftree->el_genConv_pt.push_back(-777);
+		ftree->el_genConv_eta.push_back(-777);
+		ftree->el_genConv_phi.push_back(-777);
+		ftree->el_genConv_m.push_back(-777);
+		ftree->el_genConv_E.push_back(-777);
+		ftree->el_genConv_status.push_back(-777);
+		ftree->el_genConv_id.push_back(-777);
+		ftree->el_genConv_barcode.push_back(-777);
+		ftree->el_genConv_dr.push_back(-777);
+	     }	   
+	   
             // PAT matching
             const reco::GenParticle *genpPAT = elec.genParticle();
             bool hasMCMatchPAT = (genpPAT != 0);
@@ -2503,13 +2504,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
             else
             {
-                ftree->el_genPAT_pt.push_back(-666);
-                ftree->el_genPAT_eta.push_back(-666);
-                ftree->el_genPAT_phi.push_back(-666);
-                ftree->el_genPAT_m.push_back(-666);
-                ftree->el_genPAT_status.push_back(-666);
-                ftree->el_genPAT_id.push_back(-666);
-                ftree->el_genPAT_charge.push_back(-666);
+                ftree->el_genPAT_pt.push_back(-777);
+                ftree->el_genPAT_eta.push_back(-777);
+                ftree->el_genPAT_phi.push_back(-777);
+                ftree->el_genPAT_m.push_back(-777);
+                ftree->el_genPAT_status.push_back(-777);
+                ftree->el_genPAT_id.push_back(-777);
+                ftree->el_genPAT_charge.push_back(-777);
             }
         }
 
@@ -2540,6 +2541,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             matchConv = ConversionTools::hasMatchedConversion(elec,hConversions,beamspot.position(),allowCkfMatch,lxyMin,probMin,nHitsBeforeVtxMax);
             ftree->el_hasMatchedConversion.push_back(matchConv);
         }
+       
+       iElecSel++;
     }
     ftree->el_n = ftree->el_pt.size();
 
@@ -2552,7 +2555,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // #                                  #
     // ####################################
     //
+     
     int nMuon = muons->size();
+   
+    int iMuonSel = 0;
     for(int im=0;im<nMuon;im++)
     {
         const pat::Muon& muon = muons->at(im);
@@ -2582,7 +2588,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_combinedQuality_chi2LocalPosition.push_back(combQuality.chi2LocalPosition);
         ftree->mu_combinedQuality_trkKink.push_back(combQuality.trkKink);
 
-        ftree->mu_numberOfMatches.push_back(muon.isMatchesValid() ? muon.numberOfMatches() : -666);
+        ftree->mu_numberOfMatches.push_back(muon.isMatchesValid() ? muon.numberOfMatches() : -777);
         ftree->mu_numberOfMatchedStations.push_back(muon.numberOfMatchedStations());
 
         // GlobalTrack
@@ -2590,43 +2596,43 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         bool hasGlobalTrack = globalTrack.isNonnull();
 
         ftree->mu_hasGlobalTrack.push_back(hasGlobalTrack);
-        ftree->mu_globalTrack_d0.push_back((hasGlobalTrack) ? globalTrack->d0() : -666);
-        ftree->mu_globalTrack_z0.push_back((hasGlobalTrack) ? globalTrack->dz() : -666);
-        ftree->mu_globalTrack_d0Error.push_back((hasGlobalTrack) ? globalTrack->d0Error() : -666);
-        ftree->mu_globalTrack_z0Error.push_back((hasGlobalTrack) ? globalTrack->dzError() : -666);
-        ftree->mu_globalTrack_PV_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(primVtx->position()) : -666);
-        ftree->mu_globalTrack_PV_dz.push_back((hasGlobalTrack) ? globalTrack->dz(primVtx->position()) : -666);
-        ftree->mu_globalTrack_RP_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(globalTrack->referencePoint()) : -666);
-        ftree->mu_globalTrack_RP_dz.push_back((hasGlobalTrack) ? globalTrack->dz(globalTrack->referencePoint()) : -666);
-        ftree->mu_globalTrack_BS_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(beamspot.position()) : -666);
-        ftree->mu_globalTrack_BS_dz.push_back((hasGlobalTrack) ? globalTrack->dz(beamspot.position()) : -666);
-        ftree->mu_globalTrack_dxyError.push_back((hasGlobalTrack) ? globalTrack->dxyError() : -666);
-        ftree->mu_globalTrack_dzError.push_back((hasGlobalTrack) ? globalTrack->dzError() : -666);
-        ftree->mu_globalTrack_normalizedChi2.push_back((hasGlobalTrack) ? globalTrack->normalizedChi2() : -666);
-        ftree->mu_globalTrack_numberOfValidHits.push_back((hasGlobalTrack) ? globalTrack->numberOfValidHits() : -666);
-        ftree->mu_globalTrack_numberOfValidMuonHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidMuonHits() : -666);
-        ftree->mu_globalTrack_numberOfLostHits.push_back((hasGlobalTrack) ? globalTrack->numberOfLostHits() : -666);
-        ftree->mu_globalTrack_pt.push_back((hasGlobalTrack) ? globalTrack->pt() : -666);
-        ftree->mu_globalTrack_eta.push_back((hasGlobalTrack) ? globalTrack->eta() : -666);
-        ftree->mu_globalTrack_phi.push_back((hasGlobalTrack) ? globalTrack->phi() : -666);
-        ftree->mu_globalTrack_ptError.push_back((hasGlobalTrack) ? globalTrack->ptError() : -666);
-        ftree->mu_globalTrack_etaError.push_back((hasGlobalTrack) ? globalTrack->etaError() : -666);
-        ftree->mu_globalTrack_phiError.push_back((hasGlobalTrack) ? globalTrack->phiError() : -666);
-        ftree->mu_globalTrack_vx.push_back((hasGlobalTrack) ? globalTrack->vx() : -666);
-        ftree->mu_globalTrack_vy.push_back((hasGlobalTrack) ? globalTrack->vy() : -666);
-        ftree->mu_globalTrack_vz.push_back((hasGlobalTrack) ? globalTrack->vz() : -666);
-        ftree->mu_globalTrack_qoverp.push_back((hasGlobalTrack) ? globalTrack->qoverp() : -666);
-        ftree->mu_globalTrack_qoverpError.push_back((hasGlobalTrack) ? globalTrack->qoverpError() : -666);
-        ftree->mu_globalTrack_charge.push_back((hasGlobalTrack) ? globalTrack->charge() : -666);
-        ftree->mu_globalTrack_trackerLayersWithMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().trackerLayersWithMeasurement() : -666);
-        ftree->mu_globalTrack_pixelLayersWithMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().pixelLayersWithMeasurement() : -666);
-        ftree->mu_globalTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -666);
-        ftree->mu_globalTrack_trackerLayersWithoutMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_globalTrack_numberOfValidPixelHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidPixelHits() : -666);
-        ftree->mu_globalTrack_numberOfLostPixelHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_globalTrack_numberOfInnerHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -666);
-        ftree->mu_globalTrack_numberOfOuterHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -666);
-        ftree->mu_globalTrack_validFraction.push_back((hasGlobalTrack) ? globalTrack->validFraction() : -666);
+        ftree->mu_globalTrack_d0.push_back((hasGlobalTrack) ? globalTrack->d0() : -777);
+        ftree->mu_globalTrack_z0.push_back((hasGlobalTrack) ? globalTrack->dz() : -777);
+        ftree->mu_globalTrack_d0Error.push_back((hasGlobalTrack) ? globalTrack->d0Error() : -777);
+        ftree->mu_globalTrack_z0Error.push_back((hasGlobalTrack) ? globalTrack->dzError() : -777);
+        ftree->mu_globalTrack_PV_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(primVtx->position()) : -777);
+        ftree->mu_globalTrack_PV_dz.push_back((hasGlobalTrack) ? globalTrack->dz(primVtx->position()) : -777);
+        ftree->mu_globalTrack_RP_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(globalTrack->referencePoint()) : -777);
+        ftree->mu_globalTrack_RP_dz.push_back((hasGlobalTrack) ? globalTrack->dz(globalTrack->referencePoint()) : -777);
+        ftree->mu_globalTrack_BS_dxy.push_back((hasGlobalTrack) ? globalTrack->dxy(beamspot.position()) : -777);
+        ftree->mu_globalTrack_BS_dz.push_back((hasGlobalTrack) ? globalTrack->dz(beamspot.position()) : -777);
+        ftree->mu_globalTrack_dxyError.push_back((hasGlobalTrack) ? globalTrack->dxyError() : -777);
+        ftree->mu_globalTrack_dzError.push_back((hasGlobalTrack) ? globalTrack->dzError() : -777);
+        ftree->mu_globalTrack_normalizedChi2.push_back((hasGlobalTrack) ? globalTrack->normalizedChi2() : -777);
+        ftree->mu_globalTrack_numberOfValidHits.push_back((hasGlobalTrack) ? globalTrack->numberOfValidHits() : -777);
+        ftree->mu_globalTrack_numberOfValidMuonHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidMuonHits() : -777);
+        ftree->mu_globalTrack_numberOfLostHits.push_back((hasGlobalTrack) ? globalTrack->numberOfLostHits() : -777);
+        ftree->mu_globalTrack_pt.push_back((hasGlobalTrack) ? globalTrack->pt() : -777);
+        ftree->mu_globalTrack_eta.push_back((hasGlobalTrack) ? globalTrack->eta() : -777);
+        ftree->mu_globalTrack_phi.push_back((hasGlobalTrack) ? globalTrack->phi() : -777);
+        ftree->mu_globalTrack_ptError.push_back((hasGlobalTrack) ? globalTrack->ptError() : -777);
+        ftree->mu_globalTrack_etaError.push_back((hasGlobalTrack) ? globalTrack->etaError() : -777);
+        ftree->mu_globalTrack_phiError.push_back((hasGlobalTrack) ? globalTrack->phiError() : -777);
+        ftree->mu_globalTrack_vx.push_back((hasGlobalTrack) ? globalTrack->vx() : -777);
+        ftree->mu_globalTrack_vy.push_back((hasGlobalTrack) ? globalTrack->vy() : -777);
+        ftree->mu_globalTrack_vz.push_back((hasGlobalTrack) ? globalTrack->vz() : -777);
+        ftree->mu_globalTrack_qoverp.push_back((hasGlobalTrack) ? globalTrack->qoverp() : -777);
+        ftree->mu_globalTrack_qoverpError.push_back((hasGlobalTrack) ? globalTrack->qoverpError() : -777);
+        ftree->mu_globalTrack_charge.push_back((hasGlobalTrack) ? globalTrack->charge() : -777);
+        ftree->mu_globalTrack_trackerLayersWithMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().trackerLayersWithMeasurement() : -777);
+        ftree->mu_globalTrack_pixelLayersWithMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().pixelLayersWithMeasurement() : -777);
+        ftree->mu_globalTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -777);
+        ftree->mu_globalTrack_trackerLayersWithoutMeasurement.push_back((hasGlobalTrack) ? globalTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_globalTrack_numberOfValidPixelHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfValidPixelHits() : -777);
+        ftree->mu_globalTrack_numberOfLostPixelHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_globalTrack_numberOfInnerHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -777);
+        ftree->mu_globalTrack_numberOfOuterHits.push_back((hasGlobalTrack) ? globalTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -777);
+        ftree->mu_globalTrack_validFraction.push_back((hasGlobalTrack) ? globalTrack->validFraction() : -777);
 
         // BestTrack
         ftree->mu_bestTrackType.push_back(muon.muonBestTrackType());
@@ -2634,84 +2640,84 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         bool hasBestTrack = bestTrack.isNonnull();
 
         ftree->mu_hasBestTrack.push_back(hasBestTrack);
-        ftree->mu_bestTrack_d0.push_back((hasBestTrack) ? bestTrack->d0() : -666);
-        ftree->mu_bestTrack_z0.push_back((hasBestTrack) ? bestTrack->dz() : -666);
-        ftree->mu_bestTrack_d0Error.push_back((hasBestTrack) ? bestTrack->d0Error() : -666);
-        ftree->mu_bestTrack_z0Error.push_back((hasBestTrack) ? bestTrack->dzError() : -666);
-        ftree->mu_bestTrack_PV_dxy.push_back((hasBestTrack) ? bestTrack->dxy(primVtx->position()) : -666);
-        ftree->mu_bestTrack_PV_dz.push_back((hasBestTrack) ? bestTrack->dz(primVtx->position()) : -666);
-        ftree->mu_bestTrack_RP_dxy.push_back((hasBestTrack) ? bestTrack->dxy(bestTrack->referencePoint()) : -666);
-        ftree->mu_bestTrack_RP_dz.push_back((hasBestTrack) ? bestTrack->dz(bestTrack->referencePoint()) : -666);
-        ftree->mu_bestTrack_BS_dxy.push_back((hasBestTrack) ? bestTrack->dxy(beamspot.position()) : -666);
-        ftree->mu_bestTrack_BS_dz.push_back((hasBestTrack) ? bestTrack->dz(beamspot.position()) : -666);
-        ftree->mu_bestTrack_dxyError.push_back((hasBestTrack) ? bestTrack->dxyError() : -666);
-        ftree->mu_bestTrack_dzError.push_back((hasBestTrack) ? bestTrack->dzError() : -666);
-        ftree->mu_bestTrack_normalizedChi2.push_back((hasBestTrack) ? bestTrack->normalizedChi2() : -666);
-        ftree->mu_bestTrack_numberOfValidHits.push_back((hasBestTrack) ? bestTrack->numberOfValidHits() : -666);
-        ftree->mu_bestTrack_numberOfLostHits.push_back((hasBestTrack) ? bestTrack->numberOfLostHits() : -666);
-        ftree->mu_bestTrack_pt.push_back((hasBestTrack) ? bestTrack->pt() : -666);
-        ftree->mu_bestTrack_eta.push_back((hasBestTrack) ? bestTrack->eta() : -666);
-        ftree->mu_bestTrack_phi.push_back((hasBestTrack) ? bestTrack->phi() : -666);
-        ftree->mu_bestTrack_ptError.push_back((hasBestTrack) ? bestTrack->ptError() : -666);
-        ftree->mu_bestTrack_etaError.push_back((hasBestTrack) ? bestTrack->etaError() : -666);
-        ftree->mu_bestTrack_phiError.push_back((hasBestTrack) ? bestTrack->phiError() : -666);
-        ftree->mu_bestTrack_vx.push_back((hasBestTrack) ? bestTrack->vx() : -666);
-        ftree->mu_bestTrack_vy.push_back((hasBestTrack) ? bestTrack->vy() : -666);
-        ftree->mu_bestTrack_vz.push_back((hasBestTrack) ? bestTrack->vz() : -666);
-        ftree->mu_bestTrack_qoverp.push_back((hasBestTrack) ? bestTrack->qoverp() : -666);
-        ftree->mu_bestTrack_qoverpError.push_back((hasBestTrack) ? bestTrack->qoverpError() : -666);
-        ftree->mu_bestTrack_charge.push_back((hasBestTrack) ? bestTrack->charge() : -666);
-        ftree->mu_bestTrack_trackerLayersWithMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().trackerLayersWithMeasurement() : -666);
-        ftree->mu_bestTrack_pixelLayersWithMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().pixelLayersWithMeasurement() : -666);
-        ftree->mu_bestTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -666);
-        ftree->mu_bestTrack_trackerLayersWithoutMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_bestTrack_numberOfValidPixelHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfValidPixelHits() : -666);
-        ftree->mu_bestTrack_numberOfLostPixelHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_bestTrack_numberOfInnerHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -666);
-        ftree->mu_bestTrack_numberOfOuterHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -666);
-        ftree->mu_bestTrack_validFraction.push_back((hasBestTrack) ? bestTrack->validFraction() : -666);
+        ftree->mu_bestTrack_d0.push_back((hasBestTrack) ? bestTrack->d0() : -777);
+        ftree->mu_bestTrack_z0.push_back((hasBestTrack) ? bestTrack->dz() : -777);
+        ftree->mu_bestTrack_d0Error.push_back((hasBestTrack) ? bestTrack->d0Error() : -777);
+        ftree->mu_bestTrack_z0Error.push_back((hasBestTrack) ? bestTrack->dzError() : -777);
+        ftree->mu_bestTrack_PV_dxy.push_back((hasBestTrack) ? bestTrack->dxy(primVtx->position()) : -777);
+        ftree->mu_bestTrack_PV_dz.push_back((hasBestTrack) ? bestTrack->dz(primVtx->position()) : -777);
+        ftree->mu_bestTrack_RP_dxy.push_back((hasBestTrack) ? bestTrack->dxy(bestTrack->referencePoint()) : -777);
+        ftree->mu_bestTrack_RP_dz.push_back((hasBestTrack) ? bestTrack->dz(bestTrack->referencePoint()) : -777);
+        ftree->mu_bestTrack_BS_dxy.push_back((hasBestTrack) ? bestTrack->dxy(beamspot.position()) : -777);
+        ftree->mu_bestTrack_BS_dz.push_back((hasBestTrack) ? bestTrack->dz(beamspot.position()) : -777);
+        ftree->mu_bestTrack_dxyError.push_back((hasBestTrack) ? bestTrack->dxyError() : -777);
+        ftree->mu_bestTrack_dzError.push_back((hasBestTrack) ? bestTrack->dzError() : -777);
+        ftree->mu_bestTrack_normalizedChi2.push_back((hasBestTrack) ? bestTrack->normalizedChi2() : -777);
+        ftree->mu_bestTrack_numberOfValidHits.push_back((hasBestTrack) ? bestTrack->numberOfValidHits() : -777);
+        ftree->mu_bestTrack_numberOfLostHits.push_back((hasBestTrack) ? bestTrack->numberOfLostHits() : -777);
+        ftree->mu_bestTrack_pt.push_back((hasBestTrack) ? bestTrack->pt() : -777);
+        ftree->mu_bestTrack_eta.push_back((hasBestTrack) ? bestTrack->eta() : -777);
+        ftree->mu_bestTrack_phi.push_back((hasBestTrack) ? bestTrack->phi() : -777);
+        ftree->mu_bestTrack_ptError.push_back((hasBestTrack) ? bestTrack->ptError() : -777);
+        ftree->mu_bestTrack_etaError.push_back((hasBestTrack) ? bestTrack->etaError() : -777);
+        ftree->mu_bestTrack_phiError.push_back((hasBestTrack) ? bestTrack->phiError() : -777);
+        ftree->mu_bestTrack_vx.push_back((hasBestTrack) ? bestTrack->vx() : -777);
+        ftree->mu_bestTrack_vy.push_back((hasBestTrack) ? bestTrack->vy() : -777);
+        ftree->mu_bestTrack_vz.push_back((hasBestTrack) ? bestTrack->vz() : -777);
+        ftree->mu_bestTrack_qoverp.push_back((hasBestTrack) ? bestTrack->qoverp() : -777);
+        ftree->mu_bestTrack_qoverpError.push_back((hasBestTrack) ? bestTrack->qoverpError() : -777);
+        ftree->mu_bestTrack_charge.push_back((hasBestTrack) ? bestTrack->charge() : -777);
+        ftree->mu_bestTrack_trackerLayersWithMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().trackerLayersWithMeasurement() : -777);
+        ftree->mu_bestTrack_pixelLayersWithMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().pixelLayersWithMeasurement() : -777);
+        ftree->mu_bestTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -777);
+        ftree->mu_bestTrack_trackerLayersWithoutMeasurement.push_back((hasBestTrack) ? bestTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_bestTrack_numberOfValidPixelHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfValidPixelHits() : -777);
+        ftree->mu_bestTrack_numberOfLostPixelHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_bestTrack_numberOfInnerHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -777);
+        ftree->mu_bestTrack_numberOfOuterHits.push_back((hasBestTrack) ? bestTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -777);
+        ftree->mu_bestTrack_validFraction.push_back((hasBestTrack) ? bestTrack->validFraction() : -777);
 
         // InnerTrack
         const reco::TrackRef innerTrack = muon.innerTrack();
         bool hasInnerTrack = innerTrack.isNonnull();
 
         ftree->mu_hasInnerTrack.push_back(hasInnerTrack);
-        ftree->mu_innerTrack_d0.push_back((hasInnerTrack) ? innerTrack->d0() : -666);
-        ftree->mu_innerTrack_z0.push_back((hasInnerTrack) ? innerTrack->dz() : -666);
-        ftree->mu_innerTrack_d0Error.push_back((hasInnerTrack) ? innerTrack->d0Error() : -666);
-        ftree->mu_innerTrack_z0Error.push_back((hasInnerTrack) ? innerTrack->dzError() : -666);
-        ftree->mu_innerTrack_PV_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(primVtx->position()) : -666);
-        ftree->mu_innerTrack_PV_dz.push_back((hasInnerTrack) ? innerTrack->dz(primVtx->position()) : -666);
-        ftree->mu_innerTrack_RP_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(bestTrack->referencePoint()) : -666);
-        ftree->mu_innerTrack_RP_dz.push_back((hasInnerTrack) ? innerTrack->dz(bestTrack->referencePoint()) : -666);
-        ftree->mu_innerTrack_BS_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(beamspot.position()) : -666);
-        ftree->mu_innerTrack_BS_dz.push_back((hasInnerTrack) ? innerTrack->dz(beamspot.position()) : -666);
-        ftree->mu_innerTrack_dxyError.push_back((hasInnerTrack) ? innerTrack->dxyError() : -666);
-        ftree->mu_innerTrack_dzError.push_back((hasInnerTrack) ? innerTrack->dzError() : -666);
-        ftree->mu_innerTrack_normalizedChi2.push_back((hasInnerTrack) ? innerTrack->normalizedChi2() : -666);
-        ftree->mu_innerTrack_numberOfValidHits.push_back((hasInnerTrack) ? innerTrack->numberOfValidHits() : -666);
-        ftree->mu_innerTrack_numberOfLostHits.push_back((hasInnerTrack) ? innerTrack->numberOfLostHits() : -666);
-        ftree->mu_innerTrack_pt.push_back((hasInnerTrack) ? innerTrack->pt() : -666);
-        ftree->mu_innerTrack_eta.push_back((hasInnerTrack) ? innerTrack->eta() : -666);
-        ftree->mu_innerTrack_phi.push_back((hasInnerTrack) ? innerTrack->phi() : -666);
-        ftree->mu_innerTrack_ptError.push_back((hasInnerTrack) ? innerTrack->ptError() : -666);
-        ftree->mu_innerTrack_etaError.push_back((hasInnerTrack) ? innerTrack->etaError() : -666);
-        ftree->mu_innerTrack_phiError.push_back((hasInnerTrack) ? innerTrack->phiError() : -666);
-        ftree->mu_innerTrack_vx.push_back((hasInnerTrack) ? innerTrack->vx() : -666);
-        ftree->mu_innerTrack_vy.push_back((hasInnerTrack) ? innerTrack->vy() : -666);
-        ftree->mu_innerTrack_vz.push_back((hasInnerTrack) ? innerTrack->vz() : -666);
-        ftree->mu_innerTrack_qoverp.push_back((hasInnerTrack) ? innerTrack->qoverp() : -666);
-        ftree->mu_innerTrack_qoverpError.push_back((hasInnerTrack) ? innerTrack->qoverpError() : -666);
-        ftree->mu_innerTrack_charge.push_back((hasInnerTrack) ? innerTrack->charge() : -666);
-        ftree->mu_innerTrack_trackerLayersWithMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().trackerLayersWithMeasurement() : -666);
-        ftree->mu_innerTrack_pixelLayersWithMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().pixelLayersWithMeasurement() : -666);
-        ftree->mu_innerTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -666);
-        ftree->mu_innerTrack_trackerLayersWithoutMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_innerTrack_numberOfValidPixelHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfValidPixelHits() : -666);
-        ftree->mu_innerTrack_numberOfLostPixelHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -666);
-        ftree->mu_innerTrack_numberOfInnerHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -666);
-        ftree->mu_innerTrack_numberOfOuterHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -666);
-        ftree->mu_innerTrack_validFraction.push_back((hasInnerTrack) ? innerTrack->validFraction() : -666);
+        ftree->mu_innerTrack_d0.push_back((hasInnerTrack) ? innerTrack->d0() : -777);
+        ftree->mu_innerTrack_z0.push_back((hasInnerTrack) ? innerTrack->dz() : -777);
+        ftree->mu_innerTrack_d0Error.push_back((hasInnerTrack) ? innerTrack->d0Error() : -777);
+        ftree->mu_innerTrack_z0Error.push_back((hasInnerTrack) ? innerTrack->dzError() : -777);
+        ftree->mu_innerTrack_PV_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(primVtx->position()) : -777);
+        ftree->mu_innerTrack_PV_dz.push_back((hasInnerTrack) ? innerTrack->dz(primVtx->position()) : -777);
+        ftree->mu_innerTrack_RP_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(bestTrack->referencePoint()) : -777);
+        ftree->mu_innerTrack_RP_dz.push_back((hasInnerTrack) ? innerTrack->dz(bestTrack->referencePoint()) : -777);
+        ftree->mu_innerTrack_BS_dxy.push_back((hasInnerTrack) ? innerTrack->dxy(beamspot.position()) : -777);
+        ftree->mu_innerTrack_BS_dz.push_back((hasInnerTrack) ? innerTrack->dz(beamspot.position()) : -777);
+        ftree->mu_innerTrack_dxyError.push_back((hasInnerTrack) ? innerTrack->dxyError() : -777);
+        ftree->mu_innerTrack_dzError.push_back((hasInnerTrack) ? innerTrack->dzError() : -777);
+        ftree->mu_innerTrack_normalizedChi2.push_back((hasInnerTrack) ? innerTrack->normalizedChi2() : -777);
+        ftree->mu_innerTrack_numberOfValidHits.push_back((hasInnerTrack) ? innerTrack->numberOfValidHits() : -777);
+        ftree->mu_innerTrack_numberOfLostHits.push_back((hasInnerTrack) ? innerTrack->numberOfLostHits() : -777);
+        ftree->mu_innerTrack_pt.push_back((hasInnerTrack) ? innerTrack->pt() : -777);
+        ftree->mu_innerTrack_eta.push_back((hasInnerTrack) ? innerTrack->eta() : -777);
+        ftree->mu_innerTrack_phi.push_back((hasInnerTrack) ? innerTrack->phi() : -777);
+        ftree->mu_innerTrack_ptError.push_back((hasInnerTrack) ? innerTrack->ptError() : -777);
+        ftree->mu_innerTrack_etaError.push_back((hasInnerTrack) ? innerTrack->etaError() : -777);
+        ftree->mu_innerTrack_phiError.push_back((hasInnerTrack) ? innerTrack->phiError() : -777);
+        ftree->mu_innerTrack_vx.push_back((hasInnerTrack) ? innerTrack->vx() : -777);
+        ftree->mu_innerTrack_vy.push_back((hasInnerTrack) ? innerTrack->vy() : -777);
+        ftree->mu_innerTrack_vz.push_back((hasInnerTrack) ? innerTrack->vz() : -777);
+        ftree->mu_innerTrack_qoverp.push_back((hasInnerTrack) ? innerTrack->qoverp() : -777);
+        ftree->mu_innerTrack_qoverpError.push_back((hasInnerTrack) ? innerTrack->qoverpError() : -777);
+        ftree->mu_innerTrack_charge.push_back((hasInnerTrack) ? innerTrack->charge() : -777);
+        ftree->mu_innerTrack_trackerLayersWithMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().trackerLayersWithMeasurement() : -777);
+        ftree->mu_innerTrack_pixelLayersWithMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().pixelLayersWithMeasurement() : -777);
+        ftree->mu_innerTrack_numberOfValidStripLayersWithMonoAndStereo.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfValidStripLayersWithMonoAndStereo() : -777);
+        ftree->mu_innerTrack_trackerLayersWithoutMeasurement.push_back((hasInnerTrack) ? innerTrack->hitPattern().trackerLayersWithoutMeasurement(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_innerTrack_numberOfValidPixelHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfValidPixelHits() : -777);
+        ftree->mu_innerTrack_numberOfLostPixelHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfLostPixelHits(reco::HitPattern::TRACK_HITS) : -777);
+        ftree->mu_innerTrack_numberOfInnerHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS) : -777);
+        ftree->mu_innerTrack_numberOfOuterHits.push_back((hasInnerTrack) ? innerTrack->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_OUTER_HITS) : -777);
+        ftree->mu_innerTrack_validFraction.push_back((hasInnerTrack) ? innerTrack->validFraction() : -777);
 
         // PF Isolation
         reco::MuonPFIsolation pfR03 = muon.pfIsolationR03();
@@ -2835,11 +2841,11 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        ftree->mu_matchedJetId.push_back(matched_jet_index);
        
         // mini-iso
-        float miniIso           = -666;
-        float miniIsoTTH        = -666;
-        float PFRelIso04        = -666;
-        float miniIsoTTHCharged = -666;
-        float miniIsoTTHNeutral = -666;
+        float miniIso           = -777;
+        float miniIsoTTH        = -777;
+        float PFRelIso04        = -777;
+        float miniIsoTTHCharged = -777;
+        float miniIsoTTHNeutral = -777;
         if( dataFormat_ != "AOD" )
         {
             // Variables used for stop analysis
@@ -2926,48 +2932,48 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         ftree->mu_isGoodMuon_TMLastStationOptimizedBarrelLowPtTight.push_back(muon::isGoodMuon(muon,muon::TMLastStationOptimizedBarrelLowPtTight));
 
         bool energyIsValid = muon.isEnergyValid();
-        ftree->mu_calEnergy_em.push_back(energyIsValid ? muon.calEnergy().em : -666.);
-        ftree->mu_calEnergy_had.push_back(energyIsValid ? muon.calEnergy().had : -666.);
-        ftree->mu_calEnergy_ho.push_back(energyIsValid ? muon.calEnergy().ho : -666.);
-        ftree->mu_calEnergy_emS9.push_back(energyIsValid ? muon.calEnergy().emS9 : -666.);
-        ftree->mu_calEnergy_hadS9.push_back(energyIsValid ? muon.calEnergy().hadS9 : -666.);
-        ftree->mu_calEnergy_hoS9.push_back(energyIsValid ? muon.calEnergy().hoS9 : -666.);
-        ftree->mu_calEnergy_emS25.push_back(energyIsValid ? muon.calEnergy().emS25 : -666.);
-        ftree->mu_calEnergy_emMax.push_back(energyIsValid ? muon.calEnergy().emMax : -666.);
-        ftree->mu_calEnergy_hadMax.push_back(energyIsValid ? muon.calEnergy().hadMax : -666.);
-        ftree->mu_calEnergy_ecal_time.push_back(energyIsValid ? muon.calEnergy().ecal_time : -666.);
-        ftree->mu_calEnergy_hcal_time.push_back(energyIsValid ? muon.calEnergy().hcal_time : -666.);
-        ftree->mu_calEnergy_ecal_rawId.push_back(energyIsValid ? muon.calEnergy().ecal_id.rawId() : -666.);
-        ftree->mu_calEnergy_hcal_rawId.push_back(energyIsValid ? muon.calEnergy().hcal_id.rawId() : -666.);
+        ftree->mu_calEnergy_em.push_back(energyIsValid ? muon.calEnergy().em : -777.);
+        ftree->mu_calEnergy_had.push_back(energyIsValid ? muon.calEnergy().had : -777.);
+        ftree->mu_calEnergy_ho.push_back(energyIsValid ? muon.calEnergy().ho : -777.);
+        ftree->mu_calEnergy_emS9.push_back(energyIsValid ? muon.calEnergy().emS9 : -777.);
+        ftree->mu_calEnergy_hadS9.push_back(energyIsValid ? muon.calEnergy().hadS9 : -777.);
+        ftree->mu_calEnergy_hoS9.push_back(energyIsValid ? muon.calEnergy().hoS9 : -777.);
+        ftree->mu_calEnergy_emS25.push_back(energyIsValid ? muon.calEnergy().emS25 : -777.);
+        ftree->mu_calEnergy_emMax.push_back(energyIsValid ? muon.calEnergy().emMax : -777.);
+        ftree->mu_calEnergy_hadMax.push_back(energyIsValid ? muon.calEnergy().hadMax : -777.);
+        ftree->mu_calEnergy_ecal_time.push_back(energyIsValid ? muon.calEnergy().ecal_time : -777.);
+        ftree->mu_calEnergy_hcal_time.push_back(energyIsValid ? muon.calEnergy().hcal_time : -777.);
+        ftree->mu_calEnergy_ecal_rawId.push_back(energyIsValid ? muon.calEnergy().ecal_id.rawId() : -777.);
+        ftree->mu_calEnergy_hcal_rawId.push_back(energyIsValid ? muon.calEnergy().hcal_id.rawId() : -777.);
 
         bool isoIsValid = muon.isIsolationValid();
 
-        ftree->mu_isolationR03_trackerVetoPt.push_back(isoIsValid ? muon.isolationR03().trackerVetoPt : -666.);
-        ftree->mu_isolationR03_emVetoEt.push_back(isoIsValid ? muon.isolationR03().emVetoEt : -666.);
-        ftree->mu_isolationR03_hadVetoEt.push_back(isoIsValid ? muon.isolationR03().hadVetoEt : -666.);
-        ftree->mu_isolationR03_hoVetoEt.push_back(isoIsValid ? muon.isolationR03().hoVetoEt : -666.);
-        ftree->mu_isolationR03_sumPt.push_back(isoIsValid ? muon.isolationR03().sumPt : -666.);
-        ftree->mu_isolationR03_emEt.push_back(isoIsValid ? muon.isolationR03().emEt : -666.);
-        ftree->mu_isolationR03_hadEt.push_back(isoIsValid ? muon.isolationR03().hadEt : -666.);
-        ftree->mu_isolationR03_hoEt.push_back(isoIsValid ? muon.isolationR03().hoEt : -666.);
-        ftree->mu_isolationR03_nTracks.push_back(isoIsValid ? muon.isolationR03().nTracks : -666.);
-        ftree->mu_isolationR03_nJets.push_back(isoIsValid ? muon.isolationR03().nJets : -666.);
+        ftree->mu_isolationR03_trackerVetoPt.push_back(isoIsValid ? muon.isolationR03().trackerVetoPt : -777.);
+        ftree->mu_isolationR03_emVetoEt.push_back(isoIsValid ? muon.isolationR03().emVetoEt : -777.);
+        ftree->mu_isolationR03_hadVetoEt.push_back(isoIsValid ? muon.isolationR03().hadVetoEt : -777.);
+        ftree->mu_isolationR03_hoVetoEt.push_back(isoIsValid ? muon.isolationR03().hoVetoEt : -777.);
+        ftree->mu_isolationR03_sumPt.push_back(isoIsValid ? muon.isolationR03().sumPt : -777.);
+        ftree->mu_isolationR03_emEt.push_back(isoIsValid ? muon.isolationR03().emEt : -777.);
+        ftree->mu_isolationR03_hadEt.push_back(isoIsValid ? muon.isolationR03().hadEt : -777.);
+        ftree->mu_isolationR03_hoEt.push_back(isoIsValid ? muon.isolationR03().hoEt : -777.);
+        ftree->mu_isolationR03_nTracks.push_back(isoIsValid ? muon.isolationR03().nTracks : -777.);
+        ftree->mu_isolationR03_nJets.push_back(isoIsValid ? muon.isolationR03().nJets : -777.);
 
-        ftree->mu_isolationR05_trackerVetoPt.push_back(isoIsValid ? muon.isolationR05().trackerVetoPt : -666.);
-        ftree->mu_isolationR05_emVetoEt.push_back(isoIsValid ? muon.isolationR05().emVetoEt : -666.);
-        ftree->mu_isolationR05_hadVetoEt.push_back(isoIsValid ? muon.isolationR05().hadVetoEt : -666.);
-        ftree->mu_isolationR05_hoVetoEt.push_back(isoIsValid ? muon.isolationR05().hoVetoEt : -666.);
-        ftree->mu_isolationR05_sumPt.push_back(isoIsValid ? muon.isolationR05().sumPt : -666.);
-        ftree->mu_isolationR05_emEt.push_back(isoIsValid ? muon.isolationR05().emEt : -666.);
-        ftree->mu_isolationR05_hadEt.push_back(isoIsValid ? muon.isolationR05().hadEt : -666.);
-        ftree->mu_isolationR05_hoEt.push_back(isoIsValid ? muon.isolationR05().hoEt : -666.);
-        ftree->mu_isolationR05_nTracks.push_back(isoIsValid ? muon.isolationR05().nTracks : -666.);
-        ftree->mu_isolationR05_nJets.push_back(isoIsValid ? muon.isolationR05().nJets : -666.);
+        ftree->mu_isolationR05_trackerVetoPt.push_back(isoIsValid ? muon.isolationR05().trackerVetoPt : -777.);
+        ftree->mu_isolationR05_emVetoEt.push_back(isoIsValid ? muon.isolationR05().emVetoEt : -777.);
+        ftree->mu_isolationR05_hadVetoEt.push_back(isoIsValid ? muon.isolationR05().hadVetoEt : -777.);
+        ftree->mu_isolationR05_hoVetoEt.push_back(isoIsValid ? muon.isolationR05().hoVetoEt : -777.);
+        ftree->mu_isolationR05_sumPt.push_back(isoIsValid ? muon.isolationR05().sumPt : -777.);
+        ftree->mu_isolationR05_emEt.push_back(isoIsValid ? muon.isolationR05().emEt : -777.);
+        ftree->mu_isolationR05_hadEt.push_back(isoIsValid ? muon.isolationR05().hadEt : -777.);
+        ftree->mu_isolationR05_hoEt.push_back(isoIsValid ? muon.isolationR05().hoEt : -777.);
+        ftree->mu_isolationR05_nTracks.push_back(isoIsValid ? muon.isolationR05().nTracks : -777.);
+        ftree->mu_isolationR05_nJets.push_back(isoIsValid ? muon.isolationR05().nJets : -777.);
 
         // ttH lepton MVA
         double mu_pt = muon.pt();
         double mu_eta = muon.eta();
-        double mu_lepMVA = -666.;
+        double mu_lepMVA = -777.;
 
        pat::Jet *muonjet = NULL;
        int jcl = -1;
@@ -2995,13 +3001,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        lepMVA_jetPtRatio                           = std::min(ptRatioMuon(muon,muonjet,PFRelIso04),1.5);
        lepMVA_jetPtRelv2                           = (jcl >= 0) ? ptRelMuon(muon,jets->at(jcl)) : 0.0;
        float jetRelIso = (jcl >= 0) ? (1./lepMVA_jetPtRatio)-1. : PFRelIso04;
-       float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -666;
+       float csv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -777;
        csv = (isnan(csv)) ? -999. : csv;
        lepMVA_jetBTagCSV = std::max(double(csv),0.);
-       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -666;
+       float deepcsv = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepCSVJetTags:probb") : -777;
        deepcsv = (isnan(deepcsv)) ? -999. : deepcsv;
        lepMVA_jetBTagDeepCSV = std::max(double(deepcsv),0.);
-       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -666;
+       float deepflavour = (jcl >= 0) ? jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probbb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:probb")+jets->at(jcl).bDiscriminator("pfDeepFlavourJetTags:problepb") : -777;
        deepflavour = (isnan(deepflavour)) ? -999. : deepflavour;
        lepMVA_jetBTagDeepFlavour = std::max(double(deepflavour),0.);
        lepMVA_sip3d                                = abs(ftree->mu_ip3d.back()/ftree->mu_ip3dErr.back());
@@ -3034,43 +3040,43 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
 	 {
-	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-												       muon.pt(),muon.eta(),muon.phi(),muon.pdgId());
+	    std::vector<MCTruth::GenPart*> genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+								    muon.pt(),muon.eta(),muon.phi(),muon.pdgId());
 	   
-	   bool hasMCMatch = (genp.size() > 0);
+	   int nGenPart = genp.size();
+	   bool hasMCMatch = (nGenPart > 0);
+	   ftree->mu_nGenPart.push_back(nGenPart);
 	   ftree->mu_hasMCMatch.push_back(hasMCMatch);
 	   
-	   std::vector<float> mu_gen_pt;
-	   std::vector<float> mu_gen_eta;
-	   std::vector<float> mu_gen_phi;
-	   std::vector<float> mu_gen_m;
-	   std::vector<float> mu_gen_E;
-	   std::vector<int> mu_gen_status;
-	   std::vector<int> mu_gen_id;
-	   std::vector<int> mu_gen_barcode;
-	   std::vector<float> mu_gen_dr;
-	   for( unsigned int ip=0;ip<genp.size();ip++ )
+	   for( int ip=0;ip<nGenPart;ip++ )
 	     {
-		mu_gen_pt.push_back(genp[ip].first->pt());
-		mu_gen_eta.push_back(genp[ip].first->eta());
-		mu_gen_phi.push_back(genp[ip].first->phi());
-		mu_gen_m.push_back(genp[ip].first->mass());
-		mu_gen_E.push_back(genp[ip].first->energy());
-		mu_gen_status.push_back(genp[ip].first->status());
-		mu_gen_id.push_back(genp[ip].first->pdgId());
-		mu_gen_barcode.push_back(genp[ip].second.second);
-		mu_gen_dr.push_back(genp[ip].second.first);
+		ftree->mu_gen_idx.push_back(iMuonSel);
+		ftree->mu_gen_pt.push_back(genp[ip]->pt);
+		ftree->mu_gen_eta.push_back(genp[ip]->eta);
+		ftree->mu_gen_phi.push_back(genp[ip]->phi);
+		ftree->mu_gen_m.push_back(genp[ip]->m);
+		ftree->mu_gen_E.push_back(genp[ip]->E);
+		ftree->mu_gen_status.push_back(genp[ip]->status);
+		ftree->mu_gen_id.push_back(genp[ip]->id);
+		ftree->mu_gen_barcode.push_back(genp[ip]->barcode);
+		ftree->mu_gen_dr.push_back(genp[ip]->dr);
+		
+		delete genp[ip];
 	     }
-	   ftree->mu_gen_pt.push_back(mu_gen_pt);
-	   ftree->mu_gen_eta.push_back(mu_gen_eta);
-	   ftree->mu_gen_phi.push_back(mu_gen_phi);
-	   ftree->mu_gen_m.push_back(mu_gen_m);
-	   ftree->mu_gen_E.push_back(mu_gen_E);
-	   ftree->mu_gen_status.push_back(mu_gen_status);
-	   ftree->mu_gen_id.push_back(mu_gen_id);
-	   ftree->mu_gen_barcode.push_back(mu_gen_barcode);
-	   ftree->mu_gen_dr.push_back(mu_gen_dr);
-	    
+	   if( !hasMCMatch )
+	     {
+		ftree->mu_gen_idx.push_back(iMuonSel);
+		ftree->mu_gen_pt.push_back(-777);
+		ftree->mu_gen_eta.push_back(-777);
+		ftree->mu_gen_phi.push_back(-777);
+		ftree->mu_gen_m.push_back(-777);
+		ftree->mu_gen_E.push_back(-777);
+		ftree->mu_gen_status.push_back(-777);
+		ftree->mu_gen_id.push_back(-777);
+		ftree->mu_gen_barcode.push_back(-777);
+		ftree->mu_gen_dr.push_back(-777);
+	     }
+
             // PAT matching
             const reco::GenParticle *genpPAT = muon.genParticle();
             bool hasMCMatchPAT = (genpPAT != 0);
@@ -3087,15 +3093,17 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
             else
             {
-                ftree->mu_genPAT_pt.push_back(-666);
-                ftree->mu_genPAT_eta.push_back(-666);
-                ftree->mu_genPAT_phi.push_back(-666);
-                ftree->mu_genPAT_m.push_back(-666);
-                ftree->mu_genPAT_status.push_back(-666);
-                ftree->mu_genPAT_id.push_back(-666);
-                ftree->mu_genPAT_charge.push_back(-666);
+                ftree->mu_genPAT_pt.push_back(-777);
+                ftree->mu_genPAT_eta.push_back(-777);
+                ftree->mu_genPAT_phi.push_back(-777);
+                ftree->mu_genPAT_m.push_back(-777);
+                ftree->mu_genPAT_status.push_back(-777);
+                ftree->mu_genPAT_id.push_back(-777);
+                ftree->mu_genPAT_charge.push_back(-777);
             }
         }
+       
+       iMuonSel++;
     }   
     ftree->mu_n = ftree->mu_pt.size();
 
@@ -3109,6 +3117,8 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     // ########################
 
     int nTau = taus->size();
+   
+    int iTauSel = 0;
     for(int it=0;it<nTau;it++)
     {
         const pat::Tau& tau = taus->at(it);
@@ -3127,10 +3137,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         // https://twiki.cern.ch/twiki/bin/view/CMS/TauIDRecommendation13TeV
         // https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD#Taus
         //
-        float tau_leadingTrackPt = -666;
-        int tau_leadingTrackCharge = -666;
-        float tau_leadingTrackDz = -666;
-        float tau_leadingTrackDxy = -666;
+        float tau_leadingTrackPt = -777;
+        int tau_leadingTrackCharge = -777;
+        float tau_leadingTrackDz = -777;
+        float tau_leadingTrackDxy = -777;
 
         ftree->tau_hasLeadChargedHadrCand.push_back(tau.leadChargedHadrCand().isNonnull());
 
@@ -3245,9 +3255,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
        ftree->tau_pfEssential_jetCorr_phi.push_back(tau.pfEssential().p4CorrJet_.phi());
        ftree->tau_pfEssential_jetCorr_m.push_back(tau.pfEssential().p4CorrJet_.mass());
 
-        float tau_pfEssential_sv_x = -666;
-        float tau_pfEssential_sv_y = -666;
-        float tau_pfEssential_sv_z = -666;
+        float tau_pfEssential_sv_x = -777;
+        float tau_pfEssential_sv_y = -777;
+        float tau_pfEssential_sv_z = -777;
 
         ftree->tau_pfEssential_hasSV.push_back(tau.pfEssential().sv_.isNonnull());
 
@@ -3301,116 +3311,118 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
         if( !isData_ )
 	 {
-	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpElec = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-													   tau.pt(),tau.eta(),tau.phi(),11);
-	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpMuon = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-													   tau.pt(),tau.eta(),tau.phi(),13);
-	    std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genpTau = mc_truth->doMatchTau(iEvent,iSetup,genParticlesHandle,
-													     tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
-	   
-	   bool hasMCMatchElec = (genpElec.size() > 0);
+	    std::vector<MCTruth::GenPart*> genpElec = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+									tau.pt(),tau.eta(),tau.phi(),11);
+	    std::vector<MCTruth::GenPart*> genpMuon = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
+									tau.pt(),tau.eta(),tau.phi(),13);
+	    std::vector<MCTruth::GenPart*> genpTau = mc_truth->doMatchTau(iEvent,iSetup,genParticlesHandle,
+									  tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
+	    
+	   int nGenPartElec = genpElec.size();
+	   bool hasMCMatchElec = (nGenPartElec > 0);
+	   ftree->tau_nGenPartElec.push_back(nGenPartElec);
 	   ftree->tau_hasMCMatchElec.push_back(hasMCMatchElec);
 	   
-	   std::vector<float> tau_genElec_pt;
-	   std::vector<float> tau_genElec_eta;
-	   std::vector<float> tau_genElec_phi;
-	   std::vector<float> tau_genElec_m;
-	   std::vector<float> tau_genElec_E;
-	   std::vector<int> tau_genElec_status;
-	   std::vector<int> tau_genElec_id;
-	   std::vector<int> tau_genElec_barcode;
-	   std::vector<float> tau_genElec_dr;
-	   for( unsigned int ip=0;ip<genpElec.size();ip++ )
+	   for( int ip=0;ip<nGenPartElec;ip++ )
 	     {
-		tau_genElec_pt.push_back(genpElec[ip].first->pt());
-		tau_genElec_eta.push_back(genpElec[ip].first->eta());
-		tau_genElec_phi.push_back(genpElec[ip].first->phi());
-		tau_genElec_m.push_back(genpElec[ip].first->mass());
-		tau_genElec_E.push_back(genpElec[ip].first->energy());
-		tau_genElec_status.push_back(genpElec[ip].first->status());
-		tau_genElec_id.push_back(genpElec[ip].first->pdgId());
-		tau_genElec_barcode.push_back(genpElec[ip].second.second);
-		tau_genElec_dr.push_back(genpElec[ip].second.first);
+		ftree->tau_genElec_idx.push_back(iTauSel);
+		ftree->tau_genElec_pt.push_back(genpElec[ip]->pt);
+		ftree->tau_genElec_eta.push_back(genpElec[ip]->eta);
+		ftree->tau_genElec_phi.push_back(genpElec[ip]->phi);
+		ftree->tau_genElec_m.push_back(genpElec[ip]->m);
+		ftree->tau_genElec_E.push_back(genpElec[ip]->E);
+		ftree->tau_genElec_status.push_back(genpElec[ip]->status);
+		ftree->tau_genElec_id.push_back(genpElec[ip]->id);
+		ftree->tau_genElec_barcode.push_back(genpElec[ip]->barcode);
+		ftree->tau_genElec_dr.push_back(genpElec[ip]->dr);
+		
+		delete genpElec[ip];
 	     }
-	   ftree->tau_genElec_pt.push_back(tau_genElec_pt);
-	   ftree->tau_genElec_eta.push_back(tau_genElec_eta);
-	   ftree->tau_genElec_phi.push_back(tau_genElec_phi);
-	   ftree->tau_genElec_m.push_back(tau_genElec_m);
-	   ftree->tau_genElec_E.push_back(tau_genElec_E);
-	   ftree->tau_genElec_status.push_back(tau_genElec_status);
-	   ftree->tau_genElec_id.push_back(tau_genElec_id);
-	   ftree->tau_genElec_barcode.push_back(tau_genElec_barcode);
-	   ftree->tau_genElec_dr.push_back(tau_genElec_dr);
+	   if( !hasMCMatchElec )
+	     {
+		ftree->tau_genElec_idx.push_back(iTauSel);
+		ftree->tau_genElec_pt.push_back(-777);
+		ftree->tau_genElec_eta.push_back(-777);
+		ftree->tau_genElec_phi.push_back(-777);
+		ftree->tau_genElec_m.push_back(-777);
+		ftree->tau_genElec_E.push_back(-777);
+		ftree->tau_genElec_status.push_back(-777);
+		ftree->tau_genElec_id.push_back(-777);
+		ftree->tau_genElec_barcode.push_back(-777);
+		ftree->tau_genElec_dr.push_back(-777);				
+	     }	   
 
-	   bool hasMCMatchMuon = (genpMuon.size() > 0);
+	   int nGenPartMuon = genpMuon.size();
+	   bool hasMCMatchMuon = (nGenPartMuon > 0);
+	   ftree->tau_nGenPartMuon.push_back(nGenPartMuon);
 	   ftree->tau_hasMCMatchMuon.push_back(hasMCMatchMuon);
 	   
-	   std::vector<float> tau_genMuon_pt;
-	   std::vector<float> tau_genMuon_eta;
-	   std::vector<float> tau_genMuon_phi;
-	   std::vector<float> tau_genMuon_m;
-	   std::vector<float> tau_genMuon_E;
-	   std::vector<int> tau_genMuon_status;
-	   std::vector<int> tau_genMuon_id;
-	   std::vector<int> tau_genMuon_barcode;
-	   std::vector<float> tau_genMuon_dr;
-	   for( unsigned int ip=0;ip<genpMuon.size();ip++ )
+	   for( int ip=0;ip<nGenPartMuon;ip++ )
 	     {
-		tau_genMuon_pt.push_back(genpMuon[ip].first->pt());
-		tau_genMuon_eta.push_back(genpMuon[ip].first->eta());
-		tau_genMuon_phi.push_back(genpMuon[ip].first->phi());
-		tau_genMuon_m.push_back(genpMuon[ip].first->mass());
-		tau_genMuon_E.push_back(genpMuon[ip].first->energy());
-		tau_genMuon_status.push_back(genpMuon[ip].first->status());
-		tau_genMuon_id.push_back(genpMuon[ip].first->pdgId());
-		tau_genMuon_barcode.push_back(genpMuon[ip].second.second);
-		tau_genMuon_dr.push_back(genpMuon[ip].second.first);
+		ftree->tau_genMuon_idx.push_back(iTauSel);
+		ftree->tau_genMuon_pt.push_back(genpMuon[ip]->pt);
+		ftree->tau_genMuon_eta.push_back(genpMuon[ip]->eta);
+		ftree->tau_genMuon_phi.push_back(genpMuon[ip]->phi);
+		ftree->tau_genMuon_m.push_back(genpMuon[ip]->m);
+		ftree->tau_genMuon_E.push_back(genpMuon[ip]->E);
+		ftree->tau_genMuon_status.push_back(genpMuon[ip]->status);
+		ftree->tau_genMuon_id.push_back(genpMuon[ip]->id);
+		ftree->tau_genMuon_barcode.push_back(genpMuon[ip]->barcode);
+		ftree->tau_genMuon_dr.push_back(genpMuon[ip]->dr);
+		
+		delete genpMuon[ip];
 	     }
-	   ftree->tau_genMuon_pt.push_back(tau_genMuon_pt);
-	   ftree->tau_genMuon_eta.push_back(tau_genMuon_eta);
-	   ftree->tau_genMuon_phi.push_back(tau_genMuon_phi);
-	   ftree->tau_genMuon_m.push_back(tau_genMuon_m);
-	   ftree->tau_genMuon_E.push_back(tau_genMuon_E);
-	   ftree->tau_genMuon_status.push_back(tau_genMuon_status);
-	   ftree->tau_genMuon_id.push_back(tau_genMuon_id);
-	   ftree->tau_genMuon_barcode.push_back(tau_genMuon_barcode);
-	   ftree->tau_genMuon_dr.push_back(tau_genMuon_dr);
+	   if( !hasMCMatchMuon )
+	     {
+		ftree->tau_genMuon_idx.push_back(iTauSel);
+		ftree->tau_genMuon_pt.push_back(-777);
+		ftree->tau_genMuon_eta.push_back(-777);
+		ftree->tau_genMuon_phi.push_back(-777);
+		ftree->tau_genMuon_m.push_back(-777);
+		ftree->tau_genMuon_E.push_back(-777);
+		ftree->tau_genMuon_status.push_back(-777);
+		ftree->tau_genMuon_id.push_back(-777);
+		ftree->tau_genMuon_barcode.push_back(-777);
+		ftree->tau_genMuon_dr.push_back(-777);
+	     }	   
 
-	   bool hasMCMatchTau = (genpTau.size() > 0);
+	   int nGenPartTau = genpTau.size();
+	   bool hasMCMatchTau = (nGenPartTau > 0);
+	   ftree->tau_nGenPartTau.push_back(nGenPartTau);
 	   ftree->tau_hasMCMatchTau.push_back(hasMCMatchTau);
 	   
-	   std::vector<float> tau_genTau_pt;
-	   std::vector<float> tau_genTau_eta;
-	   std::vector<float> tau_genTau_phi;
-	   std::vector<float> tau_genTau_m;
-	   std::vector<float> tau_genTau_E;
-	   std::vector<int> tau_genTau_status;
-	   std::vector<int> tau_genTau_id;
-	   std::vector<int> tau_genTau_barcode;
-	   std::vector<float> tau_genTau_dr;
-	   for( unsigned int ip=0;ip<genpTau.size();ip++ )
+	   for( int ip=0;ip<nGenPartTau;ip++ )
 	     {
-		tau_genTau_pt.push_back(genpTau[ip].first->pt());
-		tau_genTau_eta.push_back(genpTau[ip].first->eta());
-		tau_genTau_phi.push_back(genpTau[ip].first->phi());
-		tau_genTau_m.push_back(genpTau[ip].first->mass());
-		tau_genTau_E.push_back(genpTau[ip].first->energy());
-		tau_genTau_status.push_back(genpTau[ip].first->status());
-		tau_genTau_id.push_back(genpTau[ip].first->pdgId());
-		tau_genTau_barcode.push_back(genpTau[ip].second.second);
-		tau_genTau_dr.push_back(genpTau[ip].second.first);
+		ftree->tau_genTau_idx.push_back(iTauSel);
+		ftree->tau_genTau_pt.push_back(genpTau[ip]->pt);
+		ftree->tau_genTau_eta.push_back(genpTau[ip]->eta);
+		ftree->tau_genTau_phi.push_back(genpTau[ip]->phi);
+		ftree->tau_genTau_m.push_back(genpTau[ip]->m);
+		ftree->tau_genTau_E.push_back(genpTau[ip]->E);
+		ftree->tau_genTau_status.push_back(genpTau[ip]->status);
+		ftree->tau_genTau_id.push_back(genpTau[ip]->id);
+		ftree->tau_genTau_barcode.push_back(genpTau[ip]->barcode);
+		ftree->tau_genTau_dr.push_back(genpTau[ip]->dr);
+		
+		delete genpTau[ip];
 	     }
-	   ftree->tau_genTau_pt.push_back(tau_genTau_pt);
-	   ftree->tau_genTau_eta.push_back(tau_genTau_eta);
-	   ftree->tau_genTau_phi.push_back(tau_genTau_phi);
-	   ftree->tau_genTau_m.push_back(tau_genTau_m);
-	   ftree->tau_genTau_E.push_back(tau_genTau_E);
-	   ftree->tau_genTau_status.push_back(tau_genTau_status);
-	   ftree->tau_genTau_id.push_back(tau_genTau_id);
-	   ftree->tau_genTau_barcode.push_back(tau_genTau_barcode);
-	   ftree->tau_genTau_dr.push_back(tau_genTau_dr);
+	   if( !hasMCMatchTau )
+	     {
+		ftree->tau_genTau_idx.push_back(iTauSel);
+		ftree->tau_genTau_pt.push_back(-777);
+		ftree->tau_genTau_eta.push_back(-777);
+		ftree->tau_genTau_phi.push_back(-777);
+		ftree->tau_genTau_m.push_back(-777);
+		ftree->tau_genTau_E.push_back(-777);
+		ftree->tau_genTau_status.push_back(-777);
+		ftree->tau_genTau_id.push_back(-777);
+		ftree->tau_genTau_barcode.push_back(-777);
+		ftree->tau_genTau_dr.push_back(-777);
+	     }	   
 	 }
-    }
+       
+       iTauSel++;
+    }   
    ftree->tau_n = ftree->tau_pt.size();
 
     // ##########################
@@ -3507,7 +3519,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
             ftree->jet_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
         else
-            ftree->jet_pileupJetId.push_back(-666.);
+            ftree->jet_pileupJetId.push_back(-777.);
 
        // Jet ID
 
@@ -3599,19 +3611,19 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( ! qgHandle.failedToGet() )
             ftree->jet_qgtag.push_back((*qgHandle)[jetRef]);
         else
-            ftree->jet_qgtag.push_back(-666.);
+            ftree->jet_qgtag.push_back(-777.);
 
         const reco::GenJet* genJet = jet.genJet();
         bool hasGenInfo = (genJet);
         ftree->jet_hasGenJet.push_back(hasGenInfo);
 
-        float gen_jet_pt = -666;
-        float gen_jet_eta = -666;
-        float gen_jet_phi = -666;
-        float gen_jet_m = -666;
-        float gen_jet_E = -666;
-        int gen_jet_status = -666;
-        int gen_jet_id = -666;
+        float gen_jet_pt = -777;
+        float gen_jet_eta = -777;
+        float gen_jet_phi = -777;
+        float gen_jet_m = -777;
+        float gen_jet_E = -777;
+        int gen_jet_status = -777;
+        int gen_jet_id = -777;
 
         if( hasGenInfo )
         {
@@ -3637,13 +3649,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         bool hasGenPartonInfo = (genParton);
         ftree->jet_hasGenParton.push_back(hasGenPartonInfo);
 
-        float gen_parton_pt = -666;
-        float gen_parton_eta = -666;
-        float gen_parton_phi = -666;
-        float gen_parton_m = -666;
-        float gen_parton_E = -666;
-        int gen_parton_status = -666;
-        int gen_parton_id = -666;
+        float gen_parton_pt = -777;
+        float gen_parton_eta = -777;
+        float gen_parton_phi = -777;
+        float gen_parton_m = -777;
+        float gen_parton_E = -777;
+        int gen_parton_status = -777;
+        int gen_parton_id = -777;
 
         if( hasGenPartonInfo )
         {
@@ -3697,7 +3709,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             ftree->jetPuppi_chargedHadronMultiplicity.push_back(jet.chargedHadronMultiplicity());
 
             ftree->jetPuppi_jecFactorUncorrected.push_back(jet.jecFactor("Uncorrected"));
-            ftree->jetPuppi_jecFactorL1FastJet.push_back(-666.);
+            ftree->jetPuppi_jecFactorL1FastJet.push_back(-777.);
             ftree->jetPuppi_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
             ftree->jetPuppi_jecFactorL3Absolute.push_back(jet.jecFactor("L3Absolute"));
 
@@ -3720,19 +3732,19 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
                 ftree->jetPuppi_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
             else
-                ftree->jetPuppi_pileupJetId.push_back(-666.);
+                ftree->jetPuppi_pileupJetId.push_back(-777.);
 
             const reco::GenJet* genJet = jet.genJet();
             bool hasGenInfo = (genJet);
             ftree->jetPuppi_hasGenJet.push_back(hasGenInfo);
 
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
+            float gen_jet_pt = -777;
+            float gen_jet_eta = -777;
+            float gen_jet_phi = -777;
+            float gen_jet_m = -777;
+            float gen_jet_E = -777;
+            int gen_jet_status = -777;
+            int gen_jet_id = -777;
 
             if( hasGenInfo )
             {
@@ -3758,13 +3770,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             bool hasGenPartonInfo = (genParton);
             ftree->jetPuppi_hasGenParton.push_back(hasGenPartonInfo);
 
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
+            float gen_parton_pt = -777;
+            float gen_parton_eta = -777;
+            float gen_parton_phi = -777;
+            float gen_parton_m = -777;
+            float gen_parton_E = -777;
+            int gen_parton_status = -777;
+            int gen_parton_id = -777;
 
             if( hasGenPartonInfo )
             {
@@ -3842,7 +3854,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
                 ftree->ak8jet_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
             else
-                ftree->ak8jet_pileupJetId.push_back(-666.);
+                ftree->ak8jet_pileupJetId.push_back(-777.);
 
             ftree->ak8jet_jetArea.push_back(jet.jetArea());
 
@@ -3865,13 +3877,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             bool hasGenInfo = (genJet);
             ftree->ak8jet_hasGenJet.push_back(hasGenInfo);
 
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
+            float gen_jet_pt = -777;
+            float gen_jet_eta = -777;
+            float gen_jet_phi = -777;
+            float gen_jet_m = -777;
+            float gen_jet_E = -777;
+            int gen_jet_status = -777;
+            int gen_jet_id = -777;
 
             if( hasGenInfo )
             {
@@ -3897,13 +3909,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             bool hasGenPartonInfo = (genParton);
             ftree->ak8jet_hasGenParton.push_back(hasGenPartonInfo);
 
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
+            float gen_parton_pt = -777;
+            float gen_parton_eta = -777;
+            float gen_parton_phi = -777;
+            float gen_parton_m = -777;
+            float gen_parton_E = -777;
+            int gen_parton_status = -777;
+            int gen_parton_id = -777;
 
             if( hasGenPartonInfo )
             {
@@ -3930,9 +3942,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //	     ftree->ak8jet_tau2.push_back(jet.userFloat("NjettinessAK8:tau2")); // Access the n-subjettiness variables
             //	     ftree->ak8jet_tau3.push_back(jet.userFloat("NjettinessAK8:tau3")); //
             // not available since 7_6_4
-            ftree->ak8jet_tau1.push_back(-666.); //
-            ftree->ak8jet_tau2.push_back(-666.); // Access the n-subjettiness variables
-            ftree->ak8jet_tau3.push_back(-666.); //
+            ftree->ak8jet_tau1.push_back(-777.); //
+            ftree->ak8jet_tau2.push_back(-777.); // Access the n-subjettiness variables
+            ftree->ak8jet_tau3.push_back(-777.); //
 
             // not available since 7_6_4
             //	     ftree->ak8jet_softdrop_mass.push_back(jet.userFloat("ak8PFJetsCHSSoftDropMass")); // access to filtered mass
@@ -3940,10 +3952,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //	     ftree->ak8jet_pruned_mass.push_back(jet.userFloat("ak8PFJetsCHSPrunedMass"));     // access to pruned mass
             //	     ftree->ak8jet_filtered_mass.push_back(jet.userFloat("ak8PFJetsCHSFilteredMass")); // access to filtered mass
 
-            ftree->ak8jet_softdrop_mass.push_back(-666.); // access to filtered mass
-            ftree->ak8jet_trimmed_mass.push_back(-666.);   // access to trimmed mass
-            ftree->ak8jet_pruned_mass.push_back(-666.);     // access to pruned mass
-            ftree->ak8jet_filtered_mass.push_back(-666.); // access to filtered mass
+            ftree->ak8jet_softdrop_mass.push_back(-777.); // access to filtered mass
+            ftree->ak8jet_trimmed_mass.push_back(-777.);   // access to trimmed mass
+            ftree->ak8jet_pruned_mass.push_back(-777.);     // access to pruned mass
+            ftree->ak8jet_filtered_mass.push_back(-777.); // access to filtered mass
 
             // access to the top-tagging variables
             reco::CATopJetTagInfo const * tagInfo =  dynamic_cast<reco::CATopJetTagInfo const *>( jet.tagInfo("caTop"));
@@ -3955,9 +3967,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
             else
             {
-                ftree->ak8jet_minMass.push_back(-666);
-                ftree->ak8jet_topMass.push_back(-666);
-                ftree->ak8jet_nSubJets.push_back(-666);
+                ftree->ak8jet_minMass.push_back(-777);
+                ftree->ak8jet_topMass.push_back(-777);
+                ftree->ak8jet_nSubJets.push_back(-777);
             }
         }
     }
@@ -3995,7 +4007,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             ftree->ak10jet_jecFactorUncorrected.push_back(jet.jecFactor("Uncorrected"));
             ftree->ak10jet_jecFactorL1FastJet.push_back(jet.jecFactor("L1FastJet"));
             ftree->ak10jet_jecFactorL2Relative.push_back(jet.jecFactor("L2Relative"));
-            ftree->ak10jet_jecFactorL3Absolute.push_back(-666.);
+            ftree->ak10jet_jecFactorL3Absolute.push_back(-777.);
 
             ftree->ak10jet_ntrk.push_back(jet.associatedTracks().size());
 
@@ -4016,7 +4028,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             if( jet.hasUserFloat("pileupJetId:fullDiscriminant") )
                 ftree->ak10jet_pileupJetId.push_back(jet.userFloat("pileupJetId:fullDiscriminant"));
             else
-                ftree->ak10jet_pileupJetId.push_back(-666.);
+                ftree->ak10jet_pileupJetId.push_back(-777.);
 
             ftree->ak10jet_jetArea.push_back(jet.jetArea());
 
@@ -4039,13 +4051,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             bool hasGenInfo = (genJet);
             ftree->ak10jet_hasGenJet.push_back(hasGenInfo);
 
-            float gen_jet_pt = -666;
-            float gen_jet_eta = -666;
-            float gen_jet_phi = -666;
-            float gen_jet_m = -666;
-            float gen_jet_E = -666;
-            int gen_jet_status = -666;
-            int gen_jet_id = -666;
+            float gen_jet_pt = -777;
+            float gen_jet_eta = -777;
+            float gen_jet_phi = -777;
+            float gen_jet_m = -777;
+            float gen_jet_E = -777;
+            int gen_jet_status = -777;
+            int gen_jet_id = -777;
 
             if( hasGenInfo )
             {
@@ -4071,13 +4083,13 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             bool hasGenPartonInfo = (genParton);
             ftree->ak10jet_hasGenParton.push_back(hasGenPartonInfo);
 
-            float gen_parton_pt = -666;
-            float gen_parton_eta = -666;
-            float gen_parton_phi = -666;
-            float gen_parton_m = -666;
-            float gen_parton_E = -666;
-            int gen_parton_status = -666;
-            int gen_parton_id = -666;
+            float gen_parton_pt = -777;
+            float gen_parton_eta = -777;
+            float gen_parton_phi = -777;
+            float gen_parton_m = -777;
+            float gen_parton_E = -777;
+            int gen_parton_status = -777;
+            int gen_parton_id = -777;
 
             if( hasGenPartonInfo )
             {
@@ -4119,9 +4131,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             }
             else
             {
-                ftree->ak10jet_minMass.push_back(-666);
-                ftree->ak10jet_topMass.push_back(-666);
-                ftree->ak10jet_nSubJets.push_back(-666);
+                ftree->ak10jet_minMass.push_back(-777);
+                ftree->ak10jet_topMass.push_back(-777);
+                ftree->ak10jet_nSubJets.push_back(-777);
             }
         }
     }
@@ -4150,7 +4162,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             //	     RefToBase<reco::Jet> jetRef(RefToBaseProd<reco::Jet>(genJets),ij);
             //	     int genJet_flavour = (*genJetFlavourMatching)[jetRef].getFlavour();
             //	     ftree->genJet_flavour.push_back(genJet_flavour);
-            ftree->genJet_flavour.push_back(-666); //Not filled
+            ftree->genJet_flavour.push_back(-777); //Not filled
         }
     }
 

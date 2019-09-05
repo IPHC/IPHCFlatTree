@@ -396,7 +396,7 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
 
-   float gen_PVz = -666;
+   float gen_PVz = -777;
    for( size_t i=0;i<GenParticles->size();++i )
      {	
 	const reco::GenParticle & genIt = (*GenParticles)[i];
@@ -410,12 +410,12 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
    tree.gen_PVz = gen_PVz;
 }
 
-std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatch(const edm::Event& iEvent,
-								   const edm::EventSetup& iSetup,
-								   const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-								   float pt, float eta, float phi, int pdgId)
+std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
+						const edm::EventSetup& iSetup,
+						const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+						float pt, float eta, float phi, int pdgId)
 {
-   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   std::vector<MCTruth::GenPart*> genp;
    
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
@@ -461,7 +461,17 @@ std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMat
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
+	     GenPart *p = new GenPart();
+	     p->pt = ptGen;
+	     p->eta = etaGen;
+	     p->phi = phiGen;
+	     p->m = mcp->mass();
+	     p->E = mcp->energy();
+	     p->status = statusGen;
+	     p->id = idGen;
+	     p->barcode = ipart;
+	     p->dr = dr;
+	     genp.push_back(p);
 	  }	
      }
    
@@ -470,12 +480,12 @@ std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMat
    return genp;
 }
 
-std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatchTau(const edm::Event& iEvent,
-										      const edm::EventSetup& iSetup,
-										      const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-										      float pt, float eta, float phi, int pdgId)
+std::vector<MCTruth::GenPart*> MCTruth::doMatchTau(const edm::Event& iEvent,
+						   const edm::EventSetup& iSetup,
+						   const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+						   float pt, float eta, float phi, int pdgId)
 {
-   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   std::vector<MCTruth::GenPart*> genp;
    
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
@@ -515,7 +525,17 @@ std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMat
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
+	     GenPart *p = new GenPart();
+	     p->pt = ptGen;
+	     p->eta = etaGen;
+	     p->phi = phiGen;
+	     p->m = mcp->mass();
+	     p->E = mcp->energy();
+	     p->status = mcp->status();
+	     p->id = idGen;
+	     p->barcode = ipart;
+	     p->dr = dr;
+	     genp.push_back(p);
 	  }	
      }
    
@@ -524,12 +544,12 @@ std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMat
    return genp;
 }
 
-std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMatchConv(const edm::Event& iEvent,
-										       const edm::EventSetup& iSetup,
-										       const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-										       float pt, float eta, float phi, int pdgId)
+std::vector<MCTruth::GenPart*> MCTruth::doMatchConv(const edm::Event& iEvent,
+						    const edm::EventSetup& iSetup,
+						    const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
+						    float pt, float eta, float phi, int pdgId)
 {
-   std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > genp;
+   std::vector<MCTruth::GenPart*> genp;
    
    reco::GenParticleCollection genParticlesCollection = *GenParticles;
    reco::GenParticleCollection::const_iterator genParticleSrc;
@@ -562,7 +582,17 @@ std::vector<std::pair<reco::GenParticle*,std::pair<float,int> > > MCTruth::doMat
 	if( dr < drmin )
 	  {
 	     drmin = dr;
-	     genp.push_back(std::make_pair(mcp,std::make_pair(dr,ipart)));
+	     GenPart *p = new GenPart();
+	     p->pt = ptGen;
+	     p->eta = etaGen;
+	     p->phi = phiGen;
+	     p->m = mcp->mass();
+	     p->E = mcp->energy();
+	     p->status = statusGen;
+	     p->id = idGen;
+	     p->barcode = ipart;
+	     p->dr = dr;
+	     genp.push_back(p);
 	  }
      }
    
@@ -1923,7 +1953,7 @@ void MCTruth::fillTTHSignalGenParticles(const edm::Event& iEvent,
    reco::GenParticle *j2 = 0;
    reco::GenParticle *j3 = 0;
    
-   int chan = -666;
+   int chan = -777;
 
    // 0   = (t->bW,W->lnu)(t->bW,W->lnu)
    // 1   = (t->bW,W->qq)(t->bW,W->qq)
@@ -2675,7 +2705,7 @@ void MCTruth::fillTTHSignalGenParticles(const edm::Event& iEvent,
 
    if( h0 && t1 && t2 && tb1 && tb2 && tW1 && tW2 )
      {	
-	int tchan = -666;
+	int tchan = -777;
 	if( tWl1 && tWl2 )   tchan = 0;
 	if( tWq11 && tWq12 ) tchan = 1;
 	if( tWq11 && tWl2 )  tchan = 2;
@@ -3661,7 +3691,7 @@ void MCTruth::fillTTZSignalGenParticles(const edm::Event& iEvent,
 					FlatTree& tree,
 					const edm::Handle<std::vector<reco::GenParticle> >& GenParticles)
 {
-   int chan = -666;
+   int chan = -777;
    
    reco::GenParticle *Z = 0;
    
@@ -4686,7 +4716,7 @@ void MCTruth::fillTTWSignalGenParticles(const edm::Event& iEvent,
 					FlatTree& tree,
 					const edm::Handle<std::vector<reco::GenParticle> >& GenParticles)
 {
-   int chan = -666;
+   int chan = -777;
    
    reco::GenParticle *W = 0;
    reco::GenParticle *Wnu = 0;
@@ -5642,7 +5672,7 @@ void MCTruth::fillTZQSignalGenParticles(const edm::Event& iEvent,
    reco::GenParticle *j2 = 0;
    reco::GenParticle *j3 = 0;
    
-   int chan = -666;
+   int chan = -777;
 
    // 0   = (t->bW,W->lnu)
    // 1   = (t->bW,W->qq)
@@ -5985,7 +6015,7 @@ void MCTruth::fillTZQSignalGenParticles(const edm::Event& iEvent,
    
    if( t && tb && tW )
      {	
-	int tchan = -666;
+	int tchan = -777;
 	if( tWl )   tchan = 0;
 	if( tWq1 && tWq2 ) tchan = 1;
 	if( tWtaul )  tchan = 2;
@@ -6386,7 +6416,7 @@ void MCTruth::fillTHQSignalGenParticles(const edm::Event& iEvent,
    reco::GenParticle *j2 = 0;
    reco::GenParticle *j3 = 0;
    
-   int chan = -666;
+   int chan = -777;
 
    // 0   = (t->bW,W->lnu)
    // 1   = (t->bW,W->qq)
@@ -7082,7 +7112,7 @@ void MCTruth::fillTHQSignalGenParticles(const edm::Event& iEvent,
 
    if( h0 && t && tb && tW )
      {	
-	int tchan = -666;
+	int tchan = -777;
 	if( tWl )   tchan = 0;
 	if( tWq1 ) tchan = 1;
 	if( tWtaul )  tchan = 2;
