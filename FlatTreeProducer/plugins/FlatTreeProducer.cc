@@ -1550,7 +1550,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
     bool pass_eeBadScFilter = 1;
     bool pass_globalTightHalo2016Filter = 1;
     bool pass_BadPFMuonFilter = 1;
-    bool pass_BadChargedCandidateFilter = 1;
+//    bool pass_BadChargedCandidateFilter = 1;
     bool pass_ecalBadCalibFilter = 1;
 
 //    bool pass_badMuonFilter = *badMuonFilter;
@@ -1594,10 +1594,10 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             {
                 if( !isFired ) pass_BadPFMuonFilter = 0;
             }
-            else if( strcmp(triggerName.c_str(),"Flag_BadChargedCandidateFilter") == 0 )
-            {
-                if( !isFired ) pass_BadChargedCandidateFilter = 0;
-            }
+//            else if( strcmp(triggerName.c_str(),"Flag_BadChargedCandidateFilter") == 0 )
+//            {
+//                if( !isFired ) pass_BadChargedCandidateFilter = 0;
+//            }
             else if( strcmp(triggerName.c_str(),"Flag_ecalBadCalibReducedMINIAODFilter") == 0 )
             {
 	       if( datasetsYear_ != "2016" )
