@@ -1615,7 +1615,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
             pass_eeBadScFilter &&
             pass_globalTightHalo2016Filter &&
             pass_BadPFMuonFilter &&
-            pass_BadChargedCandidateFilter &&
+//            pass_BadChargedCandidateFilter &&
 	    pass_ecalBadCalibFilter);
 
     //std::cout << "\n === TRIGGER PATHS === " << std::endl;
