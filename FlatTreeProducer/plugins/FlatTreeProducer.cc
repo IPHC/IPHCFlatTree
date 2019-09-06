@@ -2452,7 +2452,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	     }	   
 
 	   std::vector<MCTruth::GenPart*> genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
-									   elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
+									   elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
 
 	   int nGenPartConv = genpConv.size();
 	   bool hasMCMatchConv = (nGenPartConv > 0);
