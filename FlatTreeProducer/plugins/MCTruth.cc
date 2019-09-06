@@ -438,10 +438,12 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	int statusGen = mcp->status();
 	int isPromptFinalState = mcp->isPromptFinalState(); //final state (status 1) particle satisfying isPrompt() = not from hadron, muon or tau decay
 	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState(); //final state (status 1) particle satisfying isDirectPromptTauDecayProduct() = direct decay product from a tau decay (ie no intermediate hadron), where the tau did not come from a hadron decay
-	
-	if( statusGen != 1 ) continue; //For ele and muons, ask particle to be stable (status=1)
+
+	if( abs(pdgId) != 15 && statusGen != 1 ) continue; //For ele and muons, ask particle to be stable (status=1)
 
 	if( abs(pdgId) != abs(idGen) ) continue;
+	
+	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 
 	const reco::GenParticle* mom = getMother(*mcp);
 	int momPID = mom->pdgId();	
@@ -454,8 +456,6 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	//Ask prompt leptons
 	if( !isPromptFinalState && !isDirectPromptTauDecayProductFinalState ) continue;
 	
-	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
-       
 	if( (fabs(pt - ptGen) / ptGen) > 0.5 ) continue;
 	
 	if( dr < drmin )
@@ -508,6 +508,8 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatchTau(const edm::Event& iEvent,
 	
 	if( abs(idGen) != 15 ) continue;
 
+	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
+	
 	const reco::GenParticle* mom = getMother(*mcp);
 	int momPID = mom->pdgId();	
 	if( abs(momPID) == 15 )
@@ -517,8 +519,6 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatchTau(const edm::Event& iEvent,
 	  }
 
 	if( abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 ) continue;
-	
-	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
 	if( (fabs(pt - ptGen) / ptGen) > 1.0 ) continue;
 	
