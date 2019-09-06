@@ -2415,7 +2415,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( !isData_ )
         {
 	   std::vector<MCTruth::GenPart*> genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-								   elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+								   elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
 	   
 	   int nGenPart = genp.size();
 	   bool hasMCMatch = (nGenPart > 0);
@@ -2452,7 +2452,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 	     }	   
 
 	   std::vector<MCTruth::GenPart*> genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
-									   elec.pt(),elec.eta(),elec.phi(),elec.pdgId());
+									   elec.pt(),elec.eta(),elec.phi(),elec.pdgId(),0);
 
 	   int nGenPartConv = genpConv.size();
 	   bool hasMCMatchConv = (nGenPartConv > 0);
@@ -3041,7 +3041,7 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( !isData_ )
 	 {
 	    std::vector<MCTruth::GenPart*> genp = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-								    muon.pt(),muon.eta(),muon.phi(),muon.pdgId());
+								    muon.pt(),muon.eta(),muon.phi(),muon.pdgId(),0);
 	   
 	   int nGenPart = genp.size();
 	   bool hasMCMatch = (nGenPart > 0);
@@ -3312,9 +3312,9 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
         if( !isData_ )
 	 {
 	    std::vector<MCTruth::GenPart*> genpElec = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-									tau.pt(),tau.eta(),tau.phi(),11);
+									tau.pt(),tau.eta(),tau.phi(),11,1);
 	    std::vector<MCTruth::GenPart*> genpMuon = mc_truth->doMatch(iEvent,iSetup,genParticlesHandle,
-									tau.pt(),tau.eta(),tau.phi(),13);
+									tau.pt(),tau.eta(),tau.phi(),13,1);
 	    std::vector<MCTruth::GenPart*> genpTau = mc_truth->doMatchTau(iEvent,iSetup,genParticlesHandle,
 									  tau.pt(),tau.eta(),tau.phi(),tau.pdgId());
 	    

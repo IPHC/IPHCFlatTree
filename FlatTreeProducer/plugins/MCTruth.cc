@@ -413,7 +413,7 @@ void MCTruth::fillGenPV(const edm::Event& iEvent,
 std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 						const edm::EventSetup& iSetup,
 						const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-						float pt, float eta, float phi, int pdgId)
+						float pt, float eta, float phi, int pdgId, bool isTau)
 {
    std::vector<MCTruth::GenPart*> genp;
    
@@ -439,7 +439,7 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	int isPromptFinalState = mcp->isPromptFinalState(); //final state (status 1) particle satisfying isPrompt() = not from hadron, muon or tau decay
 	int isDirectPromptTauDecayProductFinalState = mcp->isDirectPromptTauDecayProductFinalState(); //final state (status 1) particle satisfying isDirectPromptTauDecayProduct() = direct decay product from a tau decay (ie no intermediate hadron), where the tau did not come from a hadron decay
 
-	if( abs(pdgId) != 15 && statusGen != 1 ) continue; //For ele and muons, ask particle to be stable (status=1)
+	if( !isTau && statusGen != 1 ) continue; //For ele and muons, ask particle to be stable (status=1)
 
 	if( abs(pdgId) != abs(idGen) ) continue;
 	

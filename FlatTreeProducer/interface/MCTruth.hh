@@ -66,7 +66,7 @@ class MCTruth
    std::vector<GenPart*> doMatch(const edm::Event& iEvent,
 				 const edm::EventSetup& iSetup,
 				 const edm::Handle<std::vector<reco::GenParticle> >& GenParticles,
-				 float pt, float eta, float phi, int pdgId);
+				 float pt, float eta, float phi, int pdgId, bool isTau);
    
    std::vector<GenPart*> doMatchTau(const edm::Event& iEvent,
 				    const edm::EventSetup& iSetup,
