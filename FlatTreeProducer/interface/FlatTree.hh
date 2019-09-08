@@ -521,6 +521,10 @@ class FlatTree
    std::vector<int> el_gen_id;
    std::vector<int> el_gen_barcode;
    std::vector<float> el_gen_dr;
+   std::vector<bool> el_gen_isPrompt;
+   std::vector<bool> el_gen_isPromptTau;
+   std::vector<bool> el_gen_isBottom;
+   std::vector<bool> el_gen_isCharm;
 
    std::vector<bool> el_hasPhotonMCMatch;
    std::vector<int> el_nGenPartConv;
@@ -534,6 +538,10 @@ class FlatTree
    std::vector<int> el_genConv_id;
    std::vector<int> el_genConv_barcode;
    std::vector<float> el_genConv_dr;
+   std::vector<bool> el_genConv_isPrompt;
+   std::vector<bool> el_genConv_isPromptTau;
+   std::vector<bool> el_genConv_isBottom;
+   std::vector<bool> el_genConv_isCharm;
    
    std::vector<int> el_hasMCMatchPAT;
    std::vector<float> el_genPAT_pt;
@@ -867,6 +875,10 @@ class FlatTree
    std::vector<int> mu_gen_id;
    std::vector<int> mu_gen_barcode;
    std::vector<float> mu_gen_dr;
+   std::vector<bool> mu_gen_isPrompt;
+   std::vector<bool> mu_gen_isPromptTau;
+   std::vector<bool> mu_gen_isBottom;
+   std::vector<bool> mu_gen_isCharm;
 
    std::vector<int> mu_hasMCMatchPAT;
    std::vector<float> mu_genPAT_pt;
@@ -983,6 +995,10 @@ class FlatTree
    std::vector<int> tau_genElec_id;
    std::vector<int> tau_genElec_barcode;
    std::vector<float> tau_genElec_dr;
+   std::vector<bool> tau_genElec_isPrompt;
+   std::vector<bool> tau_genElec_isPromptTau;
+   std::vector<bool> tau_genElec_isBottom;
+   std::vector<bool> tau_genElec_isCharm;
 
    std::vector<bool> tau_hasMCMatchMuon;
    std::vector<int> tau_nGenPartMuon;
@@ -996,6 +1012,10 @@ class FlatTree
    std::vector<int> tau_genMuon_id;
    std::vector<int> tau_genMuon_barcode;
    std::vector<float> tau_genMuon_dr;
+   std::vector<bool> tau_genMuon_isPrompt;
+   std::vector<bool> tau_genMuon_isPromptTau;
+   std::vector<bool> tau_genMuon_isBottom;
+   std::vector<bool> tau_genMuon_isCharm;
 
    std::vector<bool> tau_hasMCMatchTau;
    std::vector<int> tau_nGenPartTau;
@@ -1009,6 +1029,10 @@ class FlatTree
    std::vector<int> tau_genTau_id;
    std::vector<int> tau_genTau_barcode;
    std::vector<float> tau_genTau_dr;
+   std::vector<bool> tau_genTau_isPrompt;
+   std::vector<bool> tau_genTau_isPromptTau;
+   std::vector<bool> tau_genTau_isBottom;
+   std::vector<bool> tau_genTau_isCharm;
    
    // Jets
 

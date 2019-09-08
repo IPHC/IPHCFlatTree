@@ -8,6 +8,7 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "PhysicsTools/JetMCUtils/interface/CandMCTag.h"
 
 #include "IPHCFlatTree/FlatTreeProducer/interface/FlatTree.hh"
 
@@ -33,6 +34,10 @@ class MCTruth
 	int id;
 	int barcode;
 	float dr;
+	bool isPrompt;
+	bool isPromptTau;
+	bool isBottom;
+	bool isCharm;
      };   
    
    void Init(FlatTree &tree);
@@ -109,7 +114,7 @@ class MCTruth
    void p4toTLV(reco::Particle::LorentzVector vp4,
 		TLorentzVector& tlv);
    
-   const reco::GenParticle* getMother(const reco::GenParticle&);
+   const reco::GenParticle* getMother(const reco::GenParticle&);   
 };
 
 #endif

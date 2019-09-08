@@ -451,10 +451,14 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	     momPID = momTau->pdgId();
 	  }
 	
-	//Ask prompt leptons
-	if( !isPromptFinalState && !isDirectPromptTauDecayProductFinalState && !isTau ) continue;
-	
 	if( (fabs(pt - ptGen) / ptGen) > 0.5 ) continue;
+
+	bool isPrompt = 0;
+	bool isPromptTau = 0;
+	if( isPromptFinalState ) isPrompt = 1;
+	if( isDirectPromptTauDecayProductFinalState ) isPromptTau = 1;
+	bool isBottom = CandMCTagUtils::hasBottom(*mcp);
+	bool isCharm = CandMCTagUtils::hasCharm(*mcp);
 	
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
@@ -471,6 +475,10 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	     p->id = idGen;
 	     p->barcode = ipart;
 	     p->dr = dr;
+	     p->isPrompt = isPrompt;
+	     p->isPromptTau = isPromptTau;
+	     p->isBottom = isBottom;
+	     p->isCharm = isCharm;
 	     genp.push_back(p);
 	  }	
      }
@@ -515,8 +523,6 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatchTau(const edm::Event& iEvent,
 	     const reco::GenParticle* momTau = getMother(*mom);
 	     momPID = momTau->pdgId();
 	  }
-
-	if( abs(momPID) != 23 && abs(momPID) != 24 && abs(momPID) != 25 ) continue;
 	
 	if( (fabs(pt - ptGen) / ptGen) > 1.0 ) continue;
 	
@@ -535,6 +541,7 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatchTau(const edm::Event& iEvent,
 	     p->id = idGen;
 	     p->barcode = ipart;
 	     p->dr = dr;
+	     p->isPrompt = (abs(momPID) == 23 || abs(momPID) == 24 || abs(momPID) == 25);
 	     genp.push_back(p);
 	  }	
      }

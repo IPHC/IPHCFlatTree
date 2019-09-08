@@ -481,6 +481,10 @@ void FlatTree::Init()
    el_gen_id.clear();
    el_gen_barcode.clear();
    el_gen_dr.clear();
+   el_gen_isPrompt.clear();
+   el_gen_isPromptTau.clear();
+   el_gen_isBottom.clear();
+   el_gen_isCharm.clear();
    
    el_hasPhotonMCMatch.clear();
    el_nGenPartConv.clear();
@@ -494,6 +498,10 @@ void FlatTree::Init()
    el_genConv_id.clear();
    el_genConv_barcode.clear();
    el_genConv_dr.clear();
+   el_genConv_isPrompt.clear();
+   el_genConv_isPromptTau.clear();
+   el_genConv_isBottom.clear();
+   el_genConv_isCharm.clear();
 
    el_hasMCMatchPAT.clear();
    el_genPAT_pt.clear();
@@ -823,6 +831,10 @@ void FlatTree::Init()
    mu_gen_id.clear();
    mu_gen_barcode.clear();
    mu_gen_dr.clear();
+   mu_gen_isPrompt.clear();
+   mu_gen_isPromptTau.clear();
+   mu_gen_isBottom.clear();
+   mu_gen_isCharm.clear();
 
    mu_hasMCMatchPAT.clear();
    mu_genPAT_pt.clear();
@@ -938,6 +950,10 @@ void FlatTree::Init()
    tau_genElec_id.clear();
    tau_genElec_barcode.clear();
    tau_genElec_dr.clear();
+   tau_genElec_isPrompt.clear();
+   tau_genElec_isPromptTau.clear();
+   tau_genElec_isBottom.clear();
+   tau_genElec_isCharm.clear();
 
    tau_hasMCMatchMuon.clear();
    tau_nGenPartMuon.clear();
@@ -951,6 +967,10 @@ void FlatTree::Init()
    tau_genMuon_id.clear();
    tau_genMuon_barcode.clear();
    tau_genMuon_dr.clear();
+   tau_genMuon_isPrompt.clear();
+   tau_genMuon_isPromptTau.clear();
+   tau_genMuon_isBottom.clear();
+   tau_genMuon_isCharm.clear();
 
    tau_hasMCMatchTau.clear();
    tau_nGenPartTau.clear();
@@ -964,6 +984,10 @@ void FlatTree::Init()
    tau_genTau_id.clear();
    tau_genTau_barcode.clear();
    tau_genTau_dr.clear();
+   tau_genTau_isPrompt.clear();
+   tau_genTau_isPromptTau.clear();
+   tau_genTau_isBottom.clear();
+   tau_genTau_isCharm.clear();
    
    jet_n = 0;
    jet_pt.clear();
@@ -1787,6 +1811,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_gen_id") ) tree->Branch("el_gen_id", "std::vector<int>", &el_gen_id, buffersize);
    if( doWrite("el_gen_barcode") ) tree->Branch("el_gen_barcode", "std::vector<int>", &el_gen_barcode, buffersize);
    if( doWrite("el_gen_dr") ) tree->Branch("el_gen_dr", "std::vector<float>", &el_gen_dr, buffersize);
+   if( doWrite("el_gen_isPrompt") ) tree->Branch("el_gen_isPrompt", "std::vector<bool>", &el_gen_isPrompt, buffersize);
+   if( doWrite("el_gen_isPromptTau") ) tree->Branch("el_gen_isPromptTau", "std::vector<bool>", &el_gen_isPromptTau, buffersize);
+   if( doWrite("el_gen_isBottom") ) tree->Branch("el_gen_isBottom", "std::vector<bool>", &el_gen_isBottom, buffersize);
+   if( doWrite("el_gen_isCharm") ) tree->Branch("el_gen_isCharm", "std::vector<bool>", &el_gen_isCharm, buffersize);
    
    if( doWrite("el_hasPhotonMCMatch") ) tree->Branch("el_hasPhotonMCMatch", "std::vector<bool>", &el_hasPhotonMCMatch, buffersize);
    if( doWrite("el_nGenPartConv") ) tree->Branch("el_nGenPartConv", "std::vector<int>", &el_nGenPartConv, buffersize);
@@ -1800,6 +1828,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("el_genConv_id") ) tree->Branch("el_genConv_id", "std::vector<int>", &el_genConv_id, buffersize);
    if( doWrite("el_genConv_barcode") ) tree->Branch("el_genConv_barcode", "std::vector<int>", &el_genConv_barcode, buffersize);
    if( doWrite("el_genConv_dr") ) tree->Branch("el_genConv_dr", "std::vector<float>", &el_genConv_dr, buffersize);
+   if( doWrite("el_genConv_isPrompt") ) tree->Branch("el_genConv_isPrompt", "std::vector<bool>", &el_genConv_isPrompt, buffersize);
+   if( doWrite("el_genConv_isPromptTau") ) tree->Branch("el_genConv_isPromptTau", "std::vector<bool>", &el_genConv_isPromptTau, buffersize);
+   if( doWrite("el_genConv_isBottom") ) tree->Branch("el_genConv_isBottom", "std::vector<bool>", &el_genConv_isBottom, buffersize);
+   if( doWrite("el_genConv_isCharm") ) tree->Branch("el_genConv_isCharm", "std::vector<bool>", &el_genConv_isCharm, buffersize);
 
    if( doWrite("el_hasMCMatchPAT") ) tree->Branch("el_hasMCMatchPAT", "std::vector<int>", &el_hasMCMatchPAT, buffersize);
    if( doWrite("el_genPAT_pt") ) tree->Branch("el_genPAT_pt", "std::vector<float>", &el_genPAT_pt, buffersize);
@@ -2129,6 +2161,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("mu_gen_id") ) tree->Branch("mu_gen_id", "std::vector<int>", &mu_gen_id, buffersize);
    if( doWrite("mu_gen_barcode") ) tree->Branch("mu_gen_barcode", "std::vector<int>", &mu_gen_barcode, buffersize);
    if( doWrite("mu_gen_dr") ) tree->Branch("mu_gen_dr", "std::vector<float>", &mu_gen_dr, buffersize);
+   if( doWrite("mu_gen_isPrompt") ) tree->Branch("mu_gen_isPrompt", "std::vector<bool>", &mu_gen_isPrompt, buffersize);
+   if( doWrite("mu_gen_isPromptTau") ) tree->Branch("mu_gen_isPromptTau", "std::vector<bool>", &mu_gen_isPromptTau, buffersize);
+   if( doWrite("mu_gen_isBottom") ) tree->Branch("mu_gen_isBottom", "std::vector<bool>", &mu_gen_isBottom, buffersize);
+   if( doWrite("mu_gen_isCharm") ) tree->Branch("mu_gen_isCharm", "std::vector<bool>", &mu_gen_isCharm, buffersize);
 
    if( doWrite("mu_hasMCMatchPAT") ) tree->Branch("mu_hasMCMatchPAT", "std::vector<int>", &mu_hasMCMatchPAT, buffersize);
    if( doWrite("mu_genPAT_pt") ) tree->Branch("mu_genPAT_pt", "std::vector<float>", &mu_genPAT_pt, buffersize);
@@ -2244,6 +2280,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_genElec_id") ) tree->Branch("tau_genElec_id", "std::vector<int>", &tau_genElec_id, buffersize);
    if( doWrite("tau_genElec_barcode") ) tree->Branch("tau_genElec_barcode", "std::vector<int>", &tau_genElec_barcode, buffersize);
    if( doWrite("tau_genElec_dr") ) tree->Branch("tau_genElec_dr", "std::vector<float>", &tau_genElec_dr, buffersize);
+   if( doWrite("tau_genElec_isPrompt") ) tree->Branch("tau_genElec_isPrompt", "std::vector<bool>", &tau_genElec_isPrompt, buffersize);
+   if( doWrite("tau_genElec_isPromptTau") ) tree->Branch("tau_genElec_isPromptTau", "std::vector<bool>", &tau_genElec_isPromptTau, buffersize);
+   if( doWrite("tau_genElec_isBottom") ) tree->Branch("tau_genElec_isBottom", "std::vector<bool>", &tau_genElec_isBottom, buffersize);
+   if( doWrite("tau_genElec_isCharm") ) tree->Branch("tau_genElec_isCharm", "std::vector<bool>", &tau_genElec_isCharm, buffersize);
 
    if( doWrite("tau_hasMCMatchMuon") ) tree->Branch("tau_hasMCMatchMuon", "std::vector<bool>", &tau_hasMCMatchMuon, buffersize);
    if( doWrite("tau_nGenPartMuon") ) tree->Branch("tau_nGenPartMuon", "std::vector<int>", &tau_nGenPartMuon, buffersize);
@@ -2257,6 +2297,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_genMuon_id") ) tree->Branch("tau_genMuon_id", "std::vector<int>", &tau_genMuon_id, buffersize);
    if( doWrite("tau_genMuon_barcode") ) tree->Branch("tau_genMuon_barcode", "std::vector<int>", &tau_genMuon_barcode, buffersize);
    if( doWrite("tau_genMuon_dr") ) tree->Branch("tau_genMuon_dr", "std::vector<float>", &tau_genMuon_dr, buffersize);
+   if( doWrite("tau_genMuon_isPrompt") ) tree->Branch("tau_genMuon_isPrompt", "std::vector<bool>", &tau_genMuon_isPrompt, buffersize);
+   if( doWrite("tau_genMuon_isPromptTau") ) tree->Branch("tau_genMuon_isPromptTau", "std::vector<bool>", &tau_genMuon_isPromptTau, buffersize);
+   if( doWrite("tau_genMuon_isBottom") ) tree->Branch("tau_genMuon_isBottom", "std::vector<bool>", &tau_genMuon_isBottom, buffersize);
+   if( doWrite("tau_genMuon_isCharm") ) tree->Branch("tau_genMuon_isCharm", "std::vector<bool>", &tau_genMuon_isCharm, buffersize);
 
    if( doWrite("tau_hasMCMatchTau") ) tree->Branch("tau_hasMCMatchTau", "std::vector<bool>", &tau_hasMCMatchTau, buffersize);
    if( doWrite("tau_nGenPartTau") ) tree->Branch("tau_nGenPartTau", "std::vector<int>", &tau_nGenPartTau, buffersize);
@@ -2270,6 +2314,10 @@ void FlatTree::CreateBranches(int buffersize = 32000)
    if( doWrite("tau_genTau_id") ) tree->Branch("tau_genTau_id", "std::vector<int>", &tau_genTau_id, buffersize);
    if( doWrite("tau_genTau_barcode") ) tree->Branch("tau_genTau_barcode", "std::vector<int>", &tau_genTau_barcode, buffersize);
    if( doWrite("tau_genTau_dr") ) tree->Branch("tau_genTau_dr", "std::vector<float>", &tau_genTau_dr, buffersize);
+   if( doWrite("tau_genTau_isPrompt") ) tree->Branch("tau_genTau_isPrompt", "std::vector<bool>", &tau_genTau_isPrompt, buffersize);
+   if( doWrite("tau_genTau_isPromptTau") ) tree->Branch("tau_genTau_isPromptTau", "std::vector<bool>", &tau_genTau_isPromptTau, buffersize);
+   if( doWrite("tau_genTau_isBottom") ) tree->Branch("tau_genTau_isBottom", "std::vector<bool>", &tau_genTau_isBottom, buffersize);
+   if( doWrite("tau_genTau_isCharm") ) tree->Branch("tau_genTau_isCharm", "std::vector<bool>", &tau_genTau_isCharm, buffersize);
    
    if( doWrite("jet_n") ) tree->Branch("jet_n", &jet_n, "jet_n/I", buffersize);
    if( doWrite("jet_pt") ) tree->Branch("jet_pt", "std::vector<float>", &jet_pt, buffersize);
