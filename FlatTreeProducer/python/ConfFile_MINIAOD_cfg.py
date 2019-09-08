@@ -90,7 +90,7 @@ if options.isData:
 else:    
     if is2016: process.GlobalTag.globaltag = '94X_mcRun2_asymptotic_v3'  
     elif is2017: process.GlobalTag.globaltag = '94X_mc2017_realistic_v17' 
-    elif is2018: process.GlobalTag.globaltag = '102X_upgrade2018_realisic_v18'
+    elif is2018: process.GlobalTag.globaltag = '102X_upgrade2018_realistic_v18'
 
 if is2016: corName="Summer16_07Aug2017_V11_MC"
 elif is2017: corName="Fall17_17Nov2017_V32_94X_MC"
@@ -307,18 +307,19 @@ if options.runQG:
 # Prefiring probability #
 #########################
 
+prefName = ""
 if is2016: prefName = "2016BtoH"
 elif is2017: prefName = "2017BtoF"
 
-from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
-process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
-    DataEra = cms.string(prefName),
-    UseJetEMPt = cms.bool(False),
-    PrefiringRateSystematicUncty = cms.double(0.2),
-    SkipWarnings = False
-)
-
-if is2018:
+if is2016 or is2017:
+    from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+    process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+       DataEra = cms.string(prefName),
+       UseJetEMPt = cms.bool(False),
+       PrefiringRateSystematicUncty = cms.double(0.2),
+       SkipWarnings = False
+    )
+elif is2018:
     process.prefiringweight = cms.Sequence()
 
 ###########
