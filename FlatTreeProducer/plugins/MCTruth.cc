@@ -457,8 +457,6 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	bool isPromptTau = 0;
 	if( isPromptFinalState ) isPrompt = 1;
 	if( isDirectPromptTauDecayProductFinalState ) isPromptTau = 1;
-	bool isBottom = CandMCTagUtils::hasBottom(*mcp);
-	bool isCharm = CandMCTagUtils::hasCharm(*mcp);
 	
 	float dr = GetDeltaR(eta,phi,etaGen,phiGen);
 	
@@ -477,8 +475,6 @@ std::vector<MCTruth::GenPart*> MCTruth::doMatch(const edm::Event& iEvent,
 	     p->dr = dr;
 	     p->isPrompt = isPrompt;
 	     p->isPromptTau = isPromptTau;
-	     p->isBottom = isBottom;
-	     p->isCharm = isCharm;
 	     genp.push_back(p);
 	  }	
      }

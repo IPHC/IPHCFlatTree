@@ -2436,8 +2436,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->el_gen_dr.push_back(genp[ip]->dr);
 		ftree->el_gen_isPrompt.push_back(genp[ip]->isPrompt);
 		ftree->el_gen_isPromptTau.push_back(genp[ip]->isPromptTau);
-		ftree->el_gen_isBottom.push_back(genp[ip]->isBottom);
-		ftree->el_gen_isCharm.push_back(genp[ip]->isCharm);
 		
 		delete genp[ip];
 	     }
@@ -2455,8 +2453,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->el_gen_dr.push_back(-777);
 		ftree->el_gen_isPrompt.push_back(0);
 		ftree->el_gen_isPromptTau.push_back(0);
-		ftree->el_gen_isBottom.push_back(0);
-		ftree->el_gen_isCharm.push_back(0);
 	     }	   
 
 	   std::vector<MCTruth::GenPart*> genpConv = mc_truth->doMatchConv(iEvent,iSetup,genParticlesHandle,
@@ -2481,8 +2477,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->el_genConv_dr.push_back(genpConv[ip]->dr);
 		ftree->el_genConv_isPrompt.push_back(genpConv[ip]->isPrompt);
 		ftree->el_genConv_isPromptTau.push_back(genpConv[ip]->isPromptTau);
-		ftree->el_genConv_isBottom.push_back(genpConv[ip]->isBottom);
-		ftree->el_genConv_isCharm.push_back(genpConv[ip]->isCharm);
 		
 		delete genpConv[ip];
 	     }
@@ -2500,8 +2494,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->el_genConv_dr.push_back(-777);
 		ftree->el_genConv_isPrompt.push_back(0);
 		ftree->el_genConv_isPromptTau.push_back(0);
-		ftree->el_genConv_isBottom.push_back(0);
-		ftree->el_genConv_isCharm.push_back(0);
 	     }	   
 
             // PAT matching
@@ -3078,8 +3070,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->mu_gen_dr.push_back(genp[ip]->dr);
 		ftree->mu_gen_isPrompt.push_back(genp[ip]->isPrompt);
 		ftree->mu_gen_isPromptTau.push_back(genp[ip]->isPromptTau);
-		ftree->mu_gen_isBottom.push_back(genp[ip]->isBottom);
-		ftree->mu_gen_isCharm.push_back(genp[ip]->isCharm);
 		
 		delete genp[ip];
 	     }
@@ -3097,8 +3087,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->mu_gen_dr.push_back(-777);
 		ftree->mu_gen_isPrompt.push_back(0);
 		ftree->mu_gen_isPromptTau.push_back(0);
-		ftree->mu_gen_isBottom.push_back(0);
-		ftree->mu_gen_isCharm.push_back(0);
 	     }
 
             // PAT matching
@@ -3361,8 +3349,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genElec_dr.push_back(genpElec[ip]->dr);
 		ftree->tau_genElec_isPrompt.push_back(genpElec[ip]->isPrompt);
 		ftree->tau_genElec_isPromptTau.push_back(genpElec[ip]->isPromptTau);
-		ftree->tau_genElec_isBottom.push_back(genpElec[ip]->isBottom);
-		ftree->tau_genElec_isCharm.push_back(genpElec[ip]->isCharm);
 		
 		delete genpElec[ip];
 	     }
@@ -3380,8 +3366,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genElec_dr.push_back(-777);
 		ftree->tau_genElec_isPrompt.push_back(0);
 		ftree->tau_genElec_isPromptTau.push_back(0);
-		ftree->tau_genElec_isBottom.push_back(0);
-		ftree->tau_genElec_isCharm.push_back(0);
 	     }	   
 
 	   int nGenPartMuon = genpMuon.size();
@@ -3403,8 +3387,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genMuon_dr.push_back(genpMuon[ip]->dr);
 		ftree->tau_genMuon_isPrompt.push_back(genpMuon[ip]->isPrompt);
 		ftree->tau_genMuon_isPromptTau.push_back(genpMuon[ip]->isPromptTau);
-		ftree->tau_genMuon_isBottom.push_back(genpMuon[ip]->isBottom);
-		ftree->tau_genMuon_isCharm.push_back(genpMuon[ip]->isCharm);
 		
 		delete genpMuon[ip];
 	     }
@@ -3422,8 +3404,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genMuon_dr.push_back(-777);
 		ftree->tau_genMuon_isPrompt.push_back(0);
 		ftree->tau_genMuon_isPromptTau.push_back(0);
-		ftree->tau_genMuon_isBottom.push_back(0);
-		ftree->tau_genMuon_isCharm.push_back(0);
 	     }	   
 
 	   int nGenPartTau = genpTau.size();
@@ -3445,8 +3425,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genTau_dr.push_back(genpTau[ip]->dr);
 		ftree->tau_genTau_isPrompt.push_back(genpTau[ip]->isPrompt);
 		ftree->tau_genTau_isPromptTau.push_back(genpTau[ip]->isPromptTau);
-		ftree->tau_genTau_isBottom.push_back(genpTau[ip]->isBottom);
-		ftree->tau_genTau_isCharm.push_back(genpTau[ip]->isCharm);
 		
 		delete genpTau[ip];
 	     }
@@ -3464,8 +3442,6 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 		ftree->tau_genTau_dr.push_back(-777);		
 		ftree->tau_genTau_isPrompt.push_back(0);
 		ftree->tau_genTau_isPromptTau.push_back(0);
-		ftree->tau_genTau_isBottom.push_back(0);
-		ftree->tau_genTau_isCharm.push_back(0);
 	     }	   
 	 }
        

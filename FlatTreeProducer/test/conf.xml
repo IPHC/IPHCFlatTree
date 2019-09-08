@@ -416,8 +416,6 @@
     <var name="el_gen_dr" save="1" mc="1"></var>
     <var name="el_gen_isPrompt" save="1" mc="1"></var>
     <var name="el_gen_isPromptTau" save="1" mc="1"></var>
-    <var name="el_gen_isBottom" save="1" mc="1"></var>
-    <var name="el_gen_isCharm" save="1" mc="1"></var>
     <var name="el_hasPhotonMCMatch" save="1" mc="1"></var>
     <var name="el_nGenPartConv" save="1" mc="1"></var>
     <var name="el_genConv_idx" save="1" mc="1"></var>
@@ -432,8 +430,6 @@
     <var name="el_genConv_dr" save="1" mc="1"></var>
     <var name="el_genConv_isPrompt" save="1" mc="1"></var>
     <var name="el_genConv_isPromptTau" save="1" mc="1"></var>
-    <var name="el_genConv_isBottom" save="1" mc="1"></var>
-    <var name="el_genConv_isCharm" save="1" mc="1"></var>
     <var name="el_hasMCMatchPAT" save="1" mc="1"></var>
     <var name="el_genPAT_pt" save="1" mc="1"></var>
     <var name="el_genPAT_eta" save="1" mc="1"></var>
@@ -735,8 +731,6 @@
     <var name="mu_gen_dr" save="1" mc="1"></var>
     <var name="mu_gen_isPrompt" save="1" mc="1"></var>
     <var name="mu_gen_isPromptTau" save="1" mc="1"></var>
-    <var name="mu_gen_isBottom" save="1" mc="1"></var>
-    <var name="mu_gen_isCharm" save="1" mc="1"></var>
     <var name="mu_hasMCMatchPAT" save="1" mc="1"></var>
     <var name="mu_genPAT_pt" save="1" mc="1"></var>
     <var name="mu_genPAT_eta" save="1" mc="1"></var>
@@ -839,8 +833,6 @@
     <var name="tau_genElec_dr" save="1" mc="1"></var>
     <var name="tau_genElec_isPrompt" save="1" mc="1"></var>
     <var name="tau_genElec_isPromptTau" save="1" mc="1"></var>
-    <var name="tau_genElec_isBottom" save="1" mc="1"></var>
-    <var name="tau_genElec_isCharm" save="1" mc="1"></var>
     <var name="tau_hasMCMatchMuon" save="1" mc="1"></var>
     <var name="tau_nGenPartMuon" save="1" mc="1"></var>
     <var name="tau_genMuon_idx" save="1" mc="1"></var>
@@ -855,8 +847,6 @@
     <var name="tau_genMuon_dr" save="1" mc="1"></var>
     <var name="tau_genMuon_isPrompt" save="1" mc="1"></var>
     <var name="tau_genMuon_isPromptTau" save="1" mc="1"></var>
-    <var name="tau_genMuon_isBottom" save="1" mc="1"></var>
-    <var name="tau_genMuon_isCharm" save="1" mc="1"></var>
     <var name="tau_hasMCMatchTau" save="1" mc="1"></var>
     <var name="tau_nGenPartTau" save="1" mc="1"></var>
     <var name="tau_genTau_idx" save="1" mc="1"></var>
@@ -871,8 +861,6 @@
     <var name="tau_genTau_dr" save="1" mc="1"></var>
     <var name="tau_genTau_isPrompt" save="1" mc="1"></var>
     <var name="tau_genTau_isPromptTau" save="1" mc="1"></var>
-    <var name="tau_genTau_isBottom" save="1" mc="1"></var>
-    <var name="tau_genTau_isCharm" save="1" mc="1"></var>
     <var name="jet_ntrk" save="1"></var>    
     <var name="jet_JBP" save="1"></var>
     <var name="jet_JP" save="1"></var>

@@ -8,7 +8,6 @@
 
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
-#include "PhysicsTools/JetMCUtils/interface/CandMCTag.h"
 
 #include "IPHCFlatTree/FlatTreeProducer/interface/FlatTree.hh"
 
@@ -36,8 +35,6 @@ class MCTruth
 	float dr;
 	bool isPrompt;
 	bool isPromptTau;
-	bool isBottom;
-	bool isCharm;
      };   
    
    void Init(FlatTree &tree);
