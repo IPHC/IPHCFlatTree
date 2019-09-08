@@ -424,7 +424,27 @@ int jetNDauChargedMVASel(const pat::Jet& jet,const reco::Candidate* cand,const r
 {
    int jetNDauCharged = 0;
 
-   if( vtx.isValid() )
+   auto rawp4 = jet.correctedP4("Uncorrected");
+   auto lepp4 = cand->p4();
+   
+   if( (rawp4 - lepp4).R() < 1e-4 )
+     return 0;
+   
+   bool matched = 0;
+   for( unsigned int i1=0;i1<jet.numberOfSourceCandidatePtrs();i1++ )
+     {	
+	auto c1s = jet.sourceCandidatePtr(i1);
+	for( unsigned int i2=0;i2<cand->numberOfSourceCandidatePtrs();i2++ )
+	  {	     
+	     if( cand->sourceCandidatePtr(i2) == c1s )
+	       {
+		  matched = 1;
+		  break;
+	       }	     
+	  }	
+     }   
+
+   if( vtx.isValid() && matched )
      {	
 	for( unsigned int id=0,nd=jet.numberOfDaughters();id<nd;++id )
 	  {
@@ -437,7 +457,7 @@ int jetNDauChargedMVASel(const pat::Jet& jet,const reco::Candidate* cand,const r
 	       }	     
 	  }   
      }
-   
+
    return jetNDauCharged;
 }
 
