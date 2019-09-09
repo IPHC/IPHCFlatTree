@@ -1395,21 +1395,31 @@ void FlatTreeProducer::analyze(const edm::Event& iEvent, const edm::EventSetup& 
 
 //----------------------------
 //Get prefiring proba
+
+   if( datasetsYear_ != "2018" )
+     {	
 	edm::Handle< double > theprefweight;
 	iEvent.getByToken(prefweight_token, theprefweight ) ;
 	double _prefiringweight =(*theprefweight);
-
+	
 	edm::Handle< double > theprefweightup;
 	iEvent.getByToken(prefweightup_token, theprefweightup ) ;
 	double _prefiringweightup =(*theprefweightup);
-
+	
 	edm::Handle< double > theprefweightdown;
 	iEvent.getByToken(prefweightdown_token, theprefweightdown ) ;
 	double _prefiringweightdown =(*theprefweightdown);
 	
-   ftree->prefiringWeight = _prefiringweight;
-   ftree->prefiringWeightUp = _prefiringweightup;
-   ftree->prefiringWeightDown = _prefiringweightdown;	
+	ftree->prefiringWeight = _prefiringweight;
+	ftree->prefiringWeightUp = _prefiringweightup;
+	ftree->prefiringWeightDown = _prefiringweightdown;
+     }
+   else
+     {
+	ftree->prefiringWeight = 1.;
+	ftree->prefiringWeightUp = 1.;
+	ftree->prefiringWeightDown = 1.;
+     }   
 
     // ####################################
     // #   ____  _ _                      #
