@@ -431,30 +431,52 @@ process.FlatTree = cms.EDAnalyzer('FlatTreeProducer',
 process.runQG = cms.Sequence()
 if options.runQG:
     process.runQG = cms.Sequence(process.QGTagger)
-    
-process.p = cms.Path(
-                     process.egammaPostRecoSeq+
-                     process.patJetCorrFactorsNewDFTraining+
-                     process.updatedPatJetsNewDFTraining+
-                     process.pfImpactParameterTagInfosNewDFTraining+
-                     process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining+
-                     process.pfDeepCSVTagInfosNewDFTraining+
-                     process.pfDeepFlavourTagInfosNewDFTraining+
-                     process.pfDeepFlavourJetTagsNewDFTraining+
-                     process.patJetCorrFactorsTransientCorrectedNewDFTraining+
-                     process.updatedPatJetsTransientCorrectedNewDFTraining+
-                     process.selectedUpdatedPatJetsNewDFTraining+
-                     process.rerunMvaIsolationSequence+
-                     process.NewTauIDsEmbedded+
-                     getattr(process,"NewTauIDsEmbedded")+
-                     process.fullPatMetSequenceModifiedMET+
-                     process.METSignificance+
-                     process.runQG+
-                     process.slimmedPatTriggerUnpacked+
-                     process.prefiringweight+
-                     process.selectedHadronsAndPartons+
-                     process.genJetFlavourInfos+
-                     process.matchGenBHadron+
-                     process.matchGenCHadron+
-                     process.FlatTree
-                   )
+
+if not options.isData:    
+    process.p = cms.Path(process.egammaPostRecoSeq+
+                         process.patJetCorrFactorsNewDFTraining+
+                         process.updatedPatJetsNewDFTraining+
+                         process.pfImpactParameterTagInfosNewDFTraining+
+                         process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining+
+                         process.pfDeepCSVTagInfosNewDFTraining+
+                         process.pfDeepFlavourTagInfosNewDFTraining+
+                         process.pfDeepFlavourJetTagsNewDFTraining+
+                         process.patJetCorrFactorsTransientCorrectedNewDFTraining+
+                         process.updatedPatJetsTransientCorrectedNewDFTraining+
+                         process.selectedUpdatedPatJetsNewDFTraining+
+                         process.rerunMvaIsolationSequence+
+                         process.NewTauIDsEmbedded+
+                         getattr(process,"NewTauIDsEmbedded")+
+                         process.fullPatMetSequenceModifiedMET+
+                         process.METSignificance+
+                         process.runQG+
+                         process.slimmedPatTriggerUnpacked+
+                         process.prefiringweight+
+                         process.selectedHadronsAndPartons+
+                         process.genJetFlavourInfos+
+                         process.matchGenBHadron+
+                         process.matchGenCHadron+
+                         process.FlatTree
+                         )
+else:
+    process.p = cms.Path(process.egammaPostRecoSeq+
+                         process.patJetCorrFactorsNewDFTraining+
+                         process.updatedPatJetsNewDFTraining+
+                         process.pfImpactParameterTagInfosNewDFTraining+
+                         process.pfInclusiveSecondaryVertexFinderTagInfosNewDFTraining+
+                         process.pfDeepCSVTagInfosNewDFTraining+
+                         process.pfDeepFlavourTagInfosNewDFTraining+
+                         process.pfDeepFlavourJetTagsNewDFTraining+
+                         process.patJetCorrFactorsTransientCorrectedNewDFTraining+
+                         process.updatedPatJetsTransientCorrectedNewDFTraining+
+                         process.selectedUpdatedPatJetsNewDFTraining+
+                         process.rerunMvaIsolationSequence+
+                         process.NewTauIDsEmbedded+
+                         getattr(process,"NewTauIDsEmbedded")+
+                         process.fullPatMetSequenceModifiedMET+
+                         process.METSignificance+
+                         process.runQG+
+                         process.slimmedPatTriggerUnpacked+
+                         process.prefiringweight+
+                         process.FlatTree
+                         )
