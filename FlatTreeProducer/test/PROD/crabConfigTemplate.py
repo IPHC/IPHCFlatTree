@@ -21,7 +21,7 @@ config.Data.totalUnits = -1 #nof files (or lumisection) to analyze in total (-1=
 
 #-- For DATA
 config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 20 #Data -- nof LS in each job
+config.Data.unitsPerJob = 50 #Data -- nof LS in each job
 
 config.Data.publication = False
 
