@@ -20,12 +20,33 @@ for i in ${samp}
 do
   spl=($(echo $i | tr "/" "\n"))
   pubdn=$(echo "${spl[2]}_${spl[3]}" | sed 's%-%_%g')
+  isExt1=$(echo ${pubdn} | grep 'ext1')
+  isExt2=$(echo ${pubdn} | grep 'ext2')
+  isExt3=$(echo ${pubdn} | grep 'ext3')
+  isExt4=$(echo ${pubdn} | grep 'ext4')
+  isExt5=$(echo ${pubdn} | grep 'ext5')
   nam=$(echo "${spl[1]}" | sed 's%-%_%g')
   reqn=$(echo "${nam}_${pubdn}" | sed 's%RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
+  sed 's%RunIISummer16MiniAODv3_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
   sed 's%RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
   sed 's%RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14.*%MC2017%g' |\
   sed 's%RunIIFall17MiniAODv2_PU2017_12Apr2018_94X_mc2017_realistic_v14.*%MC2017%g' |\
   sed 's%RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15.*%MC2018%g')
+  if [[ ${isExt1} != '' ]]; then
+    reqn=${reqn}_ext1
+  fi
+  if [[ ${isExt2} != '' ]]; then
+    reqn=${reqn}_ext2
+  fi
+  if [[ ${isExt3} != '' ]]; then
+    reqn=${reqn}_ext3
+  fi
+  if [[ ${isExt4} != '' ]]; then
+    reqn=${reqn}_ext4
+  fi
+  if [[ ${isExt5} != '' ]]; then
+    reqn=${reqn}_ext5
+  fi
   
   cat ${pset} | sed "s%INPUTDATASET%${i}%g" \
   | sed "s%OUTLFN%${prodv}%g" \
