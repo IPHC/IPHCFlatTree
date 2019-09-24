@@ -26,13 +26,9 @@ do
   isExt4=$(echo ${pubdn} | grep 'ext4')
   isExt5=$(echo ${pubdn} | grep 'ext5')
   nam=$(echo "${spl[1]}" | sed 's%-%_%g')
-  reqn=$(echo "${nam}_${pubdn}" | sed 's%RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
-  sed 's%RunIISummer16MiniAODv3_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
-  sed 's%RunIISummer16MiniAODv3_PUMoriond17_94X_mcRun2_asymptotic_v3.*%MC2016%g' |\
-  sed 's%RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14.*%MC2017%g' |\
-  sed 's%RunIIFall17MiniAODv2_PU2017_12Apr2018_94X_mc2017_realistic_v14.*%MC2017%g' |\
-  sed 's%RunIIFall17MiniAODv2_PU2017_12Apr2018_tauDecays_94X_mc2017_realistic_v14.*%MC2017%g' |\
-  sed 's%RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15.*%MC2018%g')
+  reqn=$(echo "${nam}_${pubdn}" | sed 's%RunIISummer16MiniAODv3.*%MC2016%g' |\
+  sed 's%RunIIFall17MiniAODv2.*%MC2017%g' |\
+  sed 's%RunIIAutumn18MiniAOD.*%MC2018%g')
   if [[ ${isExt1} != '' ]]; then
     reqn=${reqn}_ext1
   fi
