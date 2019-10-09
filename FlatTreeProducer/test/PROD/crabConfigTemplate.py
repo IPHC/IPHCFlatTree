@@ -11,6 +11,7 @@ config.JobType.pluginName = 'Analysis'
 config.JobType.inputFiles = ['../conf.xml','../Summer16_07Aug2017All_V11_DATA.db','../Summer16_07Aug2017_V11_MC.db','../Fall17_17Nov2017_V32_94X_DATA.db','../Fall17_17Nov2017_V32_94X_MC.db','../Autumn18_RunABCD_V8_DATA.db','../Autumn18_V8_MC.db']
 #config.JobType.outputFiles = ['output.root']
 config.JobType.pyCfgParams = ['isData=1','runAK10=0','datasetsYear=2016','applyMETFilters=1','runDNN=1']
+config.JobType.maxMemoryMB = 4000
 config.section_('Data')
 
 config.Data.totalUnits = -1 #nof files (or lumisection) to analyze in total (-1=all)
@@ -34,6 +35,8 @@ config.Data.outLFNDirBase = 'OUTLFN'
 #config.Data.allowNonValidInputDataset = True #Un-comment if running on dataset not in 'VALID' status
 
 config.Data.lumiMask = 'GRL/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt' #For data
+#config.Data.lumiMask = 'GRL/Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON_v1.txt' #For data
+#config.Data.lumiMask = 'GRL/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt' #For data
 
 config.section_('User')
 config.section_('Site')
